@@ -234,6 +234,34 @@
       box-shadow: 0 0 0 2px var(--gold);
     }
 
+    /* Section note — feel/repeat directives from imported songs */
+    .section-note {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin: -3px 0 7px 2px;
+      font-family: 'Lato', sans-serif;
+      font-size: 10.5px;
+      font-style: italic;
+      color: rgba(0,0,0,0.45);
+      letter-spacing: 0.01em;
+    }
+    .section-note .repeat-badge {
+      display: inline-flex;
+      align-items: center;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--saffron);
+      background: rgba(196,154,20,0.10);
+      border: 1px solid rgba(196,154,20,0.25);
+      border-radius: 8px;
+      padding: 1px 7px;
+    }
+
     /* ─── Chord + lyric pair ─────────────────────────────── */
     .line {
       margin-bottom: 5px;
@@ -288,7 +316,8 @@
     }
 
     body {
-      padding-bottom: 72px; /* clear the fixed practice bar */
+      /* Clear fixed playback dock (count-out strip + outro bar + practice bar) */
+      padding-bottom: calc(158px + env(safe-area-inset-bottom, 0px));
     }
 
     /* Stack to single column on phones / narrow windows */
@@ -510,19 +539,30 @@
       font-weight: 700 !important;
     }
 
-    /* ─── Practice bar ──────────────────────────────────── */
-    .practice-bar {
+    /* ─── Playback dock (count-out strip + outro + practice bar) ─ */
+    .playback-dock {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+      z-index: 200;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+
+    /* ─── Practice bar ──────────────────────────────────── */
+    .practice-bar {
+      width: 100%;
       background: var(--brown);
       border-top: 1px solid rgba(196,154,20,0.3);
       padding: 6px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
-      z-index: 200;
     }
 
     .bar-btn {
@@ -556,63 +596,6 @@
       color: var(--gold);
     }
     .bar-countin:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
-
-    /* Count-in / Count-out controls (paired in the practice bar).
-       Each shows a label + editable number. Tap the label area to
-       focus the input; tap 0 to disable that count. */
-    .count-grp {
-      display: flex;
-      gap: 3px;
-      flex-shrink: 0;
-    }
-    .count-ctrl {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      height: 28px;
-      padding: 0 6px 0 7px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: transparent;
-      cursor: pointer;
-      transition: border-color 0.12s, background 0.12s;
-    }
-    /* On very narrow phones, drop the labels to save space */
-    @media (max-width: 380px) {
-      .count-ctrl-lbl { display: none; }
-      .count-ctrl { padding: 0 4px; }
-    }
-    .count-ctrl:hover { border-color: rgba(255,255,255,0.4); }
-    .count-ctrl:focus-within {
-      border-color: var(--gold);
-      background: rgba(196,154,20,0.12);
-    }
-    .count-ctrl-lbl {
-      font-family: 'Lato', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
-      pointer-events: none;
-    }
-    .count-ctrl-num {
-      width: 18px;
-      background: transparent;
-      border: none;
-      color: var(--gold);
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-      padding: 0;
-      outline: none;
-      cursor: text;
-      -moz-appearance: textfield;
-    }
-    .count-ctrl-num::-webkit-outer-spin-button,
-    .count-ctrl-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .count-ctrl-num.is-zero { color: rgba(255,255,255,0.35); }
 
     .bar-play {
       width: 40px;
@@ -649,7 +632,6 @@
     /* Popovers */
     .bar-popover {
       position: fixed;
-      bottom: 56px;
       background: var(--brown);
       border: 1px solid rgba(196,154,20,0.35);
       border-radius: 8px;
@@ -672,6 +654,7 @@
     .bpm-popover {
       left: 50%;
       transform: translateX(-50%);
+      bottom: calc(158px + env(safe-area-inset-bottom, 0px) + 8px);
     }
     .bpm-popover input[type="range"] {
       writing-mode: vertical-lr;
@@ -701,6 +684,7 @@
 
     .vol-popover {
       right: 60px;
+      bottom: calc(158px + env(safe-area-inset-bottom, 0px) + 8px);
     }
     .vol-popover input[type="range"] {
       writing-mode: vertical-lr;
@@ -735,44 +719,122 @@
     .line.seekable { cursor: pointer; }
     .line.seekable:hover { background: rgba(196,154,20,0.06); }
 
-    /* ─── Intro count-in bar ────────────────────────────── */
+    /* ─── Intro / outro: loop column (N×) + four beat cells (one row, equal height) ─ */
     .intro-bar {
       background: var(--brown);
-      padding: 10px 20px;
+      padding: 8px 12px;
       display: flex;
-      align-items: center;
-      gap: 16px;
+      flex-direction: column;
+      align-items: stretch;
       border-bottom: 2px solid rgba(196,154,20,0.35);
     }
 
-    .intro-label {
-      font-family: 'Lato', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      flex-shrink: 0;
-      white-space: nowrap;
+    .intro-rhythm-row {
+      display: grid;
+      grid-template-columns: minmax(44px, 0.72fr) repeat(4, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+      align-items: stretch;
     }
 
-    .intro-beats-row {
+    .intro-loop-col {
       display: flex;
-      gap: 6px;
-      flex: 1;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 3px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(196,154,20,0.22);
+      min-width: 0;
+      min-height: 34px;
+      box-sizing: border-box;
+    }
+    .intro-loop-col:focus-within {
+      border-color: var(--gold);
+      background: rgba(196,154,20,0.12);
     }
 
-    .intro-beat {
-      flex: 1;
-      height: 36px;
+    /* While playing, hide loop editor so the four beat cells span full width */
+    body.is-playing .intro-loop-col {
+      display: none;
+    }
+    body.is-playing .intro-rhythm-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    /* “N ×” on one line — each loop = 4 beats (one bar in 4/4) */
+    .intro-loop-pair {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      cursor: text;
+    }
+
+    .intro-loop-input {
+      box-sizing: border-box;
+      border: none;
+      background: transparent;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(14px, 3.6vw, 17px);
+      font-weight: 700;
+      text-align: right;
+      width: 1.15em;
+      min-width: 0.95em;
+      max-width: 55%;
+      padding: 0 1px 0 0;
+      outline: none;
+      line-height: 1;
+      cursor: text;
+      caret-color: var(--cream);
+      -moz-appearance: textfield;
+    }
+    .intro-loop-input::-webkit-outer-spin-button,
+    .intro-loop-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .intro-loop-input.is-zero { color: rgba(255,255,255,0.4); }
+
+    .intro-loop-times {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(13px, 3.4vw, 16px);
+      font-weight: 700;
+      color: rgba(255, 245, 230, 0.92);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+      flex: 0 0 auto;
+      padding-bottom: 1px;
+    }
+
+    .intro-loop-hint {
+      font-family: 'Lato', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .intro-rhythm-row .intro-beat {
+      min-height: 34px;
+      height: auto;
+      align-self: stretch;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 4px;
+      border-radius: 3px;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(196,154,20,0.18);
       font-family: 'Space Mono', monospace;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 700;
       color: rgba(255,255,255,0.2);
       transition: background 0.04s, color 0.04s, border-color 0.04s;
@@ -1039,6 +1101,232 @@
       line-height: 1.35;
     }
 
+    /* ─── Import modal (paste a song) ───────────────────── */
+    .modal-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+      z-index: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-scrim.open { opacity: 1; pointer-events: auto; }
+    .import-modal {
+      background: var(--brown);
+      border: 1px solid rgba(196,154,20,0.4);
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      width: min(680px, 100%);
+      max-height: min(86vh, 760px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(8px);
+      opacity: 0;
+      transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+    .modal-scrim.open .import-modal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .import-modal .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .import-modal .head h3 {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .import-modal .close {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+    }
+    .import-modal .close:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .import-modal .body {
+      padding: 14px 16px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .import-modal textarea {
+      width: 100%;
+      min-height: 200px;
+      max-height: 360px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(196,154,20,0.25);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: #f5e9d4;
+      font-family: 'Space Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      resize: vertical;
+      outline: none;
+    }
+    .import-modal textarea:focus {
+      border-color: var(--gold);
+      background: rgba(0,0,0,0.35);
+    }
+    .import-modal textarea::placeholder { color: rgba(255,255,255,0.28); }
+    .import-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+    }
+    .format-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(196,154,20,0.35);
+      background: rgba(196,154,20,0.08);
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .format-chip.unknown { color: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.18); background: transparent; }
+    .import-fields {
+      display: grid;
+      grid-template-columns: 1fr 110px 80px;
+      gap: 8px;
+    }
+    .import-fields label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: 'Lato', sans-serif;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+    .import-fields input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(196,154,20,0.3);
+      border-radius: 4px;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 9px;
+      outline: none;
+    }
+    .import-fields input:focus {
+      border-color: var(--gold);
+      background: rgba(196,154,20,0.08);
+    }
+    .preview-frame {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      background: var(--cream);
+      max-height: 320px;
+      overflow: auto;
+      padding: 14px 16px;
+    }
+    .preview-empty {
+      padding: 24px 16px;
+      font-family: 'Lato', sans-serif;
+      font-size: 12px;
+      font-style: italic;
+      color: rgba(0,0,0,0.4);
+      text-align: center;
+    }
+    .preview-frame .section { margin-bottom: 8px; }
+    .preview-frame .section:last-child { margin-bottom: 0; }
+    .parse-warnings {
+      font-family: 'Lato', sans-serif;
+      font-size: 11.5px;
+      color: #ffb380;
+      background: rgba(255,120,60,0.08);
+      border: 1px solid rgba(255,120,60,0.25);
+      border-radius: 6px;
+      padding: 8px 12px;
+      line-height: 1.4;
+    }
+    .parse-warnings ul { margin: 4px 0 0; padding-left: 18px; }
+    .parse-warnings li { margin-bottom: 2px; }
+    .import-modal .foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.15);
+    }
+    .import-modal .foot .left {
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+    .import-modal .foot .file-link {
+      color: var(--gold);
+      text-decoration: underline;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font: inherit;
+      padding: 0;
+    }
+    .import-modal .foot .file-link:hover { color: #fff; }
+    .import-modal .foot .actions { display: flex; gap: 6px; }
+    .import-modal .foot button:not(.file-link) {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+    }
+    .import-modal .foot button:not(.file-link):hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+    .import-modal .foot button.primary {
+      background: var(--saffron);
+      border-color: var(--saffron);
+      color: #fff;
+    }
+    .import-modal .foot button.primary:hover { background: var(--orange); border-color: var(--orange); }
+    .import-modal .foot button.primary:disabled {
+      opacity: 0.4; cursor: not-allowed;
+      background: var(--saffron); border-color: var(--saffron);
+    }
+    @media (max-width: 480px) {
+      .import-fields { grid-template-columns: 1fr 1fr; }
+      .import-fields label.field-title { grid-column: 1 / -1; }
+      .import-modal textarea { min-height: 160px; font-size: 12px; }
+      .preview-frame { max-height: 240px; padding: 10px 12px; }
+    }
+
     /* ─── Stage Mode button (header, top-right) ─────────── */
     .stage-btn {
       position: absolute;
@@ -1094,6 +1382,7 @@
     body.stage-mode .section-label {
       font-size: clamp(11px, 1.4vw, 13px);
     }
+    body.stage-mode .section-note { display: none; }
 
     /* Spotlight current line — only fade when actively playing */
     body.stage-mode.is-playing .line {
@@ -1104,36 +1393,43 @@
       opacity: 1;
     }
 
-    /* Minimize practice bar — float it as a translucent island */
-    body.stage-mode .practice-bar {
+    /* Minimize playback dock — translucent stack above bottom edge */
+    body.stage-mode .playback-dock .practice-bar,
+    body.stage-mode .playback-dock #outro-bar {
       background: rgba(44,26,14,0.82);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(196,154,20,0.2);
-      padding: 8px 14px;
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
-    /* Auto-hide practice bar when playing + idle for 3s (handled via JS class) */
-    body.stage-mode .practice-bar.bar-fade {
-      opacity: 0.18;
-      transform: translateY(0);
+    body.stage-mode .playback-dock .practice-bar {
+      border-top: 1px solid rgba(196,154,20,0.2);
+      padding: 8px 14px;
     }
-    body.stage-mode .practice-bar.bar-fade:hover {
+    /* Auto-hide dock when playing + idle for 3s (handled via JS class) */
+    body.stage-mode .playback-dock.bar-fade {
+      opacity: 0.18;
+    }
+    body.stage-mode .playback-dock.bar-fade:hover {
       opacity: 1;
     }
-    /* Hide the "setup" buttons in stage mode (count controls, save) */
-    body.stage-mode .count-grp,
+    /* Hide setup UI in stage mode (loop inputs beside count labels, save) */
+    body.stage-mode .intro-loop-col,
     body.stage-mode #saveBtn { display: none; }
+    body.stage-mode .intro-rhythm-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 
     /* Standalone PWA: respect safe areas (iPhone notch/home indicator) */
     @media (display-mode: standalone) {
       body { padding-top: env(safe-area-inset-top); }
-      .practice-bar { padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+      .playback-dock .practice-bar {
+        padding-bottom: calc(6px + env(safe-area-inset-bottom));
+      }
     }
 
     /* ─── Print ──────────────────────────────────────────── */
     @media print {
-      .practice-bar, .intro-bar, .bpm-popover, .library-btn, .stage-btn,
+      .playback-dock, .intro-bar, .bpm-popover, .library-btn, .stage-btn,
       .drawer-scrim, .library-drawer, .tempo-popover, .vol-popover { display: none !important; }
       .line { border-left: none !important; background: none !important; padding-left: 0 !important; margin-left: 0 !important; opacity: 1 !important; }
       .section.playing .section-label { box-shadow: none !important; }
@@ -1162,18 +1458,20 @@
     </button>
   </header>
 
-  <!-- ══ INTRO COUNT-IN BAR (hidden until playback starts) ══ -->
-  <div id="intro-bar" class="intro-bar" hidden>
-    <div class="intro-label">◈ count&nbsp;in</div>
-    <div class="intro-beats-row">
+  <!-- ══ COUNT-IN: loops (N×) column + beats 1–8 ══ -->
+  <div id="intro-bar" class="intro-bar">
+    <div id="intro-beats" class="intro-rhythm-row" title="Count-in loops (0 = off). Each loop = 4 beats (one bar).">
+      <div class="intro-loop-col" title="Tap the number to edit. How many 4-beat loops before the song. × means “times”. Use 0 to turn off.">
+        <label class="intro-loop-pair" for="countInInput">
+          <input id="countInInput" class="intro-loop-input" type="number" min="0" max="8" step="1" value="2" inputmode="numeric" pattern="[0-9]*" aria-label="How many 4-beat count-in loops" aria-describedby="intro-loop-hint-in">
+          <span class="intro-loop-times" aria-hidden="true">×</span>
+        </label>
+        <span id="intro-loop-hint-in" class="intro-loop-hint">4-beat loops</span>
+      </div>
       <div class="intro-beat" data-n="0">1</div>
       <div class="intro-beat" data-n="1">2</div>
       <div class="intro-beat" data-n="2">3</div>
       <div class="intro-beat" data-n="3">4</div>
-      <div class="intro-beat" data-n="4">5</div>
-      <div class="intro-beat" data-n="5">6</div>
-      <div class="intro-beat" data-n="6">7</div>
-      <div class="intro-beat" data-n="7">8</div>
     </div>
   </div>
 
@@ -1182,37 +1480,12 @@
 
 </div><!-- /page -->
 
-<!-- ══ OUTRO COUNT-OUT BAR (loops until stopped) ═══════ -->
-<div id="outro-bar" class="intro-bar" hidden>
-  <div class="intro-label">◈ count&nbsp;out</div>
-  <div class="intro-beats-row">
-    <div class="intro-beat" data-n="0">1</div>
-    <div class="intro-beat" data-n="1">2</div>
-    <div class="intro-beat" data-n="2">3</div>
-    <div class="intro-beat" data-n="3">4</div>
-    <div class="intro-beat" data-n="4">5</div>
-    <div class="intro-beat" data-n="5">6</div>
-    <div class="intro-beat" data-n="6">7</div>
-    <div class="intro-beat" data-n="7">8</div>
-  </div>
-</div>
-
-<!-- ══ PRACTICE BAR ═════════════════════════════════════ -->
-<div class="practice-bar">
+<!-- ══ PLAYBACK DOCK: count-out setting + outro beats + transport ══ -->
+<div class="playback-dock">
+  <div class="practice-bar">
   <button id="replayBtn" class="bar-btn bar-sm" title="Restart">
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
   </button>
-
-  <div class="count-grp">
-    <label class="count-ctrl" title="Count-in loops (each loop = 8 beats; 0 = no count-in)">
-      <span class="count-ctrl-lbl">In</span>
-      <input id="countInInput" class="count-ctrl-num" type="number" min="0" max="8" step="1" value="2" inputmode="numeric" pattern="[0-9]*">
-    </label>
-    <label class="count-ctrl" title="Count-out loops (each loop = 8 beats; 0 = no count-out)">
-      <span class="count-ctrl-lbl">Out</span>
-      <input id="countOutInput" class="count-ctrl-num" type="number" min="0" max="8" step="1" value="2" inputmode="numeric" pattern="[0-9]*">
-    </label>
-  </div>
 
   <button id="playBtn" class="bar-btn bar-play" title="Play">
     <svg id="iconPlay" viewBox="0 0 24 24" width="22" height="22" fill="white"><polygon points="7,4 20,12 7,20"/></svg>
@@ -1234,7 +1507,25 @@
   </button>
 
   <span class="practice-status" id="practiceStatus">ready</span>
-</div>
+  </div>
+
+  <!-- COUNT-OUT: loops (N×) column + beats 1–8 -->
+  <div id="outro-bar" class="intro-bar">
+    <div id="outro-beats" class="intro-rhythm-row" title="Count-out loops (0 = off). Each loop = 4 beats (one bar).">
+      <div class="intro-loop-col" title="Tap the number to edit. How many 4-beat loops after the song. × means “times”. Use 0 to turn off.">
+        <label class="intro-loop-pair" for="countOutInput">
+          <input id="countOutInput" class="intro-loop-input" type="number" min="0" max="8" step="1" value="2" inputmode="numeric" pattern="[0-9]*" aria-label="How many 4-beat count-out loops" aria-describedby="intro-loop-hint-out">
+          <span class="intro-loop-times" aria-hidden="true">×</span>
+        </label>
+        <span id="intro-loop-hint-out" class="intro-loop-hint">4-beat loops</span>
+      </div>
+      <div class="intro-beat" data-n="0">1</div>
+      <div class="intro-beat" data-n="1">2</div>
+      <div class="intro-beat" data-n="2">3</div>
+      <div class="intro-beat" data-n="3">4</div>
+    </div>
+  </div>
+</div><!-- /playback-dock -->
 
 <!-- BPM popover -->
 <div id="bpmPopover" class="bar-popover bpm-popover">
@@ -1262,7 +1553,7 @@
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       NEW
     </button>
-    <button id="importBtn" class="drawer-btn" title="Import song JSON">
+    <button id="importBtn" class="drawer-btn" title="Import — paste a song or load a backup file">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       IMPORT
     </button>
@@ -1302,6 +1593,64 @@
   </div>
 </div>
 
+<!-- ══ IMPORT MODAL — paste a song ════════════════════════ -->
+<div id="importScrim" class="modal-scrim" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+  <div class="import-modal">
+    <div class="head">
+      <h3 id="importTitle">Import a Song</h3>
+      <button class="close" id="importClose" title="Close" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="body">
+      <textarea id="importPaste" spellcheck="false" placeholder="Paste a song here.
+
+Two formats supported:
+
+  ChordPro:
+    {title: My Song}
+    {start_of_verse}
+    [G]Hello [D]world
+    {end_of_verse}
+
+  Chords-above-lyrics:
+    G       D
+    Hello   world
+
+Section headers like [ Verse 1 ] or [ Chorus — peak energy ] are detected automatically.
+Lines like (repeat 4x) are saved as a section badge."></textarea>
+      <div class="import-meta">
+        <span id="importFormatChip" class="format-chip unknown">Format: paste to detect</span>
+        <span id="importLineCount">0 lines</span>
+      </div>
+      <div id="importWarnings" class="parse-warnings" style="display:none"></div>
+      <div class="import-fields">
+        <label class="field-title">Title
+          <input id="importTitle_in" type="text" placeholder="Song title">
+        </label>
+        <label>Key
+          <input id="importKey_in" type="text" placeholder="G">
+        </label>
+        <label>BPM
+          <input id="importBpm_in" type="number" min="30" max="240" step="1" placeholder="90">
+        </label>
+      </div>
+      <div id="importPreview" class="preview-frame">
+        <div class="preview-empty">Preview will appear here once you paste a song.</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="left">
+        or <button type="button" class="file-link" id="importFromFile">load a JSON / HTML backup</button>
+      </div>
+      <div class="actions">
+        <button id="importCancel">Cancel</button>
+        <button id="importConfirm" class="primary" disabled>Add to Library</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   /* ═════════════════════════════════════════════════════════
      SONG PRACTICE — multi-song player
@@ -1314,7 +1663,7 @@
     const LIBRARY_KEY   = 'song-practice-library-v1';
     const SETTINGS_KEY  = 'song-practice-settings-v1';
     const SCHEMA_VER    = 1;
-    const INTRO_BEATS_COUNT = 8;
+    const INTRO_BEATS_COUNT = 4;
     const DEFAULT_BPM   = 72;
 
     /* ─── USER SETTINGS (persisted) ─────────────────────── */
@@ -1537,8 +1886,18 @@
             <span class="prog" tabindex="0" title="Tap to edit progression">${escapeHtml(section.progression || '')}</span>
             ${tempoBadge}
           </div>
+          ${renderSectionNote(section)}
           ${(section.lines || []).map(renderLine).join('')}
         </div>`;
+    }
+
+    function renderSectionNote(section) {
+      const repeat   = (section.repeat && section.repeat > 1) ? Number(section.repeat) : 0;
+      const noteText = section.note ? String(section.note).trim() : '';
+      if (!repeat && !noteText) return '';
+      const badge = repeat ? `<span class="repeat-badge">×${repeat}</span>` : '';
+      const note  = noteText ? `<span>${escapeHtml(noteText)}</span>` : '';
+      return `<div class="section-note">${badge}${note}</div>`;
     }
 
     function renderLine(line) {
@@ -1848,7 +2207,7 @@
       const line = lines[idx];
       line.classList.add('active');
       const rect = line.getBoundingClientRect();
-      if (rect.top > window.innerHeight * 0.35 || rect.bottom > window.innerHeight - 72) {
+      if (rect.top > window.innerHeight * 0.35 || rect.bottom > window.innerHeight - 170) {
         line.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       const label = line.closest('.section')?.querySelector('.label-text');
@@ -1862,15 +2221,12 @@
 
     /* ─── Outro (count-out) bar ─────────────────────────── */
     function showOutroBar() {
-      const bar = document.getElementById('outro-bar');
-      if (bar) bar.hidden = false;
       inOutro = true;
     }
     function hideOutroBar() {
-      const bar = document.getElementById('outro-bar');
-      if (bar) {
-        bar.hidden = true;
-        bar.querySelectorAll('.intro-beat').forEach(b => b.classList.remove('active', 'played'));
+      const beats = document.getElementById('outro-beats');
+      if (beats) {
+        beats.querySelectorAll('.intro-beat').forEach(b => b.classList.remove('active', 'played'));
       }
       inOutro = false;
     }
@@ -1948,7 +2304,6 @@
       if (evt.kind === 'intro') {
         const bar     = document.getElementById('intro-bar');
         const beatEls = bar.querySelectorAll('.intro-beat');
-        if (bar.hidden) bar.hidden = false;
         beatEls.forEach((b, i) => {
           b.classList.toggle('active', i === evt.n);
           b.classList.toggle('played', i < evt.n);
@@ -2009,10 +2364,9 @@
 
     /* ─── Intro count-in helpers (scheduler-driven) ───────────── */
     function hideIntroBar() {
-      const bar = document.getElementById('intro-bar');
-      if (!bar) return;
-      bar.hidden = true;
-      bar.querySelectorAll('.intro-beat').forEach(b => b.classList.remove('active', 'played'));
+      const beats = document.getElementById('intro-beats');
+      if (!beats) return;
+      beats.querySelectorAll('.intro-beat').forEach(b => b.classList.remove('active', 'played'));
     }
 
     /* Start intro phase; scheduler auto-transitions into song phase
@@ -2040,9 +2394,8 @@
         return;
       }
 
-      const bar     = document.getElementById('intro-bar');
-      const beatEls = bar.querySelectorAll('.intro-beat');
-      bar.hidden = false;
+      const beats   = document.getElementById('intro-beats');
+      const beatEls = beats ? beats.querySelectorAll('.intro-beat') : [];
       beatEls.forEach(b => b.classList.remove('active', 'played'));
 
       _phase            = 'intro';
@@ -2056,7 +2409,8 @@
     /* Tap the count-in bar mid-song = restart from beat 0 with full count-in.
        (Previous behavior was a single-loop count-in then resume in place —
        Wind's request: always restart fresh from the top.) */
-    document.getElementById('intro-bar').addEventListener('click', () => {
+    document.getElementById('intro-bar').addEventListener('click', (e) => {
+      if (e.target.closest('.intro-loop-col')) return;
       if (!isPlaying) return;
       _stopScheduler();
       // Reset to the top
@@ -2140,7 +2494,7 @@
       if (!isPlaying) return;
       const line = e.target.closest('.line');
       if (!line) return;
-      if (e.target.closest('.practice-bar')) return;
+      if (e.target.closest('.playback-dock')) return;
       if (e.target.closest('.section-label')) return;
       const lines = getLines();
       const idx   = lines.indexOf(line);
@@ -2209,7 +2563,7 @@
         // Normalize empty / out-of-range on blur
         refreshCountInputs();
         const n = _clampLoops(el.value);
-        setStatus(label + ': ' + (n === 0 ? 'off' : n + '× 8 beats'));
+        setStatus(label + ': ' + (n === 0 ? 'off' : n + '× 4 beats'));
       });
       // Select on focus = easier overwrite on mobile
       el.addEventListener('focus', () => { setTimeout(() => el.select(), 0); });
@@ -2812,7 +3166,576 @@
       exportFullHtml();
     });
 
-    importBtn.addEventListener('click', () => importInput.click());
+    /* ═════════════════════════════════════════════════════
+       SONG IMPORT — Tier 1
+       Two paste formats supported, plus existing JSON file fallback:
+         A) ChordPro      — {directives}, [chord]inline lyrics
+         B) Plain text    — chord line above lyric line, [Section] headers
+       Pipeline: paste → detect → parse → preview → confirm → save
+    ═════════════════════════════════════════════════════ */
+
+    /* ─── Parser primitives ───────────────────────────── */
+
+    // Single chord token: G, Gm, G7, Gmaj7, G#m, Bb/D, Csus4, Dadd9, etc.
+    const CHORD_RE = /^[A-G](?:b|#)?(?:maj|min|m|dim|aug|sus|add)?[0-9]*(?:sus[0-9]*)?(?:add[0-9]*)?(?:\/[A-G](?:b|#)?)?$/;
+
+    function _isChordToken(tok) {
+      return !!tok && CHORD_RE.test(tok);
+    }
+
+    function _isChordLine(line) {
+      const trimmed = line.trim();
+      if (!trimmed) return false;
+      const tokens = trimmed.split(/\s+/);
+      if (tokens.length === 0 || tokens.length > 12) return false;
+      return tokens.every(_isChordToken);
+    }
+
+    function _stripCodeFences(text) {
+      // Remove ```language ... ``` wrappers (incl. plain ```)
+      return text.replace(/^[ \t]*```[a-zA-Z0-9_-]*\s*\n/gm, '')
+                 .replace(/\n[ \t]*```\s*$/g, '')
+                 .replace(/^[ \t]*```\s*$/gm, '');
+    }
+
+    function _detectFormat(text) {
+      if (!text || !text.trim()) return 'unknown';
+      const stripped = _stripCodeFences(text);
+      // ChordPro signals
+      const hasDirective = /\{(?:title|t|subtitle|st|artist|key|capo|tempo|start_of_|end_of_|comment|c)[: }]/i.test(stripped);
+      const hasInlineChord = /\[[A-G](?:b|#)?(?:m|maj|dim|aug|sus|add|\d|\/)?[^\]]{0,8}\]/.test(stripped);
+      if (hasDirective || hasInlineChord) return 'chordpro';
+
+      // Plain signals: at least one chord-only line followed by a non-chord line
+      const lines = stripped.split(/\r?\n/);
+      for (let i = 0; i < lines.length - 1; i++) {
+        if (_isChordLine(lines[i]) && lines[i+1].trim() && !_isChordLine(lines[i+1])) {
+          return 'plain';
+        }
+      }
+      // Title-only with section headers? Still treat as plain.
+      if (/^\s*\[[^\]]+\]\s*$/m.test(stripped)) return 'plain';
+      return 'unknown';
+    }
+
+    // Title lines: "Title / Artist", "Title - Artist", or just "Title"
+    function _parseTitleLine(line) {
+      const m = line.match(/^\s*(.+?)\s*[\/\-—–]\s*(.+?)\s*$/);
+      if (m) return { title: m[1], artist: m[2] };
+      return { title: line.trim(), artist: '' };
+    }
+
+    // Section header: "[ Verse 1 ]" or "[ Bridge — peak energy ]"
+    // Returns { label, note } or null
+    function _parseSectionHeader(line) {
+      const m = line.match(/^\s*\[\s*(.+?)\s*\]\s*$/);
+      if (!m) return null;
+      const inner = m[1];
+      // Split on em-dash / en-dash / " - " (with surrounding spaces only — preserve hyphen-words)
+      const split = inner.match(/^(.+?)\s+[—–-]\s+(.+)$/);
+      if (split) return { label: split[1].trim(), note: split[2].trim() };
+      return { label: inner.trim(), note: '' };
+    }
+
+    // Parenthetical directive: "(repeat 4x, slow and soft)" → { repeat:4, note:'slow and soft' }
+    function _parseDirectiveLine(line) {
+      const m = line.match(/^\s*\(\s*(.+?)\s*\)\s*$/);
+      if (!m) return null;
+      const inner = m[1];
+      const rep = inner.match(/repeat\s*(\d+)\s*x?/i);
+      const repeat = rep ? parseInt(rep[1], 10) : 0;
+      const note = inner.replace(/repeat\s*\d+\s*x?\s*,?\s*/i, '').trim();
+      return { repeat, note };
+    }
+
+    // Map chord tokens at column positions onto 8 beats.
+    // Args:
+    //   chordLine  — raw string of chord row
+    //   refLength  — width to map against (lyric line length, or chord line length)
+    function _chordsToBeats(chordLine, refLength) {
+      const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+      const re = /\S+/g;
+      let m, found = [];
+      while ((m = re.exec(chordLine)) !== null) {
+        found.push({ text: m[0], col: m.index });
+      }
+      if (!found.length) return cells;
+      const width = Math.max(refLength || chordLine.length, found[found.length - 1].col + 1);
+      const used = new Set();
+      found.forEach((f, idx) => {
+        let beat;
+        if (found.length === 1) beat = 0;
+        else {
+          // Distribute by column ratio
+          beat = Math.round((f.col / Math.max(width - 1, 1)) * (BEATS - 1));
+        }
+        beat = Math.max(0, Math.min(BEATS - 1, beat));
+        // Avoid collision: nudge to next free beat
+        while (used.has(beat) && beat < BEATS - 1) beat++;
+        if (used.has(beat)) {
+          // walk left
+          let b2 = beat - 1;
+          while (b2 >= 0 && used.has(b2)) b2--;
+          if (b2 >= 0) beat = b2;
+        }
+        used.add(beat);
+        cells[beat] = { text: f.text, empty: false };
+      });
+      return cells;
+    }
+
+    // Distribute words evenly across 8 beats.
+    function _wordsToBeats(words) {
+      const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+      const w = words.filter(x => x && x.length);
+      if (!w.length) return cells;
+      if (w.length >= BEATS) {
+        // Take first 8, dump rest into beat 7
+        for (let i = 0; i < BEATS - 1; i++) cells[i] = { text: w[i], empty: false };
+        cells[BEATS - 1] = { text: w.slice(BEATS - 1).join(' '), empty: false };
+        return cells;
+      }
+      // Even spread: place at round(i * (BEATS-1) / (w.length-1)) for >1 word, else beat 0
+      if (w.length === 1) {
+        cells[0] = { text: w[0], empty: false };
+        return cells;
+      }
+      for (let i = 0; i < w.length; i++) {
+        const beat = Math.round(i * (BEATS - 1) / (w.length - 1));
+        cells[beat] = { text: w[i], empty: false };
+      }
+      return cells;
+    }
+
+    function _detectKeyFromFirstChord(sections) {
+      for (const s of sections) {
+        for (const ln of (s.lines || [])) {
+          for (const c of (ln.chords || [])) {
+            if (!c.empty && c.text) {
+              return c.text.replace(/\/.*$/, '');  // strip slash bass
+            }
+          }
+        }
+      }
+      return '';
+    }
+
+    function _progressionFromSection(section) {
+      const seen = new Set();
+      const order = [];
+      for (const ln of (section.lines || [])) {
+        for (const c of (ln.chords || [])) {
+          if (!c.empty && c.text && !seen.has(c.text)) {
+            seen.add(c.text);
+            order.push(c.text);
+          }
+        }
+      }
+      return order.join(' – ');
+    }
+
+    /* ─── ChordPro parser ─────────────────────────────── */
+    function parseChordPro(rawText) {
+      const warnings = [];
+      const text = _stripCodeFences(rawText);
+      const lines = text.split(/\r?\n/);
+      const meta = { title: '', artist: '', key: '', capo: '', tempo: 0 };
+      const sections = [];
+      let cur = null;
+      let pendingDirective = null;
+
+      function startSection(label) {
+        cur = { label: label || `Section ${sections.length + 1}`, note: '', repeat: 0, lines: [] };
+        sections.push(cur);
+      }
+
+      for (let raw of lines) {
+        const line = raw.replace(/\s+$/,'');
+        if (!line.trim()) continue;
+
+        // Directives {key:value} or {key} bare
+        const dm = line.match(/^\s*\{\s*([a-zA-Z_]+)\s*(?::\s*(.+?))?\s*\}\s*$/);
+        if (dm) {
+          const key = dm[1].toLowerCase();
+          const val = dm[2] ? dm[2].trim() : '';
+          if (key === 'title' || key === 't') meta.title = val;
+          else if (key === 'subtitle' || key === 'st' || key === 'artist') meta.artist = val;
+          else if (key === 'key') meta.key = val;
+          else if (key === 'capo') meta.capo = val;
+          else if (key === 'tempo' || key === 'bpm') meta.tempo = parseInt(val, 10) || 0;
+          else if (/^start_of_(verse|chorus|bridge|intro|outro|tab|grid)$/.test(key)) {
+            const label = val || key.replace('start_of_','').replace(/^./, c => c.toUpperCase());
+            startSection(label);
+          } else if (/^end_of_/.test(key)) {
+            cur = null;
+          } else if (key === 'comment' || key === 'c') {
+            if (cur) cur.note = cur.note ? (cur.note + ' · ' + val) : val;
+          }
+          continue;
+        }
+
+        // Section header in plain bracket form (mixed in with ChordPro is tolerated)
+        const sh = _parseSectionHeader(line);
+        if (sh) {
+          startSection(sh.label);
+          if (sh.note) cur.note = sh.note;
+          continue;
+        }
+
+        // Parenthetical directive
+        const pd = _parseDirectiveLine(line);
+        if (pd) {
+          if (cur) {
+            if (pd.repeat) cur.repeat = pd.repeat;
+            if (pd.note) cur.note = cur.note ? (cur.note + ' · ' + pd.note) : pd.note;
+          }
+          continue;
+        }
+
+        // Inline-chord lyric line: "[G]Hello [D]world"
+        if (!cur) startSection('Verse');
+        const chordsCells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+        const lyricsRaw = [];
+        const re = /\[([^\]]+)\]|([^\[]+)/g;
+        let lyricSoFar = '';
+        const chordPos = [];   // {text, charIndex}
+        let m;
+        while ((m = re.exec(line)) !== null) {
+          if (m[1] !== undefined) {
+            chordPos.push({ text: m[1].trim(), charIndex: lyricSoFar.length });
+          } else if (m[2] !== undefined) {
+            lyricSoFar += m[2];
+          }
+        }
+        const lyricText = lyricSoFar.trim();
+        const totalLen = Math.max(lyricSoFar.length, 1);
+
+        // Words (split lyric on whitespace, keep punctuation glued)
+        const words = lyricText ? lyricText.split(/\s+/) : [];
+        const lyricCells = _wordsToBeats(words);
+
+        // Chords by position ratio
+        if (chordPos.length === 1) {
+          chordsCells[0] = { text: chordPos[0].text, empty: false };
+        } else if (chordPos.length > 1) {
+          const used = new Set();
+          chordPos.forEach((cp, i) => {
+            let beat = chordPos.length > 1
+              ? Math.round((cp.charIndex / Math.max(totalLen - 1, 1)) * (BEATS - 1))
+              : 0;
+            beat = Math.max(0, Math.min(BEATS - 1, beat));
+            while (used.has(beat) && beat < BEATS - 1) beat++;
+            used.add(beat);
+            chordsCells[beat] = { text: cp.text, empty: false };
+          });
+        } else if (!chordPos.length && !lyricText) {
+          continue;
+        }
+
+        cur.lines.push({ chords: chordsCells, lyrics: lyricCells });
+      }
+
+      // Build SongDoc
+      if (!sections.length) {
+        warnings.push('No sections detected.');
+      }
+      sections.forEach((s, i) => {
+        s.id = `imp-sec-${i}-${Date.now().toString(36)}`;
+        s.tempo = meta.tempo || 0;       // 0 → falls back to defaultBpm at render time
+        s.rampFromPrev = 0;
+        s.progression = _progressionFromSection(s);
+      });
+
+      const inferredKey = meta.key || _detectKeyFromFirstChord(sections);
+      const song = {
+        id: '',
+        title: meta.title || 'Untitled',
+        artist: meta.artist || '',
+        key: inferredKey,
+        capo: meta.capo || '',
+        defaultBpm: meta.tempo || 90,
+        beatsPerLine: BEATS,
+        strumTip: '',
+        sections
+      };
+      return { song, warnings, format: 'chordpro' };
+    }
+
+    /* ─── Plain-text parser (chords above lyrics) ─────── */
+    function parsePlain(rawText) {
+      const warnings = [];
+      const text = _stripCodeFences(rawText);
+      const allLines = text.split(/\r?\n/);
+      const sections = [];
+      let cur = null;
+      const meta = { title: '', artist: '' };
+
+      function startSection(label) {
+        cur = { label: label || `Section ${sections.length + 1}`, note: '', repeat: 0, lines: [] };
+        sections.push(cur);
+      }
+
+      // First non-empty line: try title detection
+      let firstNonEmpty = -1;
+      for (let i = 0; i < allLines.length; i++) {
+        if (allLines[i].trim()) { firstNonEmpty = i; break; }
+      }
+      let bodyStart = 0;
+      if (firstNonEmpty >= 0) {
+        const candidate = allLines[firstNonEmpty];
+        // Treat as title only if NOT a section header, NOT a chord line, AND contains "/"-or-similar OR is short
+        if (!_parseSectionHeader(candidate) && !_isChordLine(candidate)) {
+          const t = _parseTitleLine(candidate);
+          meta.title = t.title;
+          meta.artist = t.artist;
+          bodyStart = firstNonEmpty + 1;
+        }
+      }
+
+      for (let i = bodyStart; i < allLines.length; i++) {
+        const raw = allLines[i].replace(/\s+$/, '');
+        if (!raw.trim()) continue;
+
+        // Section header
+        const sh = _parseSectionHeader(raw);
+        if (sh) {
+          startSection(sh.label);
+          if (sh.note) cur.note = sh.note;
+          continue;
+        }
+
+        // Parenthetical (repeat / feel)
+        const pd = _parseDirectiveLine(raw);
+        if (pd) {
+          if (cur) {
+            if (pd.repeat) cur.repeat = pd.repeat;
+            if (pd.note) cur.note = cur.note ? (cur.note + ' · ' + pd.note) : pd.note;
+          }
+          continue;
+        }
+
+        // Chord-line + next lyric pair
+        if (_isChordLine(raw)) {
+          if (!cur) startSection('Verse');
+          // Look ahead to next non-empty line for the lyric
+          let lyricLine = '';
+          for (let j = i + 1; j < allLines.length; j++) {
+            const peek = allLines[j].replace(/\s+$/, '');
+            if (!peek.trim()) continue;
+            // Stop if next chord/directive/header
+            if (_isChordLine(peek) || _parseSectionHeader(peek) || _parseDirectiveLine(peek)) break;
+            lyricLine = peek;
+            i = j;  // consume
+            break;
+          }
+          const lyricLen = Math.max(lyricLine.length, raw.length);
+          const chordsCells = _chordsToBeats(raw, lyricLen);
+          const words = lyricLine ? lyricLine.trim().split(/\s+/) : [];
+          const lyricsCells = _wordsToBeats(words);
+          cur.lines.push({ chords: chordsCells, lyrics: lyricsCells });
+          continue;
+        }
+
+        // Bare lyric line (no chords above)
+        if (!cur) startSection('Verse');
+        const words = raw.trim().split(/\s+/);
+        cur.lines.push({
+          chords: Array.from({ length: BEATS }, () => ({ text: '', empty: true })),
+          lyrics: _wordsToBeats(words)
+        });
+      }
+
+      if (!sections.length) warnings.push('No sections detected.');
+      sections.forEach((s, idx) => {
+        s.id = `imp-sec-${idx}-${Date.now().toString(36)}`;
+        s.tempo = 0;
+        s.rampFromPrev = 0;
+        s.progression = _progressionFromSection(s);
+        if (!s.lines.length) warnings.push(`Section "${s.label}" has no lines.`);
+      });
+
+      const song = {
+        id: '',
+        title: meta.title || 'Untitled',
+        artist: meta.artist || '',
+        key: _detectKeyFromFirstChord(sections),
+        capo: '',
+        defaultBpm: 90,
+        beatsPerLine: BEATS,
+        strumTip: '',
+        sections
+      };
+      return { song, warnings, format: 'plain' };
+    }
+
+    function parseSongFromText(text) {
+      const fmt = _detectFormat(text);
+      if (fmt === 'chordpro') return parseChordPro(text);
+      if (fmt === 'plain')    return parsePlain(text);
+      // Unknown — try plain as fallback (most permissive)
+      const out = parsePlain(text);
+      out.format = 'unknown';
+      out.warnings = ['Format not auto-detected — parsed as plain text. Review the preview.'].concat(out.warnings);
+      return out;
+    }
+
+    /* ─── Preview renderer (no DOM dependency on currentSong) ── */
+    function renderPreviewSong(song) {
+      const sectionsHtml = (song.sections || []).map((section, idx) => {
+        const tempo = section.tempo || song.defaultBpm || DEFAULT_BPM;
+        const ramp  = section.rampFromPrev || 0;
+        const tempoBadge = `
+          <span class="tempo-badge">
+            <span class="tempo-num">${tempo}</span>
+            <span>bpm</span>
+            ${ramp > 0 ? `<span class="tempo-ramp">↗${ramp}</span>` : ''}
+          </span>`;
+        return `
+          <div class="section">
+            <div class="section-label">
+              <span class="label-text">${escapeHtml(section.label || 'Section')}</span>
+              <span class="prog">${escapeHtml(section.progression || '')}</span>
+              ${tempoBadge}
+            </div>
+            ${renderSectionNote(section)}
+            ${(section.lines || []).map(renderLine).join('')}
+          </div>`;
+      }).join('');
+      return sectionsHtml || '<div class="preview-empty">No sections to preview.</div>';
+    }
+
+    /* ─── Modal element refs + state ─────────────────── */
+    const importScrim     = document.getElementById('importScrim');
+    const importClose     = document.getElementById('importClose');
+    const importCancel    = document.getElementById('importCancel');
+    const importConfirm   = document.getElementById('importConfirm');
+    const importPaste     = document.getElementById('importPaste');
+    const importFormatChip = document.getElementById('importFormatChip');
+    const importLineCount  = document.getElementById('importLineCount');
+    const importWarnings   = document.getElementById('importWarnings');
+    const importPreview    = document.getElementById('importPreview');
+    const importTitleIn    = document.getElementById('importTitle_in');
+    const importKeyIn      = document.getElementById('importKey_in');
+    const importBpmIn      = document.getElementById('importBpm_in');
+    const importFromFile   = document.getElementById('importFromFile');
+
+    let _pendingSong = null;   // last parsed SongDoc waiting for confirm
+    let _parseDebounce = null;
+
+    function openImportModal() {
+      importScrim.classList.add('open');
+      _resetImportModal();
+      // Try clipboard paste suggestion (no auto-paste — privacy). User pastes themselves.
+      setTimeout(() => importPaste.focus(), 80);
+    }
+    function closeImportModal() {
+      importScrim.classList.remove('open');
+      _pendingSong = null;
+    }
+    function _resetImportModal() {
+      importPaste.value = '';
+      importTitleIn.value = '';
+      importKeyIn.value = '';
+      importBpmIn.value = '';
+      importFormatChip.textContent = 'Format: paste to detect';
+      importFormatChip.classList.add('unknown');
+      importLineCount.textContent = '0 lines';
+      importWarnings.style.display = 'none';
+      importWarnings.innerHTML = '';
+      importPreview.innerHTML = '<div class="preview-empty">Preview will appear here once you paste a song.</div>';
+      importConfirm.disabled = true;
+      _pendingSong = null;
+    }
+
+    function _runParseFromTextarea() {
+      const text = importPaste.value;
+      const lineCount = text ? text.split(/\r?\n/).length : 0;
+      importLineCount.textContent = lineCount + ' line' + (lineCount === 1 ? '' : 's');
+
+      if (!text.trim()) {
+        importFormatChip.textContent = 'Format: paste to detect';
+        importFormatChip.classList.add('unknown');
+        importPreview.innerHTML = '<div class="preview-empty">Preview will appear here once you paste a song.</div>';
+        importWarnings.style.display = 'none';
+        importConfirm.disabled = true;
+        _pendingSong = null;
+        return;
+      }
+
+      const result = parseSongFromText(text);
+      _pendingSong = result.song;
+
+      // Format chip
+      const labels = { chordpro: 'ChordPro', plain: 'Chords + Lyrics', unknown: 'Unknown' };
+      importFormatChip.textContent = 'Format: ' + (labels[result.format] || 'Unknown');
+      importFormatChip.classList.toggle('unknown', result.format === 'unknown');
+
+      // Auto-fill fields if they are empty
+      if (!importTitleIn.value && result.song.title) importTitleIn.value = result.song.title;
+      if (!importKeyIn.value   && result.song.key)   importKeyIn.value   = result.song.key;
+      if (!importBpmIn.value   && result.song.defaultBpm) importBpmIn.value = result.song.defaultBpm;
+
+      // Warnings
+      if (result.warnings && result.warnings.length) {
+        importWarnings.style.display = '';
+        importWarnings.innerHTML = '<strong>Heads up:</strong><ul>' +
+          result.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('') + '</ul>';
+      } else {
+        importWarnings.style.display = 'none';
+        importWarnings.innerHTML = '';
+      }
+
+      // Preview
+      importPreview.innerHTML = renderPreviewSong(result.song);
+      importConfirm.disabled = !(result.song.sections && result.song.sections.length);
+    }
+
+    function _commitImport() {
+      if (!_pendingSong) return;
+      // Apply field overrides
+      const title = (importTitleIn.value || '').trim();
+      const key   = (importKeyIn.value   || '').trim();
+      const bpm   = parseInt(importBpmIn.value, 10);
+      if (title) _pendingSong.title = title;
+      if (key)   _pendingSong.key   = key;
+      if (isFinite(bpm) && bpm > 0) {
+        _pendingSong.defaultBpm = bpm;
+        // If sections have tempo:0, render will use defaultBpm anyway
+      }
+      _pendingSong.id = newSongId();
+      // De-duplicate any colliding section IDs
+      _pendingSong.sections.forEach((s, i) => {
+        if (!s.id) s.id = `${_pendingSong.id}-sec-${i}`;
+      });
+      library.songs.push(_pendingSong);
+      persistLibrary(true);
+      renderSongList();
+      setStatus('imported "' + _pendingSong.title + '" ✦');
+      closeImportModal();
+    }
+
+    /* ─── Modal wiring ─────────────────────────────── */
+    importBtn.addEventListener('click', openImportModal);
+    importClose.addEventListener('click', closeImportModal);
+    importCancel.addEventListener('click', closeImportModal);
+    importScrim.addEventListener('click', e => {
+      if (e.target === importScrim) closeImportModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && importScrim.classList.contains('open')) closeImportModal();
+    });
+    importPaste.addEventListener('input', () => {
+      clearTimeout(_parseDebounce);
+      _parseDebounce = setTimeout(_runParseFromTextarea, 200);
+    });
+    importPaste.addEventListener('paste', () => {
+      // Run immediately on paste for snappy UX
+      setTimeout(_runParseFromTextarea, 0);
+    });
+    importConfirm.addEventListener('click', _commitImport);
+    importFromFile.addEventListener('click', () => importInput.click());
+
+    // Existing JSON / HTML file import (now triggered from the modal footer link)
     importInput.addEventListener('change', async e => {
       const file = e.target.files[0];
       if (!file) return;
@@ -2838,6 +3761,7 @@
         }
         persistLibrary(true);
         renderSongList();
+        if (importScrim.classList.contains('open')) closeImportModal();
       } catch(err) {
         alert('Import failed: ' + err.message);
         setStatus('import failed');
@@ -2956,7 +3880,7 @@
     const stageBtn        = document.getElementById('stageBtn');
     const iconStageEnter  = document.getElementById('iconStageEnter');
     const iconStageExit   = document.getElementById('iconStageExit');
-    const practiceBarEl   = document.querySelector('.practice-bar');
+    const playbackDockEl  = document.querySelector('.playback-dock');
 
     function enterStageMode() {
       if (stageMode) return;
@@ -2999,17 +3923,17 @@
        Hover/touch on the bar re-shows it; activity then re-arms the fade. */
     function scheduleBarFade() {
       cancelBarFade();
-      if (!stageMode || !isPlaying) return;
+      if (!stageMode || !isPlaying || !playbackDockEl) return;
       _idleTimer = setTimeout(() => {
-        practiceBarEl.classList.add('bar-fade');
+        playbackDockEl.classList.add('bar-fade');
       }, 3000);
     }
     function cancelBarFade() {
       if (_idleTimer) { clearTimeout(_idleTimer); _idleTimer = null; }
-      practiceBarEl.classList.remove('bar-fade');
+      if (playbackDockEl) playbackDockEl.classList.remove('bar-fade');
     }
-    practiceBarEl.addEventListener('mousemove',  () => { cancelBarFade(); scheduleBarFade(); });
-    practiceBarEl.addEventListener('touchstart', () => { cancelBarFade(); scheduleBarFade(); }, { passive: true });
+    playbackDockEl.addEventListener('mousemove',  () => { cancelBarFade(); scheduleBarFade(); });
+    playbackDockEl.addEventListener('touchstart', () => { cancelBarFade(); scheduleBarFade(); }, { passive: true });
 
     /* ─── Keyboard shortcuts ─────────────────────────────── */
     document.addEventListener('keydown', e => {
