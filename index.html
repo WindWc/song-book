@@ -1,0 +1,3154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Raga Song Book</title>
+
+  <!-- ══ PWA: install + standalone-mode meta ══════════════
+       Active when served over HTTPS (e.g. GitHub Pages).
+       Inert when opened as a local file.                    -->
+  <meta name="theme-color" content="#C0440A">
+  <meta name="application-name" content="Raga Song Book">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Raga">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJz4KICA8cmVjdCB3aWR0aD0nNTEyJyBoZWlnaHQ9JzUxMicgcng9Jzk2JyBmaWxsPScjRDg1RjA4Jy8+CiAgPGcgZmlsbD0nbm9uZScgc3Ryb2tlPScjRkZGOUVGJyBzdHJva2Utd2lkdGg9JzE2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnPgogICAgPGNpcmNsZSBjeD0nMjU2JyBjeT0nMjU2JyByPSc0MicgZmlsbD0nI0ZGRjlFRicgc3Ryb2tlPSdub25lJy8+CiAgICA8cGF0aCBkPSdNIDE3NiAyNTYgYSA4MCA4MCAwIDAgMSAxNjAgMCcvPgogICAgPHBhdGggZD0nTSAxMzYgMjU2IGEgMTIwIDEyMCAwIDAgMSAyNDAgMCcvPgogICAgPHBhdGggZD0nTSA5NiAyNTYgYSAxNjAgMTYwIDAgMCAxIDMyMCAwJy8+CiAgPC9nPgo8L3N2Zz4=">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJz4KICA8cmVjdCB3aWR0aD0nNTEyJyBoZWlnaHQ9JzUxMicgcng9Jzk2JyBmaWxsPScjRDg1RjA4Jy8+CiAgPGcgZmlsbD0nbm9uZScgc3Ryb2tlPScjRkZGOUVGJyBzdHJva2Utd2lkdGg9JzE2JyBzdHJva2UtbGluZWNhcD0ncm91bmQnPgogICAgPGNpcmNsZSBjeD0nMjU2JyBjeT0nMjU2JyByPSc0MicgZmlsbD0nI0ZGRjlFRicgc3Ryb2tlPSdub25lJy8+CiAgICA8cGF0aCBkPSdNIDE3NiAyNTYgYSA4MCA4MCAwIDAgMSAxNjAgMCcvPgogICAgPHBhdGggZD0nTSAxMzYgMjU2IGEgMTIwIDEyMCAwIDAgMSAyNDAgMCcvPgogICAgPHBhdGggZD0nTSA5NiAyNTYgYSAxNjAgMTYwIDAgMCAxIDMyMCAwJy8+CiAgPC9nPgo8L3N2Zz4=">
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiUmFnYSBTb25nIEJvb2siLCJzaG9ydF9uYW1lIjoiUmFnYSIsImRlc2NyaXB0aW9uIjoiUHJhY3RpY2UgJiBwZXJmb3JtIG11bHRpLXNvbmcgY2hvcmQgY2hhcnRzIHdpdGggbWV0cm9ub21lIiwic3RhcnRfdXJsIjoiLi8iLCJzY29wZSI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjRkZGOUVGIiwidGhlbWVfY29sb3IiOiIjQzA0NDBBIiwiY2F0ZWdvcmllcyI6WyJtdXNpYyIsInByb2R1Y3Rpdml0eSJdLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBuYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNuSUhacFpYZENiM2c5SnpBZ01DQTFNVElnTlRFeUp6NEtJQ0E4Y21WamRDQjNhV1IwYUQwbk5URXlKeUJvWldsbmFIUTlKelV4TWljZ2NuZzlKemsySnlCbWFXeHNQU2NqUkRnMVJqQTRKeTgrQ2lBZ1BHY2dabWxzYkQwbmJtOXVaU2NnYzNSeWIydGxQU2NqUmtaR09VVkdKeUJ6ZEhKdmEyVXRkMmxrZEdnOUp6RTJKeUJ6ZEhKdmEyVXRiR2x1WldOaGNEMG5jbTkxYm1RblBnb2dJQ0FnUEdOcGNtTnNaU0JqZUQwbk1qVTJKeUJqZVQwbk1qVTJKeUJ5UFNjME1pY2dabWxzYkQwbkkwWkdSamxGUmljZ2MzUnliMnRsUFNkdWIyNWxKeTgrQ2lBZ0lDQThjR0YwYUNCa1BTZE5JREUzTmlBeU5UWWdZU0E0TUNBNE1DQXdJREFnTVNBeE5qQWdNQ2N2UGdvZ0lDQWdQSEJoZEdnZ1pEMG5UU0F4TXpZZ01qVTJJR0VnTVRJd0lERXlNQ0F3SURBZ01TQXlOREFnTUNjdlBnb2dJQ0FnUEhCaGRHZ2daRDBuVFNBNU5pQXlOVFlnWVNBeE5qQWdNVFl3SURBZ01DQXhJRE15TUNBd0p5OCtDaUFnUEM5blBnbzhMM04yWno0PSIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --orange:       #C0440A;
+      --saffron:      #D85F08;
+      --cream:        #FFF9EF;
+      --tan:          #F2E4CC;
+      --brown:        #2C1A0E;
+      --brown-mid:    #5C3D22;
+      --gold:         #C49A14;
+      --gold-light:   rgba(196,154,20,0.25);
+      --blue:         #1A4872;
+      --green:        #255C3F;
+      --muted:        #A09080;
+      --space:        8px;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── Screen shell ───────────────────────────────────── */
+    body {
+      background: var(--cream);
+      font-family: 'Lato', sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* ─── Page card ──────────────────────────────────────── */
+    .page {
+      width: 100%;
+      background: var(--cream);
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: none;
+    }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    .header {
+      background: var(--orange);
+      padding: 12px 20px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+    }
+
+    /* Library button — top-left of header */
+    .library-btn {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.9);
+      transition: background 0.15s;
+    }
+    .library-btn:hover { background: rgba(255,255,255,0.22); }
+    .library-btn svg { display: block; }
+
+    /* Song title is now interactive — tap to rename */
+    .title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(18px, 5vw, 32px);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: clamp(0.12em, 2vw, 0.35em);
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      transition: background 0.15s;
+      outline: none;
+    }
+    .title:hover { background: rgba(255,255,255,0.08); }
+    .title.editing {
+      background: rgba(255,255,255,0.15);
+      cursor: text;
+    }
+
+    .subtitle {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: clamp(10px, 2.5vw, 12px);
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.08em;
+      text-align: center;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .subtitle:hover { background: rgba(255,255,255,0.06); }
+    .subtitle.editing { background: rgba(255,255,255,0.12); cursor: text; outline: none; }
+
+    .subtitle strong {
+      font-weight: 700;
+      color: rgba(255,255,255,0.95);
+    }
+
+    /* ─── Body grid ──────────────────────────────────────── */
+    .body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 0;
+    }
+
+    .col {
+      padding: 12px 14px 12px;
+    }
+
+    .col-left {
+      border-right: 1.5px solid var(--gold-light);
+      padding-left: 20px;
+      padding-right: 12px;
+    }
+
+    .col-right {
+      padding-left: 12px;
+      padding-right: 20px;
+    }
+
+    /* ─── Section block ──────────────────────────────────── */
+    .section {
+      margin-bottom: 10px;
+    }
+
+    .section-label {
+      background: var(--saffron);
+      color: #fff;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .section-label .label-text {
+      flex: 1;
+      cursor: pointer;
+      outline: none;
+    }
+    .section-label .label-text.editing {
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      cursor: text;
+    }
+
+    .section-label .prog {
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      opacity: 0.92;
+      cursor: pointer;
+      outline: none;
+    }
+    .section-label .prog.editing {
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      padding: 0 4px;
+      cursor: text;
+    }
+
+    /* Tempo badge on each section — Phase 3 wires the engine */
+    .section-label .tempo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      padding: 1px 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .section-label .tempo-badge:hover { background: rgba(0,0,0,0.32); }
+    .section-label .tempo-badge .tempo-num { color: var(--gold); }
+    .section-label .tempo-badge .tempo-ramp {
+      font-size: 8px;
+      opacity: 0.7;
+      margin-left: 2px;
+    }
+
+    /* Section is currently playing */
+    .section.playing .section-label {
+      box-shadow: 0 0 0 2px var(--gold);
+    }
+
+    /* ─── Chord + lyric pair ─────────────────────────────── */
+    .line {
+      margin-bottom: 5px;
+    }
+
+    .line:last-child {
+      margin-bottom: 0;
+    }
+
+    .chords {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+      white-space: pre;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .lyric {
+      font-family: 'Lato', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--brown);
+      line-height: 1.45;
+    }
+
+    /* ─── Strum tip ──────────────────────────────────────── */
+    .strum-tip {
+      font-family: 'Lato', sans-serif;
+      font-style: italic;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 8px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 3px;
+    }
+    .strum-tip:hover { background: rgba(196,154,20,0.06); }
+    .strum-tip.editing {
+      background: rgba(196,154,20,0.1);
+      cursor: text;
+      outline: none;
+    }
+
+    /* ─── Responsive layout ─────────────────────────────────── */
+    html, body {
+      height: auto;
+      overflow: auto;
+    }
+
+    body {
+      padding-bottom: 72px; /* clear the fixed practice bar */
+    }
+
+    /* Stack to single column on phones / narrow windows */
+    @media (max-width: 640px) {
+      .body {
+        grid-template-columns: 1fr;
+      }
+      .col-left {
+        border-right: none;
+        border-bottom: 1.5px solid var(--gold-light);
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .col-right {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+
+    /* Comfortable two-column on tablet+ */
+    @media (min-width: 641px) {
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+    }
+
+    /* ─── Practice mode ─────────────────────────────────── */
+    .line {
+      position: relative;
+      border-left: 3px solid transparent;
+      padding-left: 4px;
+      margin-left: -7px;
+      border-radius: 3px;
+      overflow: hidden;
+      scroll-margin-top: 80px;
+    }
+
+    .line.active {
+      border-left: 3px solid var(--gold);
+    }
+
+    /* Beat segments float behind the text */
+    .beat-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 2px;
+      padding: 2px;
+      pointer-events: none;
+      border-radius: 3px;
+    }
+
+    .beat-seg {
+      border-radius: 2px;
+      background: transparent;
+      transition: background 0.05s ease;
+    }
+
+    .beat-seg.filled {
+      background: rgba(196, 154, 20, 0.15);
+    }
+
+    .beat-seg.downbeat-seg.filled {
+      background: rgba(208, 95, 8, 0.18);
+    }
+
+    /* Keep chords + lyric above the overlay */
+    .chords, .lyric { position: relative; z-index: 1; }
+
+    /* Lyric word grid — spread across 8 beat positions */
+    .lyric.lyric-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 1px;
+      font-size: 14px;
+    }
+
+    .beat-cell {
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      color: var(--brown);
+      opacity: 0.78;
+      padding: 0 2px;
+      border-radius: 2px;
+      white-space: normal;
+      overflow: visible;
+      word-break: keep-all;
+      transition: opacity 0.05s, color 0.05s, font-weight 0.05s;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .beat-cell:not(.empty):not(.dragging):hover {
+      opacity: 0.8;
+      background: rgba(196,154,20,0.12);
+    }
+
+    .beat-cell.dragging {
+      cursor: grabbing;
+      opacity: 1 !important;
+      color: var(--saffron) !important;
+      font-weight: 700;
+      position: relative;
+      z-index: 20;
+      transition: none !important;
+      filter: drop-shadow(0 2px 6px rgba(208,95,8,0.4));
+    }
+
+    .beat-cell.drop-target {
+      background: rgba(196,154,20,0.25);
+      border-radius: 2px;
+    }
+
+    .beat-cell.played  { opacity: 0.65; }
+    .beat-cell.current { opacity: 1; color: var(--orange); font-weight: 700; }
+    .beat-cell.empty   { opacity: 0; cursor: default; }
+
+    /* Chord beat grid */
+    .chords.chords-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 1px;
+      white-space: normal;
+    }
+
+    /* Mobile: 4 beats per row */
+    @media (max-width: 640px) {
+      .lyric.lyric-grid {
+        grid-template-columns: repeat(4, 1fr);
+        align-items: end;
+      }
+      .chords.chords-grid {
+        display: none;
+      }
+      .beat-overlay {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+      .beat-cell {
+        font-size: 16px;
+        position: relative;
+        padding-top: 16px;
+        min-height: 38px;
+      }
+      .beat-cell[data-chord]::before {
+        content: attr(data-chord);
+        position: absolute;
+        top: 0;
+        left: 2px;
+        font-family: 'Space Mono', monospace;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--blue);
+        line-height: 1;
+      }
+      .beat-cell.selected {
+        background: rgba(196,154,20,0.25) !important;
+        opacity: 1 !important;
+        border-radius: 3px;
+        outline: 2px solid var(--gold);
+        outline-offset: -1px;
+      }
+    }
+
+    .chord-cell {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+      padding: 0 2px;
+      border-radius: 2px;
+      white-space: normal;
+      overflow: visible;
+      cursor: grab;
+      user-select: none;
+      transition: opacity 0.05s, color 0.05s;
+    }
+
+    .chord-cell:not(.empty):not(.dragging):hover {
+      opacity: 0.8;
+      background: rgba(26,72,114,0.1);
+    }
+
+    .chord-cell.dragging {
+      cursor: grabbing;
+      color: var(--saffron) !important;
+      position: relative;
+      z-index: 20;
+      transition: none !important;
+      filter: drop-shadow(0 2px 4px rgba(208,95,8,0.4));
+    }
+
+    .chord-cell.drop-target { background: rgba(26,72,114,0.15); }
+
+    .chord-cell.empty   { opacity: 0; cursor: default; }
+    .chord-cell.active-beat { color: var(--orange); }
+
+    /* Inline edit mode — triggered by double-click */
+    .beat-cell.editing,
+    .chord-cell.editing {
+      outline: 1.5px solid var(--gold);
+      background: rgba(196,154,20,0.08) !important;
+      opacity: 1 !important;
+      border-radius: 2px;
+      cursor: text;
+      min-width: 18px;
+      color: var(--brown) !important;
+      font-weight: 400 !important;
+      caret-color: var(--saffron);
+      white-space: nowrap;
+      overflow: visible;
+      z-index: 30;
+      position: relative;
+    }
+    .chord-cell.editing {
+      color: var(--blue) !important;
+      font-weight: 700 !important;
+    }
+
+    /* ─── Practice bar ──────────────────────────────────── */
+    .practice-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--brown);
+      border-top: 1px solid rgba(196,154,20,0.3);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 200;
+    }
+
+    .bar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.1s, background 0.1s;
+      flex-shrink: 0;
+    }
+
+    .bar-btn:hover, .bar-btn:active { color: #fff; }
+    .bar-btn svg { display: block; }
+
+    .bar-sm { width: 32px; height: 32px; }
+
+    .bar-countin {
+      width: auto;
+      min-width: 36px;
+      height: 28px;
+      padding: 0 8px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .bar-countin:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* Count-in / Count-out controls (paired in the practice bar).
+       Each shows a label + editable number. Tap the label area to
+       focus the input; tap 0 to disable that count. */
+    .count-grp {
+      display: flex;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .count-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 28px;
+      padding: 0 6px 0 7px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
+      cursor: pointer;
+      transition: border-color 0.12s, background 0.12s;
+    }
+    /* On very narrow phones, drop the labels to save space */
+    @media (max-width: 380px) {
+      .count-ctrl-lbl { display: none; }
+      .count-ctrl { padding: 0 4px; }
+    }
+    .count-ctrl:hover { border-color: rgba(255,255,255,0.4); }
+    .count-ctrl:focus-within {
+      border-color: var(--gold);
+      background: rgba(196,154,20,0.12);
+    }
+    .count-ctrl-lbl {
+      font-family: 'Lato', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      pointer-events: none;
+    }
+    .count-ctrl-num {
+      width: 18px;
+      background: transparent;
+      border: none;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      padding: 0;
+      outline: none;
+      cursor: text;
+      -moz-appearance: textfield;
+    }
+    .count-ctrl-num::-webkit-outer-spin-button,
+    .count-ctrl-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .count-ctrl-num.is-zero { color: rgba(255,255,255,0.35); }
+
+    .bar-play {
+      width: 40px;
+      height: 40px;
+      background: var(--saffron);
+      color: #fff;
+    }
+    .bar-play:hover, .bar-play:active { background: var(--orange); }
+
+    .bar-bpm {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      padding: 4px 10px;
+      cursor: pointer;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .bar-bpm:hover { border-color: rgba(255,255,255,0.4); }
+    .bar-bpm .bpm-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+    }
+
+    /* Popovers */
+    .bar-popover {
+      position: fixed;
+      bottom: 56px;
+      background: var(--brown);
+      border: 1px solid rgba(196,154,20,0.35);
+      border-radius: 8px;
+      padding: 12px;
+      z-index: 210;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-popover.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .bpm-popover {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .bpm-popover input[type="range"] {
+      writing-mode: vertical-lr;
+      direction: rtl;
+      height: 120px;
+      width: 28px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .bpm-popover .bpm-input {
+      font-family: 'Space Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold);
+      background: transparent;
+      border: 1px solid rgba(196,154,20,0.3);
+      border-radius: 4px;
+      width: 52px;
+      text-align: center;
+      padding: 3px 0;
+      outline: none;
+    }
+    .bpm-popover .bpm-input:focus {
+      border-color: var(--gold);
+      background: rgba(196,154,20,0.08);
+    }
+
+    .vol-popover {
+      right: 60px;
+    }
+    .vol-popover input[type="range"] {
+      writing-mode: vertical-lr;
+      direction: rtl;
+      height: 100px;
+      width: 28px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .vol-popover .vol-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .intro-bar.tappable { cursor: pointer; }
+    .intro-bar.tappable:active { background: rgba(44,26,14,0.9); }
+
+    .practice-status {
+      font-family: 'Lato', sans-serif;
+      font-size: 9px;
+      font-style: italic;
+      color: rgba(255,255,255,0.35);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    /* Seekable line — shows pointer on hover when paused */
+    .line.seekable { cursor: pointer; }
+    .line.seekable:hover { background: rgba(196,154,20,0.06); }
+
+    /* ─── Intro count-in bar ────────────────────────────── */
+    .intro-bar {
+      background: var(--brown);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 2px solid rgba(196,154,20,0.35);
+    }
+
+    .intro-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .intro-beats-row {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .intro-beat {
+      flex: 1;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(196,154,20,0.18);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.2);
+      transition: background 0.04s, color 0.04s, border-color 0.04s;
+    }
+
+    .intro-beat.played {
+      background: rgba(196,154,20,0.18);
+      color: rgba(255,255,255,0.45);
+      border-color: rgba(196,154,20,0.3);
+    }
+
+    .intro-beat.active {
+      background: var(--saffron);
+      color: #fff;
+      border-color: var(--saffron);
+      box-shadow: 0 0 8px rgba(216,95,8,0.5);
+    }
+
+    /* ─── Library drawer ─────────────────────────────────── */
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 300;
+    }
+    .drawer-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .library-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(360px, 86vw);
+      background: var(--cream);
+      border-right: 1px solid rgba(196,154,20,0.35);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+      transform: translateX(-100%);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 310;
+      display: flex;
+      flex-direction: column;
+      /* Prevent any inner overflow from peeking past the drawer edge
+         (e.g. action buttons sticking out at screen edge when closed) */
+      overflow: hidden;
+    }
+    .library-drawer.open { transform: translateX(0); }
+
+    .drawer-header {
+      background: var(--brown);
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(196,154,20,0.3);
+    }
+    .drawer-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #fff;
+    }
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .drawer-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    .drawer-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 12px;
+      border-bottom: 1px solid rgba(196,154,20,0.2);
+      background: var(--tan);
+    }
+    .drawer-btn {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid rgba(44,26,14,0.2);
+      background: var(--cream);
+      color: var(--brown);
+      border-radius: 5px;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .drawer-btn:hover { background: #fff; border-color: var(--gold); }
+    .drawer-btn.primary { background: var(--saffron); color: #fff; border-color: var(--saffron); }
+    .drawer-btn.primary:hover { background: var(--orange); border-color: var(--orange); }
+
+    .song-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+
+    .song-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(196,154,20,0.12);
+      transition: background 0.1s;
+    }
+    .song-item:hover { background: rgba(196,154,20,0.08); }
+    .song-item.active {
+      background: rgba(216,95,8,0.1);
+      border-left: 3px solid var(--saffron);
+      padding-left: 13px;
+    }
+
+    .song-item-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .song-item-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .song-item-meta {
+      font-family: 'Lato', sans-serif;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .song-item-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .song-item:hover .song-item-actions,
+    .song-item.active .song-item-actions {
+      opacity: 1;
+    }
+    .song-action {
+      background: transparent;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s, color 0.1s;
+    }
+    .song-action:hover { background: rgba(44,26,14,0.08); color: var(--brown); }
+    .song-action.danger:hover { color: var(--orange); }
+
+    .empty-library {
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* ─── Tempo edit popover ─────────────────────────────── */
+    .tempo-popover {
+      position: absolute;
+      background: var(--brown);
+      border: 1px solid rgba(196,154,20,0.4);
+      border-radius: 8px;
+      padding: 12px;
+      z-index: 250;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 220px;
+    }
+    .tempo-popover.open { display: flex; }
+    .tempo-popover label {
+      font-family: 'Lato', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .tempo-popover input[type="number"] {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(196,154,20,0.3);
+      border-radius: 4px;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 5px 8px;
+      width: 100%;
+      outline: none;
+    }
+    .tempo-popover input[type="number"]:focus {
+      border-color: var(--gold);
+      background: rgba(196,154,20,0.08);
+    }
+    .tempo-popover .row { display: flex; gap: 8px; }
+    .tempo-popover .row > label { flex: 1; }
+    .tempo-popover .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .tempo-popover button {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .tempo-popover button:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+    .tempo-popover button.primary { background: var(--saffron); border-color: var(--saffron); color: #fff; }
+    .tempo-popover button.primary:hover { background: var(--orange); border-color: var(--orange); }
+    .tempo-popover .hint {
+      font-family: 'Lato', sans-serif;
+      font-size: 10px;
+      font-style: italic;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.35;
+    }
+
+    /* ─── Stage Mode button (header, top-right) ─────────── */
+    .stage-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.9);
+      transition: background 0.15s;
+      z-index: 5;
+    }
+    .stage-btn:hover { background: rgba(255,255,255,0.22); }
+    .stage-btn svg { display: block; }
+
+    /* ─── Stage Mode (zen performance view) ─────────────── */
+    body.stage-mode {
+      background: var(--cream);
+    }
+    /* Hide setup chrome */
+    body.stage-mode .header { padding: 8px 20px 6px; }
+    body.stage-mode .library-btn { display: none; }
+    body.stage-mode .subtitle { display: none; }
+    body.stage-mode .title {
+      font-size: clamp(14px, 3vw, 20px);
+      letter-spacing: 0.18em;
+      opacity: 0.9;
+    }
+    body.stage-mode .stage-btn {
+      background: rgba(0,0,0,0.18);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* Bigger, breathier chart */
+    body.stage-mode .col {
+      padding: 20px 22px 24px;
+    }
+    body.stage-mode .lyric-cell {
+      font-size: clamp(15px, 2vw, 19px);
+      line-height: 1.45;
+    }
+    body.stage-mode .chord-cell {
+      font-size: clamp(13px, 1.7vw, 16px);
+    }
+    body.stage-mode .section { margin-bottom: 18px; }
+    body.stage-mode .section-label {
+      font-size: clamp(11px, 1.4vw, 13px);
+    }
+
+    /* Spotlight current line — only fade when actively playing */
+    body.stage-mode.is-playing .line {
+      transition: opacity 0.35s ease;
+      opacity: 0.32;
+    }
+    body.stage-mode.is-playing .line.active {
+      opacity: 1;
+    }
+
+    /* Minimize practice bar — float it as a translucent island */
+    body.stage-mode .practice-bar {
+      background: rgba(44,26,14,0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(196,154,20,0.2);
+      padding: 8px 14px;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    /* Auto-hide practice bar when playing + idle for 3s (handled via JS class) */
+    body.stage-mode .practice-bar.bar-fade {
+      opacity: 0.18;
+      transform: translateY(0);
+    }
+    body.stage-mode .practice-bar.bar-fade:hover {
+      opacity: 1;
+    }
+    /* Hide the "setup" buttons in stage mode (count controls, save) */
+    body.stage-mode .count-grp,
+    body.stage-mode #saveBtn { display: none; }
+
+    /* Standalone PWA: respect safe areas (iPhone notch/home indicator) */
+    @media (display-mode: standalone) {
+      body { padding-top: env(safe-area-inset-top); }
+      .practice-bar { padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+    }
+
+    /* ─── Print ──────────────────────────────────────────── */
+    @media print {
+      .practice-bar, .intro-bar, .bpm-popover, .library-btn, .stage-btn,
+      .drawer-scrim, .library-drawer, .tempo-popover, .vol-popover { display: none !important; }
+      .line { border-left: none !important; background: none !important; padding-left: 0 !important; margin-left: 0 !important; opacity: 1 !important; }
+      .section.playing .section-label { box-shadow: none !important; }
+      @page {
+        size: 11in 8.5in;
+        margin: 0.42in 0.48in;
+      }
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; border-radius: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ HEADER ══════════════════════════════════════════ -->
+  <header class="header">
+    <button id="libraryBtn" class="library-btn" title="Song Library">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>
+    </button>
+    <div id="songTitle" class="title" tabindex="0" title="Tap to rename">SONG</div>
+    <div id="songSubtitle" class="subtitle" tabindex="0" title="Tap to edit"></div>
+    <button id="stageBtn" class="stage-btn" title="Stage mode (F)">
+      <svg id="iconStageEnter" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V3h6"/><path d="M21 9V3h-6"/><path d="M3 15v6h6"/><path d="M21 15v6h-6"/></svg>
+      <svg id="iconStageExit" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M9 3v6H3"/><path d="M15 3v6h6"/><path d="M9 21v-6H3"/><path d="M15 21v-6h6"/></svg>
+    </button>
+  </header>
+
+  <!-- ══ INTRO COUNT-IN BAR (hidden until playback starts) ══ -->
+  <div id="intro-bar" class="intro-bar" hidden>
+    <div class="intro-label">◈ count&nbsp;in</div>
+    <div class="intro-beats-row">
+      <div class="intro-beat" data-n="0">1</div>
+      <div class="intro-beat" data-n="1">2</div>
+      <div class="intro-beat" data-n="2">3</div>
+      <div class="intro-beat" data-n="3">4</div>
+      <div class="intro-beat" data-n="4">5</div>
+      <div class="intro-beat" data-n="5">6</div>
+      <div class="intro-beat" data-n="6">7</div>
+      <div class="intro-beat" data-n="7">8</div>
+    </div>
+  </div>
+
+  <!-- ══ SONG ROOT (rendered from JSON) ══════════════════ -->
+  <div id="song-root" class="body"></div>
+
+</div><!-- /page -->
+
+<!-- ══ OUTRO COUNT-OUT BAR (loops until stopped) ═══════ -->
+<div id="outro-bar" class="intro-bar" hidden>
+  <div class="intro-label">◈ count&nbsp;out</div>
+  <div class="intro-beats-row">
+    <div class="intro-beat" data-n="0">1</div>
+    <div class="intro-beat" data-n="1">2</div>
+    <div class="intro-beat" data-n="2">3</div>
+    <div class="intro-beat" data-n="3">4</div>
+    <div class="intro-beat" data-n="4">5</div>
+    <div class="intro-beat" data-n="5">6</div>
+    <div class="intro-beat" data-n="6">7</div>
+    <div class="intro-beat" data-n="7">8</div>
+  </div>
+</div>
+
+<!-- ══ PRACTICE BAR ═════════════════════════════════════ -->
+<div class="practice-bar">
+  <button id="replayBtn" class="bar-btn bar-sm" title="Restart">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+  </button>
+
+  <div class="count-grp">
+    <label class="count-ctrl" title="Count-in loops (each loop = 8 beats; 0 = no count-in)">
+      <span class="count-ctrl-lbl">In</span>
+      <input id="countInInput" class="count-ctrl-num" type="number" min="0" max="8" step="1" value="2" inputmode="numeric" pattern="[0-9]*">
+    </label>
+    <label class="count-ctrl" title="Count-out loops (each loop = 8 beats; 0 = no count-out)">
+      <span class="count-ctrl-lbl">Out</span>
+      <input id="countOutInput" class="count-ctrl-num" type="number" min="0" max="8" step="1" value="2" inputmode="numeric" pattern="[0-9]*">
+    </label>
+  </div>
+
+  <button id="playBtn" class="bar-btn bar-play" title="Play">
+    <svg id="iconPlay" viewBox="0 0 24 24" width="22" height="22" fill="white"><polygon points="7,4 20,12 7,20"/></svg>
+    <svg id="iconPause" viewBox="0 0 24 24" width="22" height="22" fill="white" style="display:none"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+  </button>
+
+  <button id="bpmBtn" class="bar-bpm" title="Adjust BPM">
+    <span id="bpmDisplay">72</span>
+    <span class="bpm-label">BPM</span>
+  </button>
+
+  <button id="soundBtn" class="bar-btn bar-sm" title="Sound">
+    <svg id="iconSoundOn" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    <svg id="iconSoundOff" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+  </button>
+
+  <button id="saveBtn" class="bar-btn bar-sm" title="Save">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+  </button>
+
+  <span class="practice-status" id="practiceStatus">ready</span>
+</div>
+
+<!-- BPM popover -->
+<div id="bpmPopover" class="bar-popover bpm-popover">
+  <input type="range" id="bpmSlider" min="40" max="160" value="72">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" id="bpmInput" class="bpm-input" value="72" maxlength="3">
+</div>
+
+<!-- Volume popover -->
+<div id="volPopover" class="bar-popover vol-popover">
+  <input type="range" id="volSlider" min="0" max="100" value="100">
+  <span class="vol-label">VOL</span>
+</div>
+
+<!-- ══ LIBRARY DRAWER ══════════════════════════════════ -->
+<div id="drawerScrim" class="drawer-scrim"></div>
+<aside id="libraryDrawer" class="library-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">SONGBOOK</div>
+    <button class="drawer-close" id="drawerCloseBtn" title="Close">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-actions">
+    <button id="newSongBtn" class="drawer-btn primary" title="New song">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      NEW
+    </button>
+    <button id="importBtn" class="drawer-btn" title="Import song JSON">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      IMPORT
+    </button>
+    <button id="exportAllBtn" class="drawer-btn" title="Export library as JSON">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      EXPORT
+    </button>
+    <button id="backupHtmlBtn" class="drawer-btn" title="Download a full HTML backup (with edits baked in)">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      BACKUP
+    </button>
+  </div>
+  <div id="songList" class="song-list"></div>
+</aside>
+
+<!-- Hidden file input for import -->
+<input type="file" id="importInput" accept=".json,.html,application/json,text/html" style="display:none">
+
+<!-- Tempo edit popover (positioned dynamically) -->
+<div id="tempoPopover" class="tempo-popover">
+  <div class="row">
+    <label>
+      Tempo (BPM)
+      <input type="number" id="tempoBpm" min="40" max="200" step="1" value="72">
+    </label>
+    <label>
+      Ramp from prev (beats)
+      <input type="number" id="tempoRamp" min="0" max="64" step="1" value="0">
+    </label>
+  </div>
+  <div class="hint">
+    Set <strong>Ramp</strong> to 0 for a hard tempo change at this section, or to N beats to smoothly interpolate from the previous section's tempo over the first N beats.
+  </div>
+  <div class="actions">
+    <button id="tempoCancel">Cancel</button>
+    <button id="tempoApply" class="primary">Apply</button>
+  </div>
+</div>
+
+<script>
+  /* ═════════════════════════════════════════════════════════
+     SONG PRACTICE — multi-song player
+     Architecture: data ⟂ engine ⟂ render ⟂ persistence
+  ═════════════════════════════════════════════════════════ */
+  (function () {
+
+    /* ─── CONSTANTS ─────────────────────────────────────── */
+    const BEATS         = 8; // 2 bars × 4 beats per line
+    const LIBRARY_KEY   = 'song-practice-library-v1';
+    const SETTINGS_KEY  = 'song-practice-settings-v1';
+    const SCHEMA_VER    = 1;
+    const INTRO_BEATS_COUNT = 8;
+    const DEFAULT_BPM   = 72;
+
+    /* ─── USER SETTINGS (persisted) ─────────────────────── */
+    const SETTINGS_DEFAULTS = { countInLoops: 2, countOutLoops: 2 };
+    let settings = (function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (raw) {
+          const p = JSON.parse(raw);
+          if (p && typeof p === 'object') return Object.assign({}, SETTINGS_DEFAULTS, p);
+        }
+      } catch(e) {}
+      return Object.assign({}, SETTINGS_DEFAULTS);
+    })();
+    function persistSettings() {
+      try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch(e) {}
+    }
+
+    /* ─── DEFAULT SONGBOOK (bundled in the file) ─────────
+       Schema: { version, songs: [SongDoc], currentSongId }
+       SongDoc: {
+         id, title, key, capo, defaultBpm, beatsPerLine,
+         strumTip, sections: [SectionDoc]
+       }
+       SectionDoc: {
+         id, label, progression, tempo, rampFromPrev, lines: [LineDoc]
+       }
+       LineDoc: {
+         lyrics: [{text, empty}] x 8,
+         chords: [{text, empty}] x 8
+       }
+    ─────────────────────────────────────────────────────── */
+    const DEFAULT_LIBRARY = {
+      version: SCHEMA_VER,
+      currentSongId: 'hanuman',
+      songs: [
+        {
+          id: 'hanuman',
+          title: 'HANUMAN',
+          key: 'G',
+          capo: 'optional (try 2 or 5)',
+          defaultBpm: 72,
+          beatsPerLine: 8,
+          strumTip: 'down-down-up / up-down-up · open strums on mantra out',
+          sections: [
+            {
+              id: 'mantra-1', label: 'Mantra', progression: 'G – D – C – G',
+              tempo: 80, rampFromPrev: 0,
+              lines: [
+                { chords: ch('G',0,'D',4), lyrics: ly(['Shri','Ram','Jai','Ram,','Jai','Jai','Ram','']) },
+                { chords: ch('C',0,'G',4), lyrics: ly(['Jai','Hanuman,','','','Jai','Jai','Jai','']) },
+                { chords: ch('G',0,'D',4), lyrics: ly(['Shri','Ram','Jai','Ram,','Jai','Jai','Ram','']) },
+                { chords: ch('C',0,'G',4), lyrics: ly(['Jai','Hanuman,','','','Jai','Jai','Jai','']) }
+              ]
+            },
+            {
+              id: 'verse-1', label: 'Verse 1', progression: 'G – D – Em – C',
+              tempo: 80, rampFromPrev: 0,
+              lines: [
+                { chords: ch('G',0,'D',4),  lyrics: ly(['Son','of the','wind,','','born','of','devotion','']) },
+                { chords: ch('Em',0,'C',4), lyrics: ly(['Leapt','across the','world','like a','wave','on the','ocean','']) },
+                { chords: ch('G',0,'D',4),  lyrics: ly(['Your','heart','holds','Ram,','your','strength','holds','grace']) },
+                { chords: ch('Em',0,'C',4), lyrics: ly(['The','light of','love','','warms','up your','face','']) }
+              ]
+            },
+            {
+              id: 'mantra-2', label: 'Mantra', progression: 'G – D – C – G · repeat',
+              tempo: 80, rampFromPrev: 0,
+              lines: [
+                { chords: ch('G',0,'D',4), lyrics: ly(['Shri','Ram','Jai','Ram,','Jai','Jai','Ram','']) },
+                { chords: ch('C',0,'G',4), lyrics: ly(['Jai','Hanuman,','','','Jai','Jai','Jai','']) },
+                { chords: ch('G',0,'D',4), lyrics: ly(['Shri','Ram','Jai','Ram,','Jai','Jai','Ram','']) },
+                { chords: ch('C',0,'G',4), lyrics: ly(['Jai','Hanuman,','','','Jai','Jai','Jai','']) }
+              ]
+            },
+            {
+              id: 'verse-2', label: 'Verse 2', progression: 'G – D – Em – C',
+              tempo: 80, rampFromPrev: 0,
+              lines: [
+                { chords: ch('G',0,'D',4),  lyrics: ly(['Open','your','chest','and','share','your','truth','']) },
+                { chords: ch('Em',0,'C',4), lyrics: ly(['Ram','and','Sita','','both','shining','through','']) },
+                { chords: ch('G',0,'D',4),  lyrics: ly(['Hearts','open,','','','lotus','in','flower','']) },
+                { chords: ch('Em',0,'C',4), lyrics: ly(['Bhakti','in','motion,','','devotion','our','power','']) },
+                { chords: ch('G',0,'D',4),  lyrics: ly(['We','vibrate,','','','chanting','till','dawn','']) },
+                { chords: ch('Em',0,'C',4), lyrics: ly(['In','every','breath,','','the','name','of','Ram']) },
+                { chords: ch('G',0,'D',4),  lyrics: ly(['Hanu','man','the great','singing','Jai','Jai','Ram','']) }
+              ]
+            },
+            {
+              id: 'mantra-out', label: 'Mantra Out', progression: 'G – D – C – G · vamp & dissolve',
+              tempo: 80, rampFromPrev: 0,
+              lines: [
+                { chords: ch('G',0,'D',4), lyrics: ly(['Shri','Ram','Jai','Ram,','Jai','Jai','Ram...','']) },
+                { chords: ch('C',0,'G',4), lyrics: ly(['Jai','Hanuman,','','','Jai','Jai','Jai...','']) },
+                { chords: ch('G',0,'D',4), lyrics: ly(['Shri','Ram','Jai','Ram,','Jai','Jai','Ram...','']) },
+                { chords: ch('C',0,'G',4), lyrics: ly(['Jai','Hanuman,','','','Jai','Jai','Jai...','']) }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    /* Helpers for declarative song authoring ──
+       ch('G', 0, 'D', 4) → chord G at beat 0, chord D at beat 4
+       (pairs of chord, beatIndex 0..7 — pairs may repeat for >2 chords)
+       ly(['word','word', '', ...]) → 8-cell lyric array  */
+    function ch(...args) {
+      const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+      for (let i = 0; i < args.length; i += 2) {
+        const text = args[i];
+        const beat = args[i + 1];
+        if (typeof beat === 'number' && beat >= 0 && beat < BEATS) {
+          cells[beat] = { text: String(text), empty: false };
+        }
+      }
+      return cells;
+    }
+    function ly(words) {
+      // words is an 8-cell array; '' = empty cell
+      const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+      for (let i = 0; i < BEATS; i++) {
+        const w = words[i];
+        if (w !== undefined && w !== null && String(w).length) {
+          cells[i] = { text: String(w), empty: false };
+        }
+      }
+      return cells;
+    }
+
+    /* ─── LIBRARY STATE (loaded from localStorage or defaults) ── */
+    let library = loadLibrary();
+    let currentSong = library.songs.find(s => s.id === library.currentSongId) || library.songs[0];
+
+    function loadLibrary() {
+      try {
+        const raw = localStorage.getItem(LIBRARY_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.songs && parsed.songs.length) return parsed;
+        }
+      } catch(e) {}
+      // Fall back to embedded JSON tag (last-saved bundled state)
+      try {
+        const tag = document.getElementById('embedded-library');
+        if (tag) {
+          const parsed = JSON.parse(tag.textContent);
+          if (parsed && parsed.songs && parsed.songs.length) return parsed;
+        }
+      } catch(e) {}
+      // Otherwise the bundled defaults
+      return JSON.parse(JSON.stringify(DEFAULT_LIBRARY));
+    }
+
+    function persistLibrary(silent) {
+      try {
+        // Always sync currentSongId
+        library.currentSongId = currentSong.id;
+        localStorage.setItem(LIBRARY_KEY, JSON.stringify(library));
+        // Also update the embedded JSON tag so a "Save to file" captures it
+        const tag = document.getElementById('embedded-library');
+        if (tag) tag.textContent = '\n' + JSON.stringify(library) + '\n';
+        if (!silent) setStatus('saved ✦');
+      } catch(e) { console.warn('persistLibrary failed', e); }
+    }
+
+    /* ─── RENDER: build DOM from a SongDoc ─────────────── */
+    const songRoot     = document.getElementById('song-root');
+    const songTitleEl  = document.getElementById('songTitle');
+    const songSubEl    = document.getElementById('songSubtitle');
+
+    function renderSong(song) {
+      // Header
+      songTitleEl.textContent = letterSpaced(song.title || 'UNTITLED');
+      songSubEl.innerHTML = renderSubtitle(song);
+
+      // Body — split sections roughly in half across two columns
+      const sections = song.sections || [];
+      const split = Math.ceil(sections.length / 2);
+      const left  = sections.slice(0, split);
+      const right = sections.slice(split);
+
+      songRoot.innerHTML =
+        '<div class="col col-left">'  + left.map(renderSection).join('')  +
+          (song.strumTip ? `<div class="strum-tip" tabindex="0" title="Tap to edit">${escapeHtml(song.strumTip)}</div>` : '') +
+        '</div>' +
+        '<div class="col col-right">' + right.map(renderSection).join('') + '</div>';
+
+      // Wire beat overlays + grids
+      initPracticeOnSong();
+      stampChords();
+      updateSeekable();
+    }
+
+    // Insert a single non-breaking space between letters for visual letter-spacing fallback
+    function letterSpaced(s) {
+      return escapeHtml(s);
+    }
+
+    function renderSubtitle(song) {
+      const parts = [];
+      if (song.key)  parts.push('Key of ' + escapeHtml(song.key));
+      if (song.capo) parts.push('Capo ' + escapeHtml(song.capo));
+      return parts.join(' &nbsp;·&nbsp; ') || '<em>add key & capo info</em>';
+    }
+
+    function renderSection(section, idx) {
+      const tempo = section.tempo || currentSong.defaultBpm || DEFAULT_BPM;
+      const ramp  = section.rampFromPrev || 0;
+      const tempoBadge = `
+        <span class="tempo-badge" data-section-id="${section.id}" title="Tap to edit tempo">
+          <span class="tempo-num">${tempo}</span>
+          <span>bpm</span>
+          ${ramp > 0 ? `<span class="tempo-ramp">↗${ramp}</span>` : ''}
+        </span>`;
+      return `
+        <div class="section" data-section-id="${section.id}">
+          <div class="section-label">
+            <span class="label-text" tabindex="0" title="Tap to edit name">${escapeHtml(section.label || 'Section')}</span>
+            <span class="prog" tabindex="0" title="Tap to edit progression">${escapeHtml(section.progression || '')}</span>
+            ${tempoBadge}
+          </div>
+          ${(section.lines || []).map(renderLine).join('')}
+        </div>`;
+    }
+
+    function renderLine(line) {
+      const chords = (line.chords || emptyCells()).map(
+        (c, i) => `<span class="chord-cell${c.empty ? ' empty' : ''}" data-beat="${i}">${escapeHtml(c.text || '')}</span>`
+      ).join('');
+      const lyrics = (line.lyrics || emptyCells()).map(
+        (c, i) => `<span class="beat-cell${c.empty ? ' empty' : ''}" data-beat="${i}">${escapeHtml(c.text || '')}</span>`
+      ).join('');
+      return `
+        <div class="line">
+          <div class="chords chords-grid">${chords}</div>
+          <div class="lyric lyric-grid">${lyrics}</div>
+        </div>`;
+    }
+
+    function emptyCells() {
+      return Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    /* ─── Beat overlays + scrolling helpers ─────────────── */
+    function initPracticeOnSong() {
+      getLines().forEach(line => {
+        if (line.querySelector('.beat-overlay')) return;
+        const ov = document.createElement('div');
+        ov.className = 'beat-overlay';
+        for (let i = 0; i < BEATS; i++) {
+          const seg = document.createElement('div');
+          seg.className = 'beat-seg' + (i % 4 === 0 ? ' downbeat-seg' : '');
+          ov.appendChild(seg);
+        }
+        line.insertBefore(ov, line.firstChild);
+      });
+    }
+
+    /* ─── CAPTURE: read DOM cells back into currentSong ── */
+    function captureCurrentSongFromDOM() {
+      const sections = Array.from(songRoot.querySelectorAll('.section'));
+      sections.forEach(secEl => {
+        const secId = secEl.dataset.sectionId;
+        const sec = currentSong.sections.find(s => s.id === secId);
+        if (!sec) return;
+        // Update label/progression from editable spans
+        const lbl = secEl.querySelector('.label-text');
+        const prg = secEl.querySelector('.prog');
+        if (lbl) sec.label = lbl.textContent.trim();
+        if (prg) sec.progression = prg.textContent.trim();
+
+        const lines = Array.from(secEl.querySelectorAll('.line'));
+        sec.lines = lines.map(lineEl => ({
+          chords: Array.from(lineEl.querySelectorAll('.chord-cell')).map(c => ({
+            text: c.textContent, empty: c.classList.contains('empty')
+          })),
+          lyrics: Array.from(lineEl.querySelectorAll('.beat-cell')).map(c => ({
+            text: c.textContent, empty: c.classList.contains('empty')
+          }))
+        }));
+      });
+      // Update strum tip
+      const tip = songRoot.querySelector('.strum-tip');
+      if (tip) currentSong.strumTip = tip.textContent.trim();
+    }
+
+    /* ═════════════════════════════════════════════════════
+       PLAYBACK ENGINE (preserved + tempo-aware)
+    ═════════════════════════════════════════════════════ */
+    let isPlaying      = false;
+    let beatCount      = 0;
+    let bpm            = DEFAULT_BPM;     // global override; if set, overrides per-section
+    let bpmOverridden  = false;           // true if user manually set BPM via the bar
+    let soundOn        = true;
+    let inOutro        = false;
+    let volume         = 1.0;
+
+    /* ─── Web Audio scheduler state (Chris Wilson lookahead pattern) ─── */
+    const LOOKAHEAD_MS     = 25;    // how often the scheduler wakes
+    const SCHEDULE_AHEAD_S = 0.1;   // audio scheduled up to 100ms ahead of ctx clock
+    let   _phase           = null;  // 'intro' | 'song' | 'outro' | null
+    let   _introCounter    = 0;
+    let   _introTotalBeats = 0;
+    let   _outroTotalBeats = 0;     // 0 = no count-out
+    let   _nextBeatCtxTime = 0;     // AudioContext time of the next beat to schedule
+    let   _uiQueue         = [];    // [{ time, kind, ...payload }]
+    let   _schedulerId     = null;
+    let   _drawRafId       = null;
+
+    const playBtn      = document.getElementById('playBtn');
+    const iconPlay     = document.getElementById('iconPlay');
+    const iconPause    = document.getElementById('iconPause');
+    const replayBtn    = document.getElementById('replayBtn');
+    const soundBtn     = document.getElementById('soundBtn');
+    const iconSoundOn  = document.getElementById('iconSoundOn');
+    const iconSoundOff = document.getElementById('iconSoundOff');
+    const saveBtn      = document.getElementById('saveBtn');
+    const bpmBtn       = document.getElementById('bpmBtn');
+    const bpmPopover   = document.getElementById('bpmPopover');
+    const bpmSlider    = document.getElementById('bpmSlider');
+    const bpmInput     = document.getElementById('bpmInput');
+    const bpmDisplay   = document.getElementById('bpmDisplay');
+    const volPopover   = document.getElementById('volPopover');
+    const volSlider    = document.getElementById('volSlider');
+    const statusEl     = document.getElementById('practiceStatus');
+
+    function showPlayIcon()  { iconPlay.style.display = ''; iconPause.style.display = 'none'; }
+    function showPauseIcon() { iconPlay.style.display = 'none'; iconPause.style.display = ''; }
+
+    const getLines  = () => Array.from(songRoot.querySelectorAll('.line'));
+    const setStatus = t  => { statusEl.textContent = t; };
+
+    /* Compute the section index for a given line index */
+    function sectionMap() {
+      const map = []; // index by lineIdx → { sectionIdx, beatInSection }
+      let beatStart = 0;
+      currentSong.sections.forEach((sec, sIdx) => {
+        (sec.lines || []).forEach((_, lIdx) => {
+          map.push({ sectionIdx: sIdx, lineIdxInSection: lIdx, beatStart });
+          beatStart += BEATS;
+        });
+      });
+      return map;
+    }
+
+    /* Compute current ms/beat at a given absolute beat. Honors per-section
+       tempo + smooth ramp from previous section's tempo. */
+    function msPerBeatAt(absoluteBeat) {
+      if (bpmOverridden) return 60000 / bpm;
+      const sections = currentSong.sections || [];
+      if (!sections.length) return 60000 / (currentSong.defaultBpm || DEFAULT_BPM);
+
+      let beatStart = 0;
+      let prevTempo = currentSong.defaultBpm || DEFAULT_BPM;
+      for (let i = 0; i < sections.length; i++) {
+        const sec = sections[i];
+        const sectionBeats = (sec.lines || []).length * BEATS;
+        const sectionEnd = beatStart + sectionBeats;
+        if (absoluteBeat < sectionEnd) {
+          const tempo = sec.tempo || prevTempo;
+          const ramp  = Math.min(sec.rampFromPrev || 0, sectionBeats);
+          const rel   = absoluteBeat - beatStart;
+          if (i === 0 || ramp <= 0 || rel >= ramp) {
+            return 60000 / tempo;
+          }
+          // Linear interpolate from prevTempo → tempo across `ramp` beats
+          const t = (rel + 0.5) / ramp; // mid-beat
+          const interp = prevTempo + (tempo - prevTempo) * t;
+          return 60000 / interp;
+        }
+        beatStart = sectionEnd;
+        prevTempo = sec.tempo || prevTempo;
+      }
+      // Past the song: outro vamp uses last section tempo
+      return 60000 / prevTempo;
+    }
+
+    function updateBeat(lines, lineIdx, beatInLine) {
+      lines.forEach(l => {
+        l.querySelectorAll('.beat-seg').forEach(s => s.classList.remove('filled'));
+        l.querySelectorAll('.beat-cell').forEach(c => c.classList.remove('current', 'played'));
+        l.querySelectorAll('.chord-cell').forEach(c => c.classList.remove('active-beat'));
+      });
+      // Clear playing-section
+      songRoot.querySelectorAll('.section.playing').forEach(s => s.classList.remove('playing'));
+      if (lineIdx >= lines.length) return;
+      const line = lines[lineIdx];
+      line.querySelectorAll('.beat-seg').forEach((s, i) => {
+        if (i <= beatInLine) s.classList.add('filled');
+      });
+      line.querySelectorAll('.beat-cell').forEach(c => {
+        const b = parseInt(c.dataset.beat);
+        if (b === beatInLine)  c.classList.add('current');
+        else if (b < beatInLine) c.classList.add('played');
+      });
+      line.querySelectorAll('.chord-cell').forEach(c => {
+        if (parseInt(c.dataset.beat) === beatInLine) c.classList.add('active-beat');
+      });
+      const sec = line.closest('.section');
+      if (sec) sec.classList.add('playing');
+    }
+
+    /* ─── Web Audio click engine (sample-accurate, iOS-safe) ──────
+       Uses AudioContext + pre-rendered AudioBuffers scheduled ahead
+       of the audio clock. No startup latency per click (unlike HTML5
+       Audio). Volume rides through a single masterGain.              */
+    let audioCtx         = null;
+    let masterGain       = null;
+    let clickBufHi       = null;
+    let clickBufLo       = null;
+    let _scheduledSources = [];
+
+    function buildClickBuffer(ctx, freq, durSec, amp) {
+      const sr = ctx.sampleRate;
+      const n  = Math.floor(sr * durSec);
+      const buf = ctx.createBuffer(1, n, sr);
+      const d   = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) {
+        const t = i / sr;
+        d[i] = Math.sin(2 * Math.PI * freq * t) * Math.exp(-t * 50) * amp;
+      }
+      return buf;
+    }
+
+    function initAudioCtx() {
+      if (audioCtx) return;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      audioCtx   = new Ctx();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = soundOn ? volume : 0;
+      masterGain.connect(audioCtx.destination);
+      clickBufHi = buildClickBuffer(audioCtx, 800,  0.08, 1.0);
+      clickBufLo = buildClickBuffer(audioCtx, 1400, 0.04, 0.35);
+    }
+
+    /* ─── iOS silent-switch bypass ────────────────────────────────
+       iOS Safari respects the physical mute switch for Web Audio.
+       Workaround: keep a silent HTML5 <audio> looping in the
+       background — this routes the page into the "media playback"
+       audio session category, which ignores the mute switch.       */
+    let _iosSilentEl = null;
+    function _buildSilentWavUrl(seconds) {
+      const sr = 8000;
+      const n  = Math.floor(sr * seconds);
+      const buf = new ArrayBuffer(44 + n);
+      const dv  = new DataView(buf);
+      const wstr = (off, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(off + i, s.charCodeAt(i)); };
+      wstr(0, 'RIFF');
+      dv.setUint32(4, 36 + n, true);
+      wstr(8, 'WAVE');
+      wstr(12, 'fmt ');
+      dv.setUint32(16, 16, true);
+      dv.setUint16(20, 1, true);   // PCM
+      dv.setUint16(22, 1, true);   // mono
+      dv.setUint32(24, sr, true);
+      dv.setUint32(28, sr, true);
+      dv.setUint16(32, 1, true);
+      dv.setUint16(34, 8, true);   // 8-bit
+      wstr(36, 'data');
+      dv.setUint32(40, n, true);
+      // 8-bit PCM silence is 128 (unsigned midpoint)
+      for (let i = 44; i < 44 + n; i++) dv.setUint8(i, 128);
+      return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+    }
+    function _ensureIosSilentEl() {
+      if (_iosSilentEl) return;
+      const a = document.createElement('audio');
+      a.setAttribute('playsinline', '');
+      a.setAttribute('webkit-playsinline', '');
+      a.preload = 'auto';
+      a.loop    = true;
+      a.muted   = false;        // muted=true gets ignored by iOS, must be unmuted
+      a.volume  = 0.001;        // inaudible but counts as media output
+      a.src     = _buildSilentWavUrl(1);
+      a.style.cssText = 'position:absolute;width:0;height:0;opacity:0;pointer-events:none';
+      document.body.appendChild(a);
+      _iosSilentEl = a;
+    }
+
+    function unlockAudio() {
+      initAudioCtx();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      // Kick the silent loop on iOS so subsequent clicks are audible
+      // even if the physical mute switch is on.
+      _ensureIosSilentEl();
+      if (_iosSilentEl && _iosSilentEl.paused) {
+        _iosSilentEl.play().catch(() => {});
+      }
+      document.removeEventListener('touchstart', unlockAudio, true);
+      document.removeEventListener('click',      unlockAudio, true);
+    }
+    document.addEventListener('touchstart', unlockAudio, true);
+    document.addEventListener('click',      unlockAudio, true);
+
+    function scheduleClickAt(when, isDownbeat) {
+      if (!audioCtx || !clickBufHi) return;
+      const src = audioCtx.createBufferSource();
+      src.buffer = isDownbeat ? clickBufHi : clickBufLo;
+      src.connect(masterGain);
+      src.start(when);
+      _scheduledSources.push(src);
+      src.onended = () => {
+        const i = _scheduledSources.indexOf(src);
+        if (i >= 0) _scheduledSources.splice(i, 1);
+      };
+    }
+
+    function cancelScheduledAudio() {
+      _scheduledSources.forEach(s => { try { s.stop(0); } catch(e) {} });
+      _scheduledSources = [];
+    }
+
+    function setMasterGain(v) {
+      if (!audioCtx || !masterGain) return;
+      masterGain.gain.setTargetAtTime(v, audioCtx.currentTime, 0.01);
+    }
+
+    function activateLine(lines, idx) {
+      lines.forEach(l => l.classList.remove('active'));
+      if (idx >= lines.length) return;
+      const line = lines[idx];
+      line.classList.add('active');
+      const rect = line.getBoundingClientRect();
+      if (rect.top > window.innerHeight * 0.35 || rect.bottom > window.innerHeight - 72) {
+        line.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      const label = line.closest('.section')?.querySelector('.label-text');
+      setStatus(label ? label.textContent.trim().toLowerCase() : '');
+      // Reflect current section's tempo on the BPM display (if not overridden)
+      if (!bpmOverridden) {
+        const ms = msPerBeatAt(idx * BEATS);
+        bpmDisplay.textContent = Math.round(60000 / ms);
+      }
+    }
+
+    /* ─── Outro (count-out) bar ─────────────────────────── */
+    function showOutroBar() {
+      const bar = document.getElementById('outro-bar');
+      if (bar) bar.hidden = false;
+      inOutro = true;
+    }
+    function hideOutroBar() {
+      const bar = document.getElementById('outro-bar');
+      if (bar) {
+        bar.hidden = true;
+        bar.querySelectorAll('.intro-beat').forEach(b => b.classList.remove('active', 'played'));
+      }
+      inOutro = false;
+    }
+    function updateOutroBeat(n) {
+      const bar = document.getElementById('outro-bar');
+      if (!bar) return;
+      bar.querySelectorAll('.intro-beat').forEach((b, i) => {
+        b.classList.toggle('active', i === n);
+        b.classList.toggle('played', i < n);
+      });
+    }
+
+    /* ─── Lookahead scheduler (Chris Wilson pattern) ─────────────
+       Runs every LOOKAHEAD_MS. For each beat whose audio time is within
+       SCHEDULE_AHEAD_S of now, we schedule the click on the AudioContext
+       timeline (sample-accurate) and push a matching UI event onto
+       _uiQueue. The rAF draw loop pops events when their time arrives
+       per the audio clock, keeping visuals locked to audio.           */
+    function _schedulerTick() {
+      if (!audioCtx) return;
+      const lines     = getLines();
+      const songBeats = lines.length * BEATS;
+      const horizon   = audioCtx.currentTime + SCHEDULE_AHEAD_S;
+
+      // Safety: if we've fallen way behind (tab throttled), snap forward
+      // so we don't pile up thousands of past-due clicks.
+      if (_nextBeatCtxTime < audioCtx.currentTime - 0.25) {
+        _nextBeatCtxTime = audioCtx.currentTime + 0.02;
+      }
+
+      while (_nextBeatCtxTime < horizon) {
+        if (_phase === 'intro') {
+          const n    = _introCounter % INTRO_BEATS_COUNT;
+          const loop = Math.floor(_introCounter / INTRO_BEATS_COUNT) + 1;
+          scheduleClickAt(_nextBeatCtxTime, n % 4 === 0);
+          _uiQueue.push({ time: _nextBeatCtxTime, kind: 'intro', n, loop });
+          _introCounter++;
+          _nextBeatCtxTime += msPerBeatAt(0) / 1000;
+          if (_introCounter >= _introTotalBeats) {
+            _phase = 'song';
+            // song phase picks up at beatCount (already set by caller, usually 0)
+          }
+        } else if (_phase === 'song') {
+          const beatInLine = beatCount % BEATS;
+          scheduleClickAt(_nextBeatCtxTime, beatInLine % 4 === 0);
+          _uiQueue.push({ time: _nextBeatCtxTime, kind: 'song', beat: beatCount });
+          _nextBeatCtxTime += msPerBeatAt(beatCount) / 1000;
+          beatCount++;
+          if (beatCount >= songBeats) {
+            _phase = 'outro';
+          }
+        } else if (_phase === 'outro') {
+          const outroFired = beatCount - songBeats;
+          // Bounded count-out: stop after _outroTotalBeats clicks have fired.
+          // 0 means count-out is disabled — finish immediately.
+          if (_outroTotalBeats <= 0 || outroFired >= _outroTotalBeats) {
+            _phase = null;
+            // Schedule a UI-side "finish" event right at the natural end
+            _uiQueue.push({ time: _nextBeatCtxTime, kind: 'finish' });
+            return;
+          }
+          const outroBeat = outroFired % INTRO_BEATS_COUNT;
+          scheduleClickAt(_nextBeatCtxTime, outroBeat % 4 === 0);
+          _uiQueue.push({ time: _nextBeatCtxTime, kind: 'outro', n: outroBeat });
+          _nextBeatCtxTime += msPerBeatAt(beatCount) / 1000;
+          beatCount++;
+        } else {
+          return; // no active phase
+        }
+      }
+    }
+
+    function _renderEvent(evt) {
+      const lines = getLines();
+      if (evt.kind === 'intro') {
+        const bar     = document.getElementById('intro-bar');
+        const beatEls = bar.querySelectorAll('.intro-beat');
+        if (bar.hidden) bar.hidden = false;
+        beatEls.forEach((b, i) => {
+          b.classList.toggle('active', i === evt.n);
+          b.classList.toggle('played', i < evt.n);
+        });
+        const loops = Math.max(1, Math.min(8, settings.countInLoops || 2));
+        setStatus('count in ' + evt.loop + '/' + loops + '…');
+      } else if (evt.kind === 'song') {
+        // First song beat: tidy up intro bar
+        if (evt.beat === 0) hideIntroBar();
+        const lineIdx    = Math.floor(evt.beat / BEATS);
+        const beatInLine = evt.beat % BEATS;
+        if (beatInLine === 0) activateLine(lines, lineIdx);
+        updateBeat(lines, lineIdx, beatInLine);
+      } else if (evt.kind === 'outro') {
+        if (!inOutro) {
+          lines.forEach(l => l.classList.remove('active'));
+          songRoot.querySelectorAll('.section.playing').forEach(s => s.classList.remove('playing'));
+          showOutroBar();
+        }
+        updateOutroBeat(evt.n);
+        setStatus('keep flowing…');
+      } else if (evt.kind === 'finish') {
+        // Natural end of count-out — full stop.
+        stop(true);
+      }
+    }
+
+    function _drawLoop() {
+      if (!audioCtx) { _drawRafId = null; return; }
+      const now = audioCtx.currentTime;
+      while (_uiQueue.length && _uiQueue[0].time <= now) {
+        _renderEvent(_uiQueue.shift());
+      }
+      if (isPlaying) {
+        _drawRafId = requestAnimationFrame(_drawLoop);
+      } else {
+        _drawRafId = null;
+      }
+    }
+
+    function _startScheduler() {
+      initAudioCtx();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      if (_schedulerId) clearInterval(_schedulerId);
+      _schedulerId = setInterval(_schedulerTick, LOOKAHEAD_MS);
+      if (_drawRafId) cancelAnimationFrame(_drawRafId);
+      _drawRafId = requestAnimationFrame(_drawLoop);
+    }
+
+    function _stopScheduler() {
+      if (_schedulerId) { clearInterval(_schedulerId); _schedulerId = null; }
+      if (_drawRafId)   { cancelAnimationFrame(_drawRafId); _drawRafId = null; }
+      _uiQueue = [];
+      cancelScheduledAudio();
+    }
+
+    /* ─── Intro count-in helpers (scheduler-driven) ───────────── */
+    function hideIntroBar() {
+      const bar = document.getElementById('intro-bar');
+      if (!bar) return;
+      bar.hidden = true;
+      bar.querySelectorAll('.intro-beat').forEach(b => b.classList.remove('active', 'played'));
+    }
+
+    /* Start intro phase; scheduler auto-transitions into song phase
+       once _introTotalBeats have fired. beatCount should already be
+       set to the song start (usually 0).
+       If settings.countInLoops === 0, the intro is skipped entirely. */
+    function _startIntroThenPlay() {
+      initAudioCtx();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      const inLoops    = Math.max(0, Math.min(8, settings.countInLoops));
+      const outLoops   = Math.max(0, Math.min(8, settings.countOutLoops));
+      _outroTotalBeats = INTRO_BEATS_COUNT * outLoops;
+
+      if (inLoops <= 0) {
+        // Skip count-in entirely; go straight to song phase
+        hideIntroBar();
+        _phase           = 'song';
+        _nextBeatCtxTime = audioCtx.currentTime + 0.06;
+        _startScheduler();
+        setPlayingClass(true);
+        return;
+      }
+
+      const bar     = document.getElementById('intro-bar');
+      const beatEls = bar.querySelectorAll('.intro-beat');
+      bar.hidden = false;
+      beatEls.forEach(b => b.classList.remove('active', 'played'));
+
+      _phase            = 'intro';
+      _introCounter     = 0;
+      _introTotalBeats  = INTRO_BEATS_COUNT * inLoops;
+      _nextBeatCtxTime  = audioCtx.currentTime + 0.06; // tiny lead before first click
+      _startScheduler();
+      setPlayingClass(true);
+    }
+
+    /* Tap the count-in bar mid-song = restart from beat 0 with full count-in.
+       (Previous behavior was a single-loop count-in then resume in place —
+       Wind's request: always restart fresh from the top.) */
+    document.getElementById('intro-bar').addEventListener('click', () => {
+      if (!isPlaying) return;
+      _stopScheduler();
+      // Reset to the top
+      beatCount = 0;
+      // Clear any visual state from where we were
+      getLines().forEach(l => {
+        l.classList.remove('active');
+        l.querySelectorAll('.beat-seg').forEach(s => s.classList.remove('filled'));
+        l.querySelectorAll('.beat-cell').forEach(c => c.classList.remove('current', 'played'));
+        l.querySelectorAll('.chord-cell').forEach(c => c.classList.remove('active-beat'));
+      });
+      songRoot.querySelectorAll('.section.playing').forEach(s => s.classList.remove('playing'));
+      hideOutroBar();
+      // Run the full configurable count-in then play from the top
+      _startIntroThenPlay();
+    });
+
+    /* ─── Controls ──────────────────────────────────────── */
+    /* Start (or resume) the song phase at the current beatCount. */
+    function play() {
+      initAudioCtx();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      const songBeats  = getLines().length * BEATS;
+      const outLoops   = Math.max(0, Math.min(8, settings.countOutLoops));
+      _outroTotalBeats = INTRO_BEATS_COUNT * outLoops;
+      _phase = (beatCount >= songBeats) ? 'outro' : 'song';
+      _nextBeatCtxTime = audioCtx.currentTime + 0.05;
+      _startScheduler();
+      setPlayingClass(true);
+    }
+
+    function pause() {
+      isPlaying = false;
+      _stopScheduler();
+      _phase = null;
+      showPlayIcon();
+      playBtn.disabled = false;
+      hideIntroBar();
+      hideOutroBar();
+      setStatus('paused');
+      setPlayingClass(false);
+    }
+
+    function stop(finished) {
+      isPlaying = false;
+      _stopScheduler();
+      _phase = null;
+      beatCount = 0;
+      setPlayingClass(false);
+      showPlayIcon();
+      playBtn.disabled = false;
+      hideIntroBar();
+      hideOutroBar();
+      getLines().forEach(l => {
+        l.classList.remove('active');
+        l.querySelectorAll('.beat-seg').forEach(s => s.classList.remove('filled'));
+        l.querySelectorAll('.beat-cell').forEach(c => c.classList.remove('current', 'played'));
+        l.querySelectorAll('.chord-cell').forEach(c => c.classList.remove('active-beat'));
+      });
+      songRoot.querySelectorAll('.section.playing').forEach(s => s.classList.remove('playing'));
+      // Reset BPM display to first section's tempo if not overridden
+      if (!bpmOverridden) {
+        const ms = msPerBeatAt(0);
+        bpmDisplay.textContent = Math.round(60000 / ms);
+      }
+      updateSeekable();
+      setStatus(finished ? 'done ✦' : 'ready');
+    }
+
+    /* ─── Seekable lines: tap to jump (only while playing) ── */
+    function updateSeekable() {
+      getLines().forEach(l => l.classList.add('seekable'));
+    }
+
+    let _justDragged = false;
+
+    document.addEventListener('click', e => {
+      if (_justDragged) { _justDragged = false; return; }
+      if (!isPlaying) return;
+      const line = e.target.closest('.line');
+      if (!line) return;
+      if (e.target.closest('.practice-bar')) return;
+      if (e.target.closest('.section-label')) return;
+      const lines = getLines();
+      const idx   = lines.indexOf(line);
+      if (idx < 0) return;
+      if (inOutro) hideOutroBar();
+      _stopScheduler();
+      beatCount = idx * BEATS;
+      play();
+    });
+
+    playBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (isPlaying) {
+        // Tap during count-out = full STOP (count-out is a tail, not pause-friendly)
+        if (inOutro || _phase === 'outro') {
+          stop(false);
+        } else {
+          pause();
+        }
+      } else if (beatCount > 0) {
+        isPlaying = true;
+        showPauseIcon();
+        play();
+      } else {
+        isPlaying = true;
+        showPauseIcon();
+        _startIntroThenPlay();
+      }
+    });
+
+    replayBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      stop(false);
+      isPlaying = true;
+      showPauseIcon();
+      _startIntroThenPlay();
+    });
+
+    /* ─── Count-in / Count-out controls (paired number inputs) ───── */
+    const countInInput  = document.getElementById('countInInput');
+    const countOutInput = document.getElementById('countOutInput');
+
+    function _clampLoops(v) {
+      const n = parseInt(v, 10);
+      if (!isFinite(n)) return 0;
+      return Math.max(0, Math.min(8, n));
+    }
+    function refreshCountInputs() {
+      const ci = _clampLoops(settings.countInLoops);
+      const co = _clampLoops(settings.countOutLoops);
+      countInInput.value  = ci;
+      countOutInput.value = co;
+      countInInput.classList.toggle('is-zero',  ci === 0);
+      countOutInput.classList.toggle('is-zero', co === 0);
+    }
+    refreshCountInputs();
+
+    function _bindCountInput(el, key, label) {
+      el.addEventListener('input', () => {
+        const n = _clampLoops(el.value);
+        settings[key] = n;
+        persistSettings();
+        el.classList.toggle('is-zero', n === 0);
+      });
+      el.addEventListener('blur', () => {
+        // Normalize empty / out-of-range on blur
+        refreshCountInputs();
+        const n = _clampLoops(el.value);
+        setStatus(label + ': ' + (n === 0 ? 'off' : n + '× 8 beats'));
+      });
+      // Select on focus = easier overwrite on mobile
+      el.addEventListener('focus', () => { setTimeout(() => el.select(), 0); });
+      // Block typing non-digits (still allows arrow keys, backspace, etc.)
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { el.blur(); return; }
+      });
+    }
+    _bindCountInput(countInInput,  'countInLoops',  'count-in');
+    _bindCountInput(countOutInput, 'countOutLoops', 'count-out');
+
+    /* ─── Sound toggle + volume popover ─────────────────── */
+    let volOpen = false;
+    function closeVol() { volOpen = false; volPopover.classList.remove('open'); }
+
+    soundBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (volOpen) { closeVol(); return; }
+      soundOn = !soundOn;
+      iconSoundOn.style.display  = soundOn ? '' : 'none';
+      iconSoundOff.style.display = soundOn ? 'none' : '';
+      initAudioCtx();
+      setMasterGain(soundOn ? volume : 0);
+    });
+
+    soundBtn.addEventListener('dblclick', e => {
+      e.stopPropagation();
+      soundOn = !soundOn;
+      iconSoundOn.style.display  = soundOn ? '' : 'none';
+      iconSoundOff.style.display = soundOn ? 'none' : '';
+      setMasterGain(soundOn ? volume : 0);
+      volOpen = !volOpen;
+      volPopover.classList.toggle('open', volOpen);
+      closeBpm();
+    });
+
+    volSlider.addEventListener('input', () => {
+      volume = parseInt(volSlider.value) / 100;
+      if (volume === 0) {
+        soundOn = false;
+        iconSoundOn.style.display = 'none';
+        iconSoundOff.style.display = '';
+      } else if (!soundOn) {
+        soundOn = true;
+        iconSoundOn.style.display = '';
+        iconSoundOff.style.display = 'none';
+      }
+      setMasterGain(soundOn ? volume : 0);
+    });
+
+    /* ─── BPM popover (manual override) ─────────────────── */
+    let bpmOpen = false;
+    function closeBpm() { bpmOpen = false; bpmPopover.classList.remove('open'); }
+
+    function setBpm(val, fromUser) {
+      bpm = Math.max(40, Math.min(160, val));
+      bpmSlider.value    = bpm;
+      bpmInput.value     = bpm;
+      bpmDisplay.textContent = bpm;
+      if (fromUser) bpmOverridden = true;
+    }
+
+    function clearBpmOverride() {
+      bpmOverridden = false;
+      // Reset display to first section's tempo
+      const ms = msPerBeatAt(0);
+      const t = Math.round(60000 / ms);
+      bpm = t;
+      bpmSlider.value = t;
+      bpmInput.value  = t;
+      bpmDisplay.textContent = t;
+    }
+
+    bpmBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      bpmOpen = !bpmOpen;
+      bpmPopover.classList.toggle('open', bpmOpen);
+      if (bpmOpen) { closeVol(); bpmInput.value = bpm; }
+    });
+
+    // Long-press on BPM button → clear override (revert to per-section tempo)
+    let bpmHoldTimer = null;
+    bpmBtn.addEventListener('pointerdown', () => {
+      bpmHoldTimer = setTimeout(() => {
+        clearBpmOverride();
+        setStatus('section tempo');
+        bpmHoldTimer = null;
+      }, 600);
+    });
+    bpmBtn.addEventListener('pointerup', () => { clearTimeout(bpmHoldTimer); });
+    bpmBtn.addEventListener('pointerleave', () => { clearTimeout(bpmHoldTimer); });
+
+    bpmSlider.addEventListener('input', () => setBpm(parseInt(bpmSlider.value), true));
+    bpmInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { setBpm(parseInt(bpmInput.value) || DEFAULT_BPM, true); bpmInput.blur(); }
+    });
+    bpmInput.addEventListener('blur', () => setBpm(parseInt(bpmInput.value) || DEFAULT_BPM, true));
+
+    /* Close popovers on outside tap */
+    document.addEventListener('click', e => {
+      if (bpmOpen && !bpmPopover.contains(e.target) && !bpmBtn.contains(e.target)) closeBpm();
+      if (volOpen && !volPopover.contains(e.target) && !soundBtn.contains(e.target)) closeVol();
+    });
+
+    /* ─── Save (silent in-place persist; no file dialog, no download) ──
+       Captures DOM → song object → localStorage + embedded JSON tag.
+       Edits survive reloads of THIS browser. For cross-device backup use
+       "Export All" or "Download HTML Backup" in the library drawer.       */
+    let _fileHandle = null;
+
+    saveBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      captureCurrentSongFromDOM();
+      persistLibrary(false); // silent=false so user sees "saved ✦"
+    });
+
+    /* Optional: write the live document HTML back to disk via File System
+       Access API. Triggered only from the drawer "Download HTML Backup" btn. */
+    async function exportFullHtml() {
+      captureCurrentSongFromDOM();
+      persistLibrary(true);
+      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+      if ('showSaveFilePicker' in window) {
+        try {
+          if (!_fileHandle) {
+            _fileHandle = await window.showSaveFilePicker({
+              suggestedName: 'Raga Song Book.html',
+              types: [{ description: 'HTML', accept: { 'text/html': ['.html'] } }]
+            });
+          }
+          const writable = await _fileHandle.createWritable();
+          await writable.write(html);
+          await writable.close();
+          setStatus('html backup saved ✦');
+          return;
+        } catch(err) {
+          if (err.name === 'AbortError') { setStatus('save cancelled'); return; }
+          _fileHandle = null;
+        }
+      }
+      // Fallback: download
+      const blob = new Blob([html], { type: 'text/html' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'Raga Song Book.html';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus('html downloaded ✦');
+    }
+
+    /* ═════════════════════════════════════════════════════
+       INTERACTION: drag/swap, double-click edit (preserved)
+    ═════════════════════════════════════════════════════ */
+    function initDrag() {
+      let dragCell    = null;
+      let origBeat    = 0;
+      let startX      = 0;
+      let currentDrop = null;
+
+      function getCells(cell) {
+        const grid = cell.closest('.lyric-grid') || cell.closest('.chords-grid');
+        const cls  = cell.classList.contains('chord-cell') ? '.chord-cell' : '.beat-cell';
+        return Array.from(grid.querySelectorAll(cls));
+      }
+
+      function clearDrop() {
+        if (currentDrop) { currentDrop.classList.remove('drop-target'); currentDrop = null; }
+      }
+
+      function targetCell(cells, fromBeat, deltaX, lineWidth) {
+        const beatWidth = lineWidth / BEATS;
+        const delta     = Math.round(deltaX / beatWidth);
+        if (delta === 0) return null;
+        const newBeat   = Math.max(0, Math.min(BEATS - 1, fromBeat + delta));
+        return newBeat !== fromBeat
+          ? cells.find(c => parseInt(c.dataset.beat) === newBeat) || null
+          : null;
+      }
+
+      function doSwap(cellA, cellB) {
+        const textA  = cellA.textContent;
+        const emptyA = cellA.classList.contains('empty');
+        cellA.textContent = cellB.textContent;
+        cellA.classList.toggle('empty', cellB.classList.contains('empty'));
+        cellB.textContent = textA;
+        cellB.classList.toggle('empty', emptyA);
+      }
+
+      function onMove(e) {
+        if (!dragCell) return;
+        if (e.cancelable) e.preventDefault();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const cells   = getCells(dragCell);
+        const tgt     = targetCell(cells, origBeat, clientX - startX, dragCell.closest('.line').offsetWidth);
+        clearDrop();
+        if (tgt) { tgt.classList.add('drop-target'); currentDrop = tgt; }
+      }
+
+      function onUp(e) {
+        if (!dragCell) return;
+        const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+        const cells   = getCells(dragCell);
+        const tgt     = targetCell(cells, origBeat, clientX - startX, dragCell.closest('.line').offsetWidth);
+        clearDrop();
+        dragCell.classList.remove('dragging');
+        if (tgt) doSwap(dragCell, tgt);
+        dragCell = null;
+        _justDragged = true;
+        setTimeout(() => { _justDragged = false; }, 300);
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup',   onUp);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend',  onUp);
+        // Capture after swap
+        captureCurrentSongFromDOM();
+        persistLibrary(true);
+        stampChords();
+      }
+
+      function pickCell(target) {
+        const c = target.closest('.beat-cell') || target.closest('.chord-cell');
+        return (c && !c.classList.contains('empty') && !c.classList.contains('editing')) ? c : null;
+      }
+
+      document.addEventListener('mousedown', e => {
+        if (isPlaying) return;
+        if (e.detail >= 2) return;
+        const cell = pickCell(e.target);
+        if (!cell) return;
+        e.preventDefault();
+        dragCell = cell;
+        origBeat = parseInt(cell.dataset.beat);
+        startX   = e.clientX;
+        cell.classList.add('dragging');
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup',   onUp);
+      });
+
+      // Mobile: tap-to-select, tap-to-swap
+      let selectedCell = null;
+      const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+
+      function deselectCell() {
+        if (selectedCell) { selectedCell.classList.remove('selected'); selectedCell = null; }
+      }
+
+      function pickAnyCell(target) {
+        return target.closest('.beat-cell') || target.closest('.chord-cell') || null;
+      }
+
+      document.addEventListener('touchstart', e => {
+        if (isPlaying) return;
+
+        if (isMobile()) {
+          const cell = pickAnyCell(e.target);
+          if (!cell) { deselectCell(); return; }
+
+          if (selectedCell && selectedCell !== cell
+              && selectedCell.closest('.line') === cell.closest('.line')
+              && selectedCell.className.split(' ')[0] === cell.className.split(' ')[0]) {
+            doSwap(selectedCell, cell);
+            deselectCell();
+            stampChords();
+            captureCurrentSongFromDOM();
+            persistLibrary(true);
+            _justDragged = true;
+            setTimeout(() => { _justDragged = false; }, 300);
+            return;
+          }
+          deselectCell();
+          if (!cell.classList.contains('empty')) {
+            selectedCell = cell;
+            cell.classList.add('selected');
+          }
+          return;
+        }
+
+        const cell = pickCell(e.target);
+        if (!cell) return;
+        dragCell = cell;
+        origBeat = parseInt(cell.dataset.beat);
+        startX   = e.touches[0].clientX;
+        cell.classList.add('dragging');
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend',  onUp);
+      }, { passive: true });
+    }
+
+    /* Inline cell editing — works for beat-cell, chord-cell, label-text,
+       prog, strum-tip, title, subtitle */
+    function startEdit(cell, opts = {}) {
+      if (isPlaying) return;
+      if (cell.classList.contains('editing')) return;
+      const origText = cell.textContent;
+      cell.classList.add('editing');
+      cell.classList.remove('empty');
+      cell.contentEditable = 'true';
+      cell.focus();
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(cell);
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      function commit() {
+        cell.contentEditable = 'false';
+        cell.classList.remove('editing');
+        const val = cell.textContent.trim();
+        if (val === '' && opts.allowEmpty !== false) {
+          cell.textContent = '';
+          if (cell.classList.contains('beat-cell') || cell.classList.contains('chord-cell')) {
+            cell.classList.add('empty');
+          }
+        } else {
+          cell.textContent = val || origText;
+        }
+        cell.removeEventListener('keydown', onKey);
+        cell.removeEventListener('blur', onBlur);
+        // Sync metadata changes back to model
+        if (cell.id === 'songTitle') {
+          currentSong.title = cell.textContent.trim() || 'UNTITLED';
+        }
+        if (cell.id === 'songSubtitle') {
+          // Parse "Key of X · Capo Y" back into key + capo (best-effort)
+          const txt = cell.textContent.trim();
+          parseSubtitle(txt);
+          renderSubtitleOnly();
+        }
+        captureCurrentSongFromDOM();
+        persistLibrary(true);
+        stampChords();
+        renderSongList();
+      }
+
+      function cancel() {
+        cell.contentEditable = 'false';
+        cell.classList.remove('editing');
+        cell.textContent = origText;
+        if (!origText && (cell.classList.contains('beat-cell') || cell.classList.contains('chord-cell'))) {
+          cell.classList.add('empty');
+        }
+        cell.removeEventListener('keydown', onKey);
+        cell.removeEventListener('blur', onBlur);
+      }
+
+      function onKey(e) {
+        if (e.key === 'Enter')  { e.preventDefault(); commit(); }
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+      }
+
+      function onBlur() { setTimeout(commit, 100); }
+
+      cell.addEventListener('keydown', onKey);
+      cell.addEventListener('blur',    onBlur);
+    }
+
+    function parseSubtitle(txt) {
+      // Best-effort parse "Key of G · Capo 2" or "Key of G  ·  Capo optional (try 2 or 5)"
+      const m = txt.match(/Key of\s+([^·•|]+?)(?:\s*[·•|]\s*Capo\s+(.+))?$/i);
+      if (m) {
+        currentSong.key  = (m[1] || '').trim();
+        currentSong.capo = (m[2] || '').trim();
+      } else {
+        // If user typed something else, just store as the subtitle override
+        currentSong.subtitleOverride = txt;
+      }
+    }
+
+    function renderSubtitleOnly() {
+      songSubEl.innerHTML = renderSubtitle(currentSong);
+    }
+
+    document.addEventListener('dblclick', e => {
+      const cell =
+        e.target.closest('.beat-cell') ||
+        e.target.closest('.chord-cell') ||
+        e.target.closest('.label-text') ||
+        e.target.closest('.prog') ||
+        e.target.closest('.strum-tip') ||
+        (e.target.id === 'songTitle' ? e.target : null) ||
+        (e.target.id === 'songSubtitle' ? e.target : null);
+      if (!cell) return;
+      e.preventDefault();
+      startEdit(cell);
+    });
+
+    // Single click on title/subtitle/strum/section labels triggers edit too
+    songTitleEl.addEventListener('click', e => { if (!isPlaying) startEdit(e.currentTarget); });
+    songSubEl.addEventListener('click',   e => { if (!isPlaying) startEdit(e.currentTarget); });
+
+    songRoot.addEventListener('click', e => {
+      const tip = e.target.closest('.strum-tip');
+      if (tip && !isPlaying) { startEdit(tip); return; }
+      const lbl = e.target.closest('.label-text');
+      if (lbl && !isPlaying) { startEdit(lbl); return; }
+      const prg = e.target.closest('.prog');
+      if (prg && !isPlaying) { startEdit(prg); return; }
+    });
+
+    /* ─── Stamp chord info onto lyric beat-cells (mobile inline) ── */
+    function stampChords() {
+      songRoot.querySelectorAll('.line').forEach(line => {
+        const chordCells = Array.from(line.querySelectorAll('.chord-cell'));
+        const beatCells  = Array.from(line.querySelectorAll('.beat-cell'));
+        chordCells.forEach((cc, i) => {
+          if (!beatCells[i]) return;
+          const text = cc.textContent.trim();
+          if (text) beatCells[i].setAttribute('data-chord', text);
+          else      beatCells[i].removeAttribute('data-chord');
+        });
+      });
+    }
+
+    /* ═════════════════════════════════════════════════════
+       LIBRARY DRAWER (Phase 2 — picker / new / import)
+    ═════════════════════════════════════════════════════ */
+    const drawerScrim   = document.getElementById('drawerScrim');
+    const libraryDrawer = document.getElementById('libraryDrawer');
+    const libraryBtn    = document.getElementById('libraryBtn');
+    const drawerCloseBtn= document.getElementById('drawerCloseBtn');
+    const newSongBtn    = document.getElementById('newSongBtn');
+    const importBtn     = document.getElementById('importBtn');
+    const importInput   = document.getElementById('importInput');
+    const exportAllBtn  = document.getElementById('exportAllBtn');
+    const songListEl    = document.getElementById('songList');
+
+    function openDrawer()  { renderSongList(); libraryDrawer.classList.add('open'); drawerScrim.classList.add('open'); }
+    function closeDrawer() { libraryDrawer.classList.remove('open'); drawerScrim.classList.remove('open'); }
+
+    libraryBtn.addEventListener('click', openDrawer);
+    drawerCloseBtn.addEventListener('click', closeDrawer);
+    drawerScrim.addEventListener('click', closeDrawer);
+
+    function renderSongList() {
+      if (!library.songs.length) {
+        songListEl.innerHTML = '<div class="empty-library">No songs yet.<br>Tap NEW to start one.</div>';
+        return;
+      }
+      songListEl.innerHTML = library.songs.map(s => {
+        const sectionCount = (s.sections || []).length;
+        const meta = `${sectionCount} section${sectionCount === 1 ? '' : 's'}` +
+                     (s.key ? ` · Key of ${escapeHtml(s.key)}` : '');
+        return `
+          <div class="song-item ${s.id === currentSong.id ? 'active' : ''}" data-song-id="${s.id}">
+            <div class="song-item-main">
+              <div class="song-item-title">${escapeHtml(s.title || 'Untitled')}</div>
+              <div class="song-item-meta">${meta}</div>
+            </div>
+            <div class="song-item-actions">
+              <button class="song-action" data-action="duplicate" title="Duplicate">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="song-action" data-action="export" title="Export JSON">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button class="song-action danger" data-action="delete" title="Delete">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              </button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    songListEl.addEventListener('click', e => {
+      const action = e.target.closest('[data-action]');
+      const item   = e.target.closest('.song-item');
+      if (!item) return;
+      const id = item.dataset.songId;
+
+      if (action) {
+        e.stopPropagation();
+        const a = action.dataset.action;
+        if (a === 'duplicate') return duplicateSong(id);
+        if (a === 'delete')    return deleteSong(id);
+        if (a === 'export')    return exportSong(id);
+      }
+      // Switch to song
+      switchSong(id);
+      closeDrawer();
+    });
+
+    function switchSong(id) {
+      // Capture current before switching
+      captureCurrentSongFromDOM();
+      persistLibrary(true);
+      stop(false);
+
+      const next = library.songs.find(s => s.id === id);
+      if (!next) return;
+      currentSong = next;
+      library.currentSongId = id;
+      // Reset BPM override for new song
+      bpmOverridden = false;
+      renderSong(currentSong);
+      // Set display BPM to first section's tempo
+      const ms = msPerBeatAt(0);
+      const t = Math.round(60000 / ms);
+      bpm = t;
+      bpmSlider.value = t;
+      bpmInput.value  = t;
+      bpmDisplay.textContent = t;
+      persistLibrary(true);
+      setStatus('ready');
+    }
+
+    function newSongId() {
+      return 'song-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+    }
+
+    newSongBtn.addEventListener('click', () => {
+      captureCurrentSongFromDOM();
+      const id = newSongId();
+      const blank = {
+        id, title: 'NEW SONG', key: 'C', capo: 'none',
+        defaultBpm: 90, beatsPerLine: BEATS,
+        strumTip: '',
+        sections: [
+          {
+            id: 'sec-1', label: 'Verse 1', progression: 'C – G – Am – F',
+            tempo: 90, rampFromPrev: 0,
+            lines: [
+              { chords: ch('C',0,'G',4), lyrics: ly(['','','','','','','','']) },
+              { chords: ch('Am',0,'F',4), lyrics: ly(['','','','','','','','']) }
+            ]
+          }
+        ]
+      };
+      library.songs.push(blank);
+      currentSong = blank;
+      library.currentSongId = id;
+      bpmOverridden = false;
+      persistLibrary(true);
+      renderSong(currentSong);
+      renderSongList();
+      const ms = msPerBeatAt(0);
+      const t = Math.round(60000 / ms);
+      bpm = t; bpmSlider.value = t; bpmInput.value = t; bpmDisplay.textContent = t;
+      setStatus('new song ✦');
+    });
+
+    function duplicateSong(id) {
+      const src = library.songs.find(s => s.id === id);
+      if (!src) return;
+      const copy = JSON.parse(JSON.stringify(src));
+      copy.id = newSongId();
+      copy.title = (src.title || 'UNTITLED') + ' (copy)';
+      // Re-id sections
+      copy.sections = (copy.sections || []).map((s, i) => ({ ...s, id: 'sec-' + (i + 1) + '-' + Date.now().toString(36) }));
+      library.songs.push(copy);
+      persistLibrary(true);
+      renderSongList();
+      setStatus('duplicated ✦');
+    }
+
+    function deleteSong(id) {
+      if (library.songs.length <= 1) { setStatus('keep at least one song'); return; }
+      const idx = library.songs.findIndex(s => s.id === id);
+      if (idx < 0) return;
+      const wasActive = library.songs[idx].id === currentSong.id;
+      if (!confirm(`Delete "${library.songs[idx].title}"? This can't be undone.`)) return;
+      library.songs.splice(idx, 1);
+      if (wasActive) {
+        currentSong = library.songs[0];
+        library.currentSongId = currentSong.id;
+        renderSong(currentSong);
+      }
+      persistLibrary(true);
+      renderSongList();
+    }
+
+    function exportSong(id) {
+      const s = library.songs.find(x => x.id === id);
+      if (!s) return;
+      const blob = new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = (s.title || 'song').replace(/[^a-z0-9]+/gi, '_') + '.json';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus('exported ✦');
+    }
+
+    exportAllBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(library, null, 2)], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'songbook.json';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus('songbook exported ✦');
+    });
+
+    /* HTML backup — explicit power-user action; produces a self-contained
+       HTML file with the current library baked into <script id="embedded-library">. */
+    document.getElementById('backupHtmlBtn').addEventListener('click', () => {
+      exportFullHtml();
+    });
+
+    importBtn.addEventListener('click', () => importInput.click());
+    importInput.addEventListener('change', async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        // Accept: a single SongDoc, or a full library
+        if (parsed.songs && Array.isArray(parsed.songs)) {
+          // Library merge — append songs (re-id duplicates)
+          parsed.songs.forEach(s => {
+            const copy = { ...s };
+            if (library.songs.some(x => x.id === copy.id)) copy.id = newSongId();
+            library.songs.push(copy);
+          });
+          setStatus(`imported ${parsed.songs.length} song${parsed.songs.length === 1 ? '' : 's'} ✦`);
+        } else if (parsed.title || parsed.sections) {
+          const copy = { ...parsed };
+          if (!copy.id || library.songs.some(x => x.id === copy.id)) copy.id = newSongId();
+          library.songs.push(copy);
+          setStatus('imported "' + (copy.title || 'song') + '" ✦');
+        } else {
+          throw new Error('Unrecognized format');
+        }
+        persistLibrary(true);
+        renderSongList();
+      } catch(err) {
+        alert('Import failed: ' + err.message);
+        setStatus('import failed');
+      }
+      importInput.value = '';
+    });
+
+    /* ═════════════════════════════════════════════════════
+       TEMPO BADGE → popover (Phase 3)
+    ═════════════════════════════════════════════════════ */
+    const tempoPopover = document.getElementById('tempoPopover');
+    const tempoBpmInput  = document.getElementById('tempoBpm');
+    const tempoRampInput = document.getElementById('tempoRamp');
+    const tempoApplyBtn  = document.getElementById('tempoApply');
+    const tempoCancelBtn = document.getElementById('tempoCancel');
+    let editingSectionId = null;
+
+    function openTempoPopover(badge, sectionId) {
+      const sec = currentSong.sections.find(s => s.id === sectionId);
+      if (!sec) return;
+      editingSectionId = sectionId;
+      tempoBpmInput.value  = sec.tempo || currentSong.defaultBpm || DEFAULT_BPM;
+      tempoRampInput.value = sec.rampFromPrev || 0;
+      const rect = badge.getBoundingClientRect();
+      tempoPopover.style.top  = (window.scrollY + rect.bottom + 6) + 'px';
+      tempoPopover.style.left = Math.max(8, Math.min(window.innerWidth - 260, rect.left)) + 'px';
+      tempoPopover.classList.add('open');
+      setTimeout(() => tempoBpmInput.focus(), 50);
+    }
+    function closeTempoPopover() {
+      tempoPopover.classList.remove('open');
+      editingSectionId = null;
+    }
+
+    songRoot.addEventListener('click', e => {
+      const badge = e.target.closest('.tempo-badge');
+      if (!badge) return;
+      e.stopPropagation();
+      openTempoPopover(badge, badge.dataset.sectionId);
+    });
+
+    tempoCancelBtn.addEventListener('click', closeTempoPopover);
+    tempoApplyBtn.addEventListener('click', () => {
+      if (!editingSectionId) return;
+      const sec = currentSong.sections.find(s => s.id === editingSectionId);
+      if (!sec) { closeTempoPopover(); return; }
+      sec.tempo        = Math.max(40, Math.min(200, parseInt(tempoBpmInput.value) || DEFAULT_BPM));
+      sec.rampFromPrev = Math.max(0,  Math.min(64,  parseInt(tempoRampInput.value) || 0));
+      // Re-render just the section's badge
+      const secEl = songRoot.querySelector(`.section[data-section-id="${editingSectionId}"]`);
+      if (secEl) {
+        const badge = secEl.querySelector('.tempo-badge');
+        if (badge) {
+          badge.innerHTML = `
+            <span class="tempo-num">${sec.tempo}</span>
+            <span>bpm</span>
+            ${sec.rampFromPrev > 0 ? `<span class="tempo-ramp">↗${sec.rampFromPrev}</span>` : ''}`;
+        }
+      }
+      closeTempoPopover();
+      persistLibrary(true);
+      // If not overridden, refresh the bar's BPM display to reflect this change
+      if (!bpmOverridden) {
+        const ms = msPerBeatAt(beatCount || 0);
+        bpmDisplay.textContent = Math.round(60000 / ms);
+      }
+      setStatus('tempo set ✦');
+    });
+
+    document.addEventListener('click', e => {
+      if (tempoPopover.classList.contains('open') &&
+          !tempoPopover.contains(e.target) &&
+          !e.target.closest('.tempo-badge')) {
+        closeTempoPopover();
+      }
+    });
+
+    /* ═════════════════════════════════════════════════════
+       PHASE 4 POLISH — Wake Lock, Stage Mode, Gestures
+    ═════════════════════════════════════════════════════ */
+
+    /* ─── Wake Lock (keeps screen awake during playback) ── */
+    let _wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        _wakeLock = await navigator.wakeLock.request('screen');
+        _wakeLock.addEventListener('release', () => { _wakeLock = null; });
+      } catch (e) { /* ignore — user may be backgrounded */ }
+    }
+    function releaseWakeLock() {
+      if (_wakeLock) {
+        _wakeLock.release().catch(() => {});
+        _wakeLock = null;
+      }
+    }
+    // Re-acquire after returning from a backgrounded tab
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && isPlaying && !_wakeLock) {
+        requestWakeLock();
+      }
+    });
+
+    /* ─── Body-level "is-playing" class (drives stage-mode fade) ── */
+    function setPlayingClass(on) {
+      document.body.classList.toggle('is-playing', on);
+      if (on) requestWakeLock(); else releaseWakeLock();
+      if (stageMode) {
+        if (on) scheduleBarFade(); else cancelBarFade();
+      }
+    }
+
+    /* ─── Stage Mode (zen performance view) ──────────────── */
+    let stageMode    = false;
+    let _idleTimer   = null;
+    const stageBtn        = document.getElementById('stageBtn');
+    const iconStageEnter  = document.getElementById('iconStageEnter');
+    const iconStageExit   = document.getElementById('iconStageExit');
+    const practiceBarEl   = document.querySelector('.practice-bar');
+
+    function enterStageMode() {
+      if (stageMode) return;
+      stageMode = true;
+      document.body.classList.add('stage-mode');
+      iconStageEnter.style.display = 'none';
+      iconStageExit.style.display  = '';
+      // Best-effort fullscreen (PWA standalone is already fullscreen; this is for desktop browsers)
+      const el = document.documentElement;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) try { req.call(el).catch(()=>{}); } catch(e){}
+      if (isPlaying) scheduleBarFade();
+      setStatus('stage mode');
+    }
+
+    function exitStageMode() {
+      if (!stageMode) return;
+      stageMode = false;
+      document.body.classList.remove('stage-mode');
+      iconStageEnter.style.display = '';
+      iconStageExit.style.display  = 'none';
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) {
+        try { exit.call(document).catch(()=>{}); } catch(e){}
+      }
+      cancelBarFade();
+      setStatus(isPlaying ? 'playing' : 'ready');
+    }
+
+    function toggleStageMode() {
+      stageMode ? exitStageMode() : enterStageMode();
+    }
+
+    stageBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleStageMode();
+    });
+
+    /* Auto-fade the practice bar after 3s of no interaction (stage mode + playing).
+       Hover/touch on the bar re-shows it; activity then re-arms the fade. */
+    function scheduleBarFade() {
+      cancelBarFade();
+      if (!stageMode || !isPlaying) return;
+      _idleTimer = setTimeout(() => {
+        practiceBarEl.classList.add('bar-fade');
+      }, 3000);
+    }
+    function cancelBarFade() {
+      if (_idleTimer) { clearTimeout(_idleTimer); _idleTimer = null; }
+      practiceBarEl.classList.remove('bar-fade');
+    }
+    practiceBarEl.addEventListener('mousemove',  () => { cancelBarFade(); scheduleBarFade(); });
+    practiceBarEl.addEventListener('touchstart', () => { cancelBarFade(); scheduleBarFade(); }, { passive: true });
+
+    /* ─── Keyboard shortcuts ─────────────────────────────── */
+    document.addEventListener('keydown', e => {
+      // Don't intercept while editing inputs / contenteditable elements
+      const t = e.target;
+      if (t && (t.isContentEditable || (t.matches && t.matches('input, textarea')))) return;
+
+      switch (e.key) {
+        case ' ':
+        case 'Spacebar':
+          e.preventDefault();
+          playBtn.click();
+          break;
+        case 'f':
+        case 'F':
+          e.preventDefault();
+          toggleStageMode();
+          break;
+        case 'm':
+        case 'M':
+          e.preventDefault();
+          soundBtn.click();
+          break;
+        case 'Escape':
+          if (stageMode) { e.preventDefault(); exitStageMode(); }
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          switchToAdjacentSong(-1);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          switchToAdjacentSong(1);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          seekLineRelative(-1);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          seekLineRelative(1);
+          break;
+      }
+    });
+
+    function switchToAdjacentSong(delta) {
+      if (!library.songs.length) return;
+      const idx = library.songs.findIndex(s => s.id === currentSong.id);
+      if (idx < 0) return;
+      const n = library.songs.length;
+      const next = library.songs[(idx + delta + n) % n];
+      if (next.id !== currentSong.id) switchSong(next.id);
+    }
+
+    function seekLineRelative(delta) {
+      const lines = getLines();
+      if (!lines.length) return;
+      const curIdx = Math.floor(beatCount / BEATS);
+      const newIdx = Math.max(0, Math.min(lines.length - 1, curIdx + delta));
+      if (newIdx === curIdx) return;
+      if (isPlaying) {
+        _stopScheduler();
+        beatCount = newIdx * BEATS;
+        play();
+      } else {
+        // not playing: just preview the line in UI
+        beatCount = newIdx * BEATS;
+        activateLine(lines, newIdx);
+      }
+    }
+
+    /* ─── Touch gestures: swipe to switch song, double-tap → stage mode ── */
+    const SWIPE_THRESHOLD = 60;  // px horizontal
+    const SWIPE_MAX_VERT  = 50;  // px max vertical drift to count as horizontal swipe
+    const DOUBLE_TAP_MS   = 320;
+    let _touchStart = null;
+    let _lastTapTime = 0;
+    const songRootEl  = document.getElementById('song-root');
+
+    songRootEl.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) { _touchStart = null; return; }
+      const t = e.touches[0];
+      _touchStart = { x: t.clientX, y: t.clientY, t: Date.now() };
+    }, { passive: true });
+
+    songRootEl.addEventListener('touchend', e => {
+      if (!_touchStart) return;
+      const t  = e.changedTouches[0];
+      const dx = t.clientX - _touchStart.x;
+      const dy = t.clientY - _touchStart.y;
+      const dt = Date.now() - _touchStart.t;
+      _touchStart = null;
+
+      // Horizontal swipe (song nav) — beats double-tap detection
+      if (Math.abs(dx) >= SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_MAX_VERT) {
+        switchToAdjacentSong(dx > 0 ? -1 : 1); // swipe right = previous, left = next
+        _justDragged = true;  // suppress the upcoming line-tap-to-seek click
+        _lastTapTime = 0;
+        return;
+      }
+
+      // Double-tap (quick taps in same spot) → toggle stage mode
+      if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && dt < 250) {
+        const now = Date.now();
+        if (now - _lastTapTime < DOUBLE_TAP_MS) {
+          toggleStageMode();
+          _justDragged = true; // suppress single-click seek
+          _lastTapTime = 0;
+          return;
+        }
+        _lastTapTime = now;
+      } else {
+        _lastTapTime = 0;
+      }
+    }, { passive: true });
+
+    /* ═════════════════════════════════════════════════════
+       BOOT
+    ═════════════════════════════════════════════════════ */
+    renderSong(currentSong);
+    initDrag();
+    // Initialize BPM display from first section's tempo
+    {
+      const ms = msPerBeatAt(0);
+      const t = Math.round(60000 / ms);
+      bpm = t; bpmSlider.value = t; bpmInput.value = t; bpmDisplay.textContent = t;
+    }
+    setStatus('ready');
+
+  })();
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     EMBEDDED LIBRARY — last-saved state baked into the file.
+     The app updates this block on every Save so the file
+     remains a self-contained snapshot of your songbook.
+══════════════════════════════════════════════════════════ -->
+<script id="embedded-library" type="application/json">
+</script>
+
+</body>
+</html>
