@@ -1211,10 +1211,19 @@
       text-transform: uppercase;
     }
     .format-chip.unknown { color: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.18); background: transparent; }
+    .fields-heading {
+      font-family: 'Lato', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin: 4px 0 -4px;
+    }
     .import-fields {
       display: grid;
-      grid-template-columns: 1fr 110px 80px;
-      gap: 8px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px 8px;
     }
     .import-fields label {
       display: flex;
@@ -1227,6 +1236,16 @@
       text-transform: uppercase;
       color: rgba(255,255,255,0.5);
     }
+    .import-fields .field-title  { grid-column: span 4; }
+    .import-fields .field-artist { grid-column: span 2; }
+    .import-fields .field-key    { grid-column: span 2; }
+    .import-fields .field-capo   { grid-column: span 2; }
+    .import-fields .field-bpm    { grid-column: span 2; }
+    .import-fields .req {
+      color: var(--orange);
+      margin-left: 2px;
+      opacity: 0.8;
+    }
     .import-fields input {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(196,154,20,0.3);
@@ -1237,10 +1256,19 @@
       font-weight: 700;
       padding: 6px 9px;
       outline: none;
+      transition: border-color 0.12s, background 0.12s;
     }
     .import-fields input:focus {
       border-color: var(--gold);
       background: rgba(196,154,20,0.08);
+    }
+    .import-fields input.required-empty {
+      border-color: rgba(255,120,60,0.6);
+      background: rgba(255,120,60,0.05);
+    }
+    .import-fields input::placeholder {
+      color: rgba(255,255,255,0.25);
+      font-weight: 400;
     }
     .preview-frame {
       border: 1px solid rgba(255,255,255,0.08);
@@ -1260,6 +1288,36 @@
     }
     .preview-frame .section { margin-bottom: 8px; }
     .preview-frame .section:last-child { margin-bottom: 0; }
+    .preview-header {
+      padding: 0 0 10px;
+      margin: 0 0 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .preview-header .preview-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.005em;
+      line-height: 1.15;
+    }
+    .preview-header .preview-artist {
+      font-family: 'Lato', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(0,0,0,0.55);
+      letter-spacing: 0.02em;
+    }
+    .preview-header .preview-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--saffron);
+      margin-top: 4px;
+    }
     .parse-warnings {
       font-family: 'Lato', sans-serif;
       font-size: 11.5px;
@@ -1321,8 +1379,12 @@
       background: var(--saffron); border-color: var(--saffron);
     }
     @media (max-width: 480px) {
-      .import-fields { grid-template-columns: 1fr 1fr; }
-      .import-fields label.field-title { grid-column: 1 / -1; }
+      .import-fields { grid-template-columns: repeat(4, 1fr); }
+      .import-fields .field-title  { grid-column: span 4; }
+      .import-fields .field-artist { grid-column: span 4; }
+      .import-fields .field-key    { grid-column: span 1; }
+      .import-fields .field-capo   { grid-column: span 1; }
+      .import-fields .field-bpm    { grid-column: span 2; }
       .import-modal textarea { min-height: 160px; font-size: 12px; }
       .preview-frame { max-height: 240px; padding: 10px 12px; }
     }
@@ -1624,14 +1686,21 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
         <span id="importLineCount">0 lines</span>
       </div>
       <div id="importWarnings" class="parse-warnings" style="display:none"></div>
+      <div class="fields-heading">Song Details · fill in anything the parser missed</div>
       <div class="import-fields">
-        <label class="field-title">Title
-          <input id="importTitle_in" type="text" placeholder="Song title">
+        <label class="field-title">Title<span class="req">*</span>
+          <input id="importTitle_in" type="text" placeholder="Song title — required">
         </label>
-        <label>Key
+        <label class="field-artist">Artist
+          <input id="importArtist_in" type="text" placeholder="Artist or composer">
+        </label>
+        <label class="field-key">Key
           <input id="importKey_in" type="text" placeholder="G">
         </label>
-        <label>BPM
+        <label class="field-capo">Capo
+          <input id="importCapo_in" type="number" min="0" max="12" step="1" placeholder="0">
+        </label>
+        <label class="field-bpm">BPM
           <input id="importBpm_in" type="number" min="30" max="240" step="1" placeholder="90">
         </label>
       </div>
@@ -3198,9 +3267,47 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
                  .replace(/^[ \t]*```\s*$/gm, '');
     }
 
+    // Strip common markdown formatting that contaminates pasted lyrics.
+    //   ## Section          → Section
+    //   **G** D**           → G D
+    //   *(repeat 4x)*       → (repeat 4x)
+    //   ---                 → (removed)
+    function _stripMarkdown(text) {
+      return text
+        // ATX heading markers at line start: "## ", "### ", etc.
+        .replace(/^[ \t]*#{1,6}[ \t]+/gm, '')
+        // Horizontal rules on their own line: ---, ***, ___
+        .replace(/^[ \t]*(?:[-*_][ \t]*){3,}[ \t]*$/gm, '')
+        // Paired bold: **text** and __text__
+        .replace(/\*\*([^*\n]+?)\*\*/g, '$1')
+        .replace(/__([^_\n]+?)__/g, '$1')
+        // Paired italic: *text* and _text_  (avoid eating chord-token asterisks
+        // by requiring a non-word boundary before the opening marker)
+        .replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, '$1$2')
+        .replace(/(^|[^_\w])_([^_\n]+?)_(?!\w)/g, '$1$2')
+        // Trim accidental triple+ blank lines after stripping
+        .replace(/\n{3,}/g, '\n\n');
+    }
+
+    // Split lines like "[ Verse 1 ] (repeat 4x)" into two lines so the
+    // section-header regex (which needs ']' at end of line) and the
+    // directive regex can each match cleanly.
+    function _splitInlineDirective(text) {
+      return text.replace(
+        /^([ \t]*\[[^\]\n]+\])[ \t]+(\([^)\n]+\))[ \t]*$/gm,
+        '$1\n$2'
+      );
+    }
+
+    // Single normalization pipeline used by detection AND both parsers,
+    // so they always see identical pre-cleaned text.
+    function _normalizeImportText(text) {
+      return _splitInlineDirective(_stripMarkdown(_stripCodeFences(text || '')));
+    }
+
     function _detectFormat(text) {
       if (!text || !text.trim()) return 'unknown';
-      const stripped = _stripCodeFences(text);
+      const stripped = _normalizeImportText(text);
       // ChordPro signals
       const hasDirective = /\{(?:title|t|subtitle|st|artist|key|capo|tempo|start_of_|end_of_|comment|c)[: }]/i.test(stripped);
       const hasInlineChord = /\[[A-G](?:b|#)?(?:m|maj|dim|aug|sus|add|\d|\/)?[^\]]{0,8}\]/.test(stripped);
@@ -3337,7 +3444,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     /* ─── ChordPro parser ─────────────────────────────── */
     function parseChordPro(rawText) {
       const warnings = [];
-      const text = _stripCodeFences(rawText);
+      const text = _normalizeImportText(rawText);
       const lines = text.split(/\r?\n/);
       const meta = { title: '', artist: '', key: '', capo: '', tempo: 0 };
       const sections = [];
@@ -3464,7 +3571,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     /* ─── Plain-text parser (chords above lyrics) ─────── */
     function parsePlain(rawText) {
       const warnings = [];
-      const text = _stripCodeFences(rawText);
+      const text = _normalizeImportText(rawText);
       const allLines = text.split(/\r?\n/);
       const sections = [];
       let cur = null;
@@ -3581,6 +3688,22 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
 
     /* ─── Preview renderer (no DOM dependency on currentSong) ── */
     function renderPreviewSong(song) {
+      // Compact header so Wind sees title/artist + meta as it'll feel in the library
+      const titleStr  = song.title  || '';
+      const artistStr = song.artist || '';
+      const metaParts = [];
+      if (song.key)        metaParts.push('Key ' + song.key);
+      if (song.capo != null && song.capo !== '' && song.capo !== 0 && song.capo !== '0') {
+        metaParts.push('Capo ' + song.capo);
+      }
+      if (song.defaultBpm) metaParts.push(song.defaultBpm + ' bpm');
+      const headerHtml = (titleStr || artistStr || metaParts.length) ? `
+        <div class="preview-header">
+          <div class="preview-title">${escapeHtml(titleStr || 'Untitled')}${
+            artistStr ? ` <span class="preview-artist">· ${escapeHtml(artistStr)}</span>` : ''
+          }</div>
+          ${metaParts.length ? `<div class="preview-meta">${metaParts.map(escapeHtml).join(' &nbsp;·&nbsp; ')}</div>` : ''}
+        </div>` : '';
       const sectionsHtml = (song.sections || []).map((section, idx) => {
         const tempo = section.tempo || song.defaultBpm || DEFAULT_BPM;
         const ramp  = section.rampFromPrev || 0;
@@ -3601,7 +3724,8 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
             ${(section.lines || []).map(renderLine).join('')}
           </div>`;
       }).join('');
-      return sectionsHtml || '<div class="preview-empty">No sections to preview.</div>';
+      if (!sectionsHtml) return '<div class="preview-empty">No sections to preview.</div>';
+      return headerHtml + sectionsHtml;
     }
 
     /* ─── Modal element refs + state ─────────────────── */
@@ -3615,7 +3739,9 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     const importWarnings   = document.getElementById('importWarnings');
     const importPreview    = document.getElementById('importPreview');
     const importTitleIn    = document.getElementById('importTitle_in');
+    const importArtistIn   = document.getElementById('importArtist_in');
     const importKeyIn      = document.getElementById('importKey_in');
+    const importCapoIn     = document.getElementById('importCapo_in');
     const importBpmIn      = document.getElementById('importBpm_in');
     const importFromFile   = document.getElementById('importFromFile');
 
@@ -3635,8 +3761,11 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     function _resetImportModal() {
       importPaste.value = '';
       importTitleIn.value = '';
+      importArtistIn.value = '';
       importKeyIn.value = '';
+      importCapoIn.value = '';
       importBpmIn.value = '';
+      importTitleIn.classList.remove('required-empty');
       importFormatChip.textContent = 'Format: paste to detect';
       importFormatChip.classList.add('unknown');
       importLineCount.textContent = '0 lines';
@@ -3645,6 +3774,12 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       importPreview.innerHTML = '<div class="preview-empty">Preview will appear here once you paste a song.</div>';
       importConfirm.disabled = true;
       _pendingSong = null;
+    }
+    function _updateImportConfirmState() {
+      const hasTitle = !!(importTitleIn.value || '').trim();
+      const hasSections = !!(_pendingSong && _pendingSong.sections && _pendingSong.sections.length);
+      importConfirm.disabled = !(hasTitle && hasSections);
+      importTitleIn.classList.toggle('required-empty', hasSections && !hasTitle);
     }
 
     function _runParseFromTextarea() {
@@ -3657,6 +3792,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
         importFormatChip.classList.add('unknown');
         importPreview.innerHTML = '<div class="preview-empty">Preview will appear here once you paste a song.</div>';
         importWarnings.style.display = 'none';
+        importTitleIn.classList.remove('required-empty');
         importConfirm.disabled = true;
         _pendingSong = null;
         return;
@@ -3670,10 +3806,16 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       importFormatChip.textContent = 'Format: ' + (labels[result.format] || 'Unknown');
       importFormatChip.classList.toggle('unknown', result.format === 'unknown');
 
-      // Auto-fill fields if they are empty
-      if (!importTitleIn.value && result.song.title) importTitleIn.value = result.song.title;
-      if (!importKeyIn.value   && result.song.key)   importKeyIn.value   = result.song.key;
-      if (!importBpmIn.value   && result.song.defaultBpm) importBpmIn.value = result.song.defaultBpm;
+      // Auto-fill fields if they are empty.
+      // For title: skip parser fallback 'Untitled' so the required state shows.
+      const parsedTitle = result.song.title && result.song.title !== 'Untitled' ? result.song.title : '';
+      if (!importTitleIn.value  && parsedTitle)             importTitleIn.value  = parsedTitle;
+      if (!importArtistIn.value && result.song.artist)      importArtistIn.value = result.song.artist;
+      if (!importKeyIn.value    && result.song.key)         importKeyIn.value    = result.song.key;
+      if (!importCapoIn.value   && result.song.capo != null && result.song.capo !== '') {
+        importCapoIn.value = result.song.capo;
+      }
+      if (!importBpmIn.value    && result.song.defaultBpm)  importBpmIn.value    = result.song.defaultBpm;
 
       // Warnings
       if (result.warnings && result.warnings.length) {
@@ -3687,18 +3829,29 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
 
       // Preview
       importPreview.innerHTML = renderPreviewSong(result.song);
-      importConfirm.disabled = !(result.song.sections && result.song.sections.length);
+      _updateImportConfirmState();
     }
 
     function _commitImport() {
       if (!_pendingSong) return;
       // Apply field overrides
-      const title = (importTitleIn.value || '').trim();
-      const key   = (importKeyIn.value   || '').trim();
-      const bpm   = parseInt(importBpmIn.value, 10);
-      if (title) _pendingSong.title = title;
-      if (key)   _pendingSong.key   = key;
-      if (isFinite(bpm) && bpm > 0) {
+      const title  = (importTitleIn.value  || '').trim();
+      const artist = (importArtistIn.value || '').trim();
+      const key    = (importKeyIn.value    || '').trim();
+      const capo   = parseInt(importCapoIn.value, 10);
+      const bpm    = parseInt(importBpmIn.value,  10);
+
+      // Title is required — guard the commit even if disabled state is bypassed
+      if (!title) {
+        importTitleIn.classList.add('required-empty');
+        importTitleIn.focus();
+        return;
+      }
+      _pendingSong.title  = title;
+      if (artist) _pendingSong.artist = artist;
+      if (key)    _pendingSong.key    = key;
+      if (isFinite(capo) && capo >= 0) _pendingSong.capo = capo;
+      if (isFinite(bpm)  && bpm  >  0) {
         _pendingSong.defaultBpm = bpm;
         // If sections have tempo:0, render will use defaultBpm anyway
       }
@@ -3732,6 +3885,8 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       // Run immediately on paste for snappy UX
       setTimeout(_runParseFromTextarea, 0);
     });
+    // Title is required — keep confirm button + visual state in sync as user types
+    importTitleIn.addEventListener('input', _updateImportConfirmState);
     importConfirm.addEventListener('click', _commitImport);
     importFromFile.addEventListener('click', () => importInput.click());
 
