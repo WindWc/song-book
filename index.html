@@ -43,6 +43,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     /* ─── Screen shell ───────────────────────────────────── */
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
     body {
       background: var(--cream);
       font-family: 'Lato', sans-serif;
@@ -97,17 +101,19 @@
     /* Song title is now interactive — tap to rename */
     .title {
       font-family: 'Cinzel', serif;
-      font-size: clamp(18px, 5vw, 32px);
+      font-size: clamp(16px, 4.6vw, 32px);
       font-weight: 700;
       color: #fff;
-      letter-spacing: clamp(0.12em, 2vw, 0.35em);
-      line-height: 1;
-      white-space: nowrap;
+      letter-spacing: clamp(0.06em, 1.4vw, 0.35em);
+      line-height: 1.05;
+      max-width: calc(100% - 96px); /* leave room for left + right header buttons */
+      text-align: center;
       cursor: pointer;
       padding: 2px 8px;
       border-radius: 4px;
       transition: background 0.15s;
       outline: none;
+      overflow-wrap: anywhere;
     }
     .title:hover { background: rgba(255,255,255,0.08); }
     .title.editing {
@@ -137,7 +143,7 @@
     /* ─── Body grid ──────────────────────────────────────── */
     .body {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       min-height: 0;
     }
 
@@ -172,14 +178,17 @@
       padding: 4px 10px;
       border-radius: 3px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 4px 8px;
       margin-bottom: 7px;
+      min-width: 0;
     }
 
     .section-label .label-text {
-      flex: 1;
+      flex: 1 1 auto;
+      min-width: 0;
       cursor: pointer;
       outline: none;
     }
@@ -323,7 +332,7 @@
     /* Stack to single column on phones / narrow windows */
     @media (max-width: 640px) {
       .body {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
       .col-left {
         border-right: none;
@@ -392,7 +401,7 @@
     /* Lyric word grid — spread across 8 beat positions */
     .lyric.lyric-grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       gap: 1px;
       font-size: 14px;
     }
@@ -440,7 +449,7 @@
     /* Chord beat grid */
     .chords.chords-grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       gap: 1px;
       white-space: normal;
     }
@@ -464,14 +473,14 @@
     /* Mobile: 4 beats per row */
     @media (max-width: 640px) {
       .lyric.lyric-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         align-items: end;
       }
       .chords.chords-grid {
         display: none;
       }
       .beat-overlay {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         grid-template-rows: repeat(2, 1fr);
       }
       .beat-cell {
@@ -497,6 +506,11 @@
         border-radius: 3px;
         outline: 2px solid var(--gold);
         outline-offset: -1px;
+      }
+      /* Empty lyric cell with a chord stamped above — keep it visible so the
+         chord prefix renders even when the beat has no lyric text. */
+      .beat-cell.empty[data-chord] {
+        opacity: 1;
       }
       /* Mobile already wraps at beat 4 → bar marker is implicit. Suppress the line. */
       .lyric.lyric-grid::before,
@@ -755,7 +769,9 @@
       grid-template-columns: minmax(44px, 0.72fr) repeat(4, minmax(0, 1fr));
       gap: 3px;
       width: 100%;
+      max-width: 100%;
       align-items: stretch;
+      box-sizing: border-box;
     }
 
     .intro-loop-col {
@@ -942,7 +958,7 @@
 
     .drawer-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
       padding: 12px;
       border-bottom: 1px solid rgba(196,154,20,0.2);
@@ -1240,6 +1256,10 @@
       padding: 10px 12px;
       display: flex; flex-direction: column;
       gap: 8px;
+    }
+    /* Author `display:flex` wins over UA [hidden] in some browsers — force collapse */
+    .example-panel[hidden] {
+      display: none !important;
     }
     .example-help {
       font-family: 'Lato', sans-serif;
@@ -1755,9 +1775,10 @@
     </div>
     <div class="body">
       <div class="example-row">
-        <button type="button" class="ghost-btn" id="importShowExample">
+        <button type="button" class="ghost-btn" id="importShowExample"
+          aria-expanded="false" aria-controls="importExamplePanel">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          Show example format
+          <span id="importShowExampleLabel">Show example format</span>
         </button>
       </div>
       <div id="importExamplePanel" class="example-panel" hidden>
@@ -1769,6 +1790,8 @@
           <button type="button" class="file-link" id="importLoadExample">Load into editor</button>
           <span class="example-sep">·</span>
           <button type="button" class="file-link" id="importDownloadSample">Download as .txt</button>
+          <span class="example-sep">·</span>
+          <button type="button" class="file-link" id="importHideExamplePanel">Hide example</button>
         </div>
       </div>
       <textarea id="importPaste" spellcheck="false" placeholder="Paste a song here.
@@ -4183,9 +4206,19 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     const importExampleText   = document.getElementById('importExampleText');
     const importLoadExample   = document.getElementById('importLoadExample');
     const importDownloadSample= document.getElementById('importDownloadSample');
+    const importHideExamplePanel = document.getElementById('importHideExamplePanel');
 
     // Initial fill of example panel pre block (one-time)
     if (importExampleText) importExampleText.textContent = SAMPLE_SONG_TEXT;
+
+    function _setImportExamplePanelVisible(show) {
+      if (!importExamplePanel || !importShowExample) return;
+      importExamplePanel.hidden = !show;
+      importShowExample.classList.toggle('active', show);
+      importShowExample.setAttribute('aria-expanded', String(!!show));
+      const lbl = document.getElementById('importShowExampleLabel');
+      if (lbl) lbl.textContent = show ? 'Hide example format' : 'Show example format';
+    }
 
     let _pendingSong = null;   // last parsed SongDoc waiting for confirm
     let _parseDebounce = null;
@@ -4224,8 +4257,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       _pendingSong = null;
       _editingSongId = null;
       // Collapse example panel on close so next open is clean
-      if (importExamplePanel) importExamplePanel.hidden = true;
-      if (importShowExample)  importShowExample.classList.remove('active');
+      _setImportExamplePanelVisible(false);
     }
     function _resetImportModal() {
       importPaste.value = '';
@@ -4371,13 +4403,14 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     importClose.addEventListener('click', closeImportModal);
     importCancel.addEventListener('click', closeImportModal);
 
-    // Show/hide example panel
+    // Show/hide example panel (same control; label flips for clarity)
     if (importShowExample) {
       importShowExample.addEventListener('click', () => {
-        const willShow = importExamplePanel.hidden;
-        importExamplePanel.hidden = !willShow;
-        importShowExample.classList.toggle('active', willShow);
+        _setImportExamplePanelVisible(importExamplePanel.hidden);
       });
+    }
+    if (importHideExamplePanel) {
+      importHideExamplePanel.addEventListener('click', () => _setImportExamplePanelVisible(false));
     }
     // Load example into the textarea (replaces empty content; confirms if not empty)
     if (importLoadExample) {
