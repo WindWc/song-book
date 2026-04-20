@@ -1539,20 +1539,47 @@
       border-color: rgba(255,255,255,0.15);
     }
 
+    /* Stage Mode layout — one column, full-width lines.
+       On tablet/desktop the default two-column layout crams 8 beats into
+       half the screen. Stage mode collapses to a single column so each
+       line spans the full readable width, max-capped at 1000px so wide
+       monitors don't stretch beats into absurdity. */
+    body.stage-mode .body {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    body.stage-mode .col-left {
+      border-right: none;
+      border-bottom: 1.5px solid var(--gold-light);
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    body.stage-mode .col-right {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    /* Drop the bottom border when col-right is empty (odd section count) */
+    body.stage-mode .col-right:empty {
+      display: none;
+    }
+
     /* Bigger, breathier chart */
     body.stage-mode .col {
       padding: 20px 22px 24px;
     }
-    body.stage-mode .lyric-cell {
-      font-size: clamp(15px, 2vw, 19px);
+    /* Fix: was targeting non-existent .lyric-cell; actual class is .beat-cell */
+    body.stage-mode .beat-cell {
+      font-size: clamp(16px, 1.6vw, 20px);
       line-height: 1.45;
     }
     body.stage-mode .chord-cell {
-      font-size: clamp(13px, 1.7vw, 16px);
+      font-size: clamp(14px, 1.3vw, 17px);
     }
     body.stage-mode .section { margin-bottom: 18px; }
     body.stage-mode .section-label {
-      font-size: clamp(11px, 1.4vw, 13px);
+      font-size: clamp(11px, 1.1vw, 13px);
     }
     body.stage-mode .section-note { display: none; }
 
