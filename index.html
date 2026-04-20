@@ -445,6 +445,22 @@
       white-space: normal;
     }
 
+    /* Bar marker — subtle gray vertical line between beat 4 and beat 5.
+       Drawn on the grid container so it's visible regardless of cell content.
+       (.chords + .lyric already have position: relative from the rule above.) */
+    .chords.chords-grid::before,
+    .lyric.lyric-grid::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(26, 72, 114, 0.18);
+      pointer-events: none;
+      z-index: 1;
+    }
+
     /* Mobile: 4 beats per row */
     @media (max-width: 640px) {
       .lyric.lyric-grid {
@@ -481,6 +497,11 @@
         border-radius: 3px;
         outline: 2px solid var(--gold);
         outline-offset: -1px;
+      }
+      /* Mobile already wraps at beat 4 → bar marker is implicit. Suppress the line. */
+      .lyric.lyric-grid::before,
+      .chords.chords-grid::before {
+        display: none;
       }
     }
 
@@ -1187,6 +1208,74 @@
       background: rgba(0,0,0,0.35);
     }
     .import-modal textarea::placeholder { color: rgba(255,255,255,0.28); }
+    .example-row {
+      display: flex; align-items: center;
+      margin: -4px 0 0;
+    }
+    .ghost-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent;
+      color: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-family: 'Lato', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .ghost-btn:hover { color: var(--gold); border-color: rgba(196,154,20,0.45); }
+    .ghost-btn.active {
+      color: var(--gold);
+      border-color: rgba(196,154,20,0.5);
+      background: rgba(196,154,20,0.07);
+    }
+    .example-panel {
+      border: 1px dashed rgba(196,154,20,0.3);
+      border-radius: 6px;
+      background: rgba(196,154,20,0.04);
+      padding: 10px 12px;
+      display: flex; flex-direction: column;
+      gap: 8px;
+    }
+    .example-help {
+      font-family: 'Lato', sans-serif;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.6);
+    }
+    .example-help code {
+      font-family: 'Space Mono', monospace;
+      font-size: 10.5px;
+      background: rgba(0,0,0,0.3);
+      color: var(--gold);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .example-text {
+      margin: 0;
+      max-height: 180px;
+      overflow: auto;
+      padding: 8px 10px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.75);
+      white-space: pre;
+    }
+    .example-actions {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Lato', sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+    .example-sep { opacity: 0.4; }
     .import-meta {
       display: flex;
       flex-wrap: wrap;
@@ -1665,6 +1754,23 @@
       </button>
     </div>
     <div class="body">
+      <div class="example-row">
+        <button type="button" class="ghost-btn" id="importShowExample">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Show example format
+        </button>
+      </div>
+      <div id="importExamplePanel" class="example-panel" hidden>
+        <div class="example-help">
+          Section headers in <code>[ brackets ]</code> · directives in <code>(parens)</code> like <code>(repeat 4x, slow build)</code> · chord line directly above the lyric line, column position picks the beat (8 beats per line max).
+        </div>
+        <pre id="importExampleText" class="example-text"></pre>
+        <div class="example-actions">
+          <button type="button" class="file-link" id="importLoadExample">Load into editor</button>
+          <span class="example-sep">·</span>
+          <button type="button" class="file-link" id="importDownloadSample">Download as .txt</button>
+        </div>
+      </div>
       <textarea id="importPaste" spellcheck="false" placeholder="Paste a song here.
 
 Two formats supported:
@@ -2041,8 +2147,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     ═════════════════════════════════════════════════════ */
     let isPlaying      = false;
     let beatCount      = 0;
-    let bpm            = DEFAULT_BPM;     // global override; if set, overrides per-section
-    let bpmOverridden  = false;           // true if user manually set BPM via the bar
+    let bpm            = DEFAULT_BPM;     // mirrors footer + first section; playback uses section tempos
     let soundOn        = true;
     let inOutro        = false;
     let volume         = 1.0;
@@ -2098,7 +2203,6 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     /* Compute current ms/beat at a given absolute beat. Honors per-section
        tempo + smooth ramp from previous section's tempo. */
     function msPerBeatAt(absoluteBeat) {
-      if (bpmOverridden) return 60000 / bpm;
       const sections = currentSong.sections || [];
       if (!sections.length) return 60000 / (currentSong.defaultBpm || DEFAULT_BPM);
 
@@ -2281,11 +2385,8 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       }
       const label = line.closest('.section')?.querySelector('.label-text');
       setStatus(label ? label.textContent.trim().toLowerCase() : '');
-      // Reflect current section's tempo on the BPM display (if not overridden)
-      if (!bpmOverridden) {
-        const ms = msPerBeatAt(idx * BEATS);
-        bpmDisplay.textContent = Math.round(60000 / ms);
-      }
+      const ms = msPerBeatAt(idx * BEATS);
+      syncBpmUi(Math.round(60000 / ms));
     }
 
     /* ─── Outro (count-out) bar ─────────────────────────── */
@@ -2542,11 +2643,8 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
         l.querySelectorAll('.chord-cell').forEach(c => c.classList.remove('active-beat'));
       });
       songRoot.querySelectorAll('.section.playing').forEach(s => s.classList.remove('playing'));
-      // Reset BPM display to first section's tempo if not overridden
-      if (!bpmOverridden) {
-        const ms = msPerBeatAt(0);
-        bpmDisplay.textContent = Math.round(60000 / ms);
-      }
+      const ms0 = msPerBeatAt(0);
+      syncBpmUi(Math.round(60000 / ms0));
       updateSeekable();
       setStatus(finished ? 'done ✦' : 'ready');
     }
@@ -2683,27 +2781,51 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       setMasterGain(soundOn ? volume : 0);
     });
 
-    /* ─── BPM popover (manual override) ─────────────────── */
+    /* ─── BPM popover (updates all sections + song default) ─ */
     let bpmOpen = false;
     function closeBpm() { bpmOpen = false; bpmPopover.classList.remove('open'); }
 
+    function applyGlobalBpmToSong(n) {
+      if (!currentSong || !Array.isArray(currentSong.sections) || !currentSong.sections.length) return;
+      currentSong.defaultBpm = n;
+      for (const sec of currentSong.sections) {
+        sec.tempo = n;
+        sec.rampFromPrev = 0;
+      }
+      songRoot.querySelectorAll('.section[data-section-id]').forEach(secEl => {
+        const badge = secEl.querySelector('.tempo-badge');
+        if (!badge) return;
+        badge.innerHTML = `
+          <span class="tempo-num">${n}</span>
+          <span>bpm</span>`;
+      });
+      persistLibrary(true);
+    }
+
+    function syncBpmUi(n) {
+      let v = typeof n === 'number' ? n : parseInt(String(n), 10);
+      if (!isFinite(v) || isNaN(v)) v = DEFAULT_BPM;
+      v = Math.max(40, Math.min(160, v));
+      bpm = v;
+      bpmSlider.value = String(v);
+      bpmInput.value = String(v);
+      bpmDisplay.textContent = String(v);
+    }
+
     function setBpm(val, fromUser) {
-      bpm = Math.max(40, Math.min(160, val));
-      bpmSlider.value    = bpm;
-      bpmInput.value     = bpm;
-      bpmDisplay.textContent = bpm;
-      if (fromUser) bpmOverridden = true;
+      let n = typeof val === 'number' ? val : parseInt(String(val), 10);
+      if (!isFinite(n) || isNaN(n)) n = DEFAULT_BPM;
+      n = Math.max(40, Math.min(160, n));
+      syncBpmUi(n);
+      if (fromUser && currentSong && currentSong.sections && currentSong.sections.length) {
+        applyGlobalBpmToSong(n);
+      }
     }
 
     function clearBpmOverride() {
-      bpmOverridden = false;
-      // Reset display to first section's tempo
       const ms = msPerBeatAt(0);
       const t = Math.round(60000 / ms);
-      bpm = t;
-      bpmSlider.value = t;
-      bpmInput.value  = t;
-      bpmDisplay.textContent = t;
+      syncBpmUi(t);
     }
 
     bpmBtn.addEventListener('click', e => {
@@ -2713,7 +2835,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       if (bpmOpen) { closeVol(); bpmInput.value = bpm; }
     });
 
-    // Long-press on BPM button → clear override (revert to per-section tempo)
+    // Long-press on BPM button → sync footer to first section tempo
     let bpmHoldTimer = null;
     bpmBtn.addEventListener('pointerdown', () => {
       bpmHoldTimer = setTimeout(() => {
@@ -2725,7 +2847,14 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     bpmBtn.addEventListener('pointerup', () => { clearTimeout(bpmHoldTimer); });
     bpmBtn.addEventListener('pointerleave', () => { clearTimeout(bpmHoldTimer); });
 
-    bpmSlider.addEventListener('input', () => setBpm(parseInt(bpmSlider.value), true));
+    bpmSlider.addEventListener('input', () => {
+      const n = parseInt(bpmSlider.value, 10);
+      if (!isFinite(n)) return;
+      syncBpmUi(n);
+    });
+    bpmSlider.addEventListener('change', () => {
+      setBpm(parseInt(bpmSlider.value, 10) || DEFAULT_BPM, true);
+    });
     bpmInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') { setBpm(parseInt(bpmInput.value) || DEFAULT_BPM, true); bpmInput.blur(); }
     });
@@ -3084,6 +3213,9 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
               <div class="song-item-meta">${meta}</div>
             </div>
             <div class="song-item-actions">
+              <button class="song-action" data-action="edit" title="Edit source">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+              </button>
               <button class="song-action" data-action="duplicate" title="Duplicate">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               </button>
@@ -3107,6 +3239,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       if (action) {
         e.stopPropagation();
         const a = action.dataset.action;
+        if (a === 'edit')      return editSong(id);
         if (a === 'duplicate') return duplicateSong(id);
         if (a === 'delete')    return deleteSong(id);
         if (a === 'export')    return exportSong(id);
@@ -3115,6 +3248,18 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       switchSong(id);
       closeDrawer();
     });
+
+    function editSong(id) {
+      const s = library.songs.find(x => x.id === id);
+      if (!s) return;
+      // Capture any unsaved DOM edits to the active song before opening the modal
+      if (currentSong && currentSong.id === id) captureCurrentSongFromDOM();
+      // Stop playback if it's running
+      stop(false);
+      // Re-fetch (capture may have mutated currentSong, but reference is the same)
+      const fresh = library.songs.find(x => x.id === id);
+      openImportModal({ editSong: fresh });
+    }
 
     function switchSong(id) {
       // Capture current before switching
@@ -3126,16 +3271,10 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       if (!next) return;
       currentSong = next;
       library.currentSongId = id;
-      // Reset BPM override for new song
-      bpmOverridden = false;
       renderSong(currentSong);
-      // Set display BPM to first section's tempo
       const ms = msPerBeatAt(0);
       const t = Math.round(60000 / ms);
-      bpm = t;
-      bpmSlider.value = t;
-      bpmInput.value  = t;
-      bpmDisplay.textContent = t;
+      syncBpmUi(t);
       persistLibrary(true);
       setStatus('ready');
     }
@@ -3165,13 +3304,12 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       library.songs.push(blank);
       currentSong = blank;
       library.currentSongId = id;
-      bpmOverridden = false;
       persistLibrary(true);
       renderSong(currentSong);
       renderSongList();
       const ms = msPerBeatAt(0);
       const t = Math.round(60000 / ms);
-      bpm = t; bpmSlider.value = t; bpmInput.value = t; bpmDisplay.textContent = t;
+      syncBpmUi(t);
       setStatus('new song ✦');
     });
 
@@ -3255,9 +3393,20 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     function _isChordLine(line) {
       const trimmed = line.trim();
       if (!trimmed) return false;
-      const tokens = trimmed.split(/\s+/);
+      // Strip structural bar-pipes — chord lines may use | as bar markers
+      const tokens = trimmed.split(/\s+/).filter(tok => tok && tok !== '|');
       if (tokens.length === 0 || tokens.length > 12) return false;
       return tokens.every(_isChordToken);
+    }
+
+    // Beat-ruler comment lines look like:  | 1   2   3   4   | 5   6   7   8   |
+    // Recognize: only digits, pipes, dots, dashes, underscores, and whitespace,
+    // with at least one digit present.
+    function _isBeatRuler(line) {
+      const t = line.trim();
+      if (!t) return false;
+      if (!/[0-9]/.test(t)) return false;
+      return /^[\d\s|.\-_]+$/.test(t);
     }
 
     function _stripCodeFences(text) {
@@ -3361,13 +3510,66 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     //   refLength  — width to map against (lyric line length, or chord line length)
     function _chordsToBeats(chordLine, refLength) {
       const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+
+      // ── Structural-pipe path ───────────────────────────────────────
+      // If the line wraps with pipes around it AND has a middle pipe,
+      // treat it as fakebook-style "| half1 | half2 |" where each half
+      // covers 4 beats. This gives precise beat assignment when Wind
+      // (or our serializer) uses the bar-marker format.
+      const t = chordLine.trim();
+      if (t.startsWith('|') && t.endsWith('|') && (t.match(/\|/g) || []).length >= 3) {
+        const inner = t.slice(1, -1);
+        const halves = inner.split('|');
+        if (halves.length === 2) {
+          halves.forEach((half, hi) => {
+            const re = /\S+/g;
+            const found = [];
+            let m;
+            while ((m = re.exec(half)) !== null) {
+              if (m[0] !== '|') found.push({ text: m[0], col: m.index });
+            }
+            if (!found.length) return;
+            const base = hi * 4;
+            const halfWidth = Math.max(half.length, 1);
+            const used = new Set();
+            if (found.length === 1) {
+              cells[base] = { text: found[0].text, empty: false };
+              return;
+            }
+            if (found.length >= 4) {
+              for (let k = 0; k < 4; k++) {
+                cells[base + k] = { text: found[k].text, empty: false };
+              }
+              return;
+            }
+            // 2 or 3 tokens: distribute by column ratio within the half
+            found.forEach(f => {
+              let local = Math.round((f.col / Math.max(halfWidth - 1, 1)) * 3);
+              local = Math.max(0, Math.min(3, local));
+              let cellIdx = base + local;
+              while (used.has(cellIdx) && cellIdx < base + 3) cellIdx++;
+              if (used.has(cellIdx)) {
+                let b2 = cellIdx - 1;
+                while (b2 >= base && used.has(b2)) b2--;
+                if (b2 >= base) cellIdx = b2;
+              }
+              used.add(cellIdx);
+              cells[cellIdx] = { text: f.text, empty: false };
+            });
+          });
+          return cells;
+        }
+      }
+
+      // ── Original column-ratio path (pipes neutralized to spaces) ──
+      const cleaned = chordLine.replace(/\|/g, ' ');
       const re = /\S+/g;
       let m, found = [];
-      while ((m = re.exec(chordLine)) !== null) {
+      while ((m = re.exec(cleaned)) !== null) {
         found.push({ text: m[0], col: m.index });
       }
       if (!found.length) return cells;
-      const width = Math.max(refLength || chordLine.length, found[found.length - 1].col + 1);
+      const width = Math.max(refLength || cleaned.length, found[found.length - 1].col + 1);
       const used = new Set();
       found.forEach((f, idx) => {
         let beat;
@@ -3394,7 +3596,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     // Distribute words evenly across 8 beats.
     function _wordsToBeats(words) {
       const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
-      const w = words.filter(x => x && x.length);
+      const w = words.filter(x => x && x.length && x !== '|');
       if (!w.length) return cells;
       if (w.length >= BEATS) {
         // Take first 8, dump rest into beat 7
@@ -3411,6 +3613,130 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
         const beat = Math.round(i * (BEATS - 1) / (w.length - 1));
         cells[beat] = { text: w[i], empty: false };
       }
+      return cells;
+    }
+
+    // Position-aware lyric placement.
+    // When a chord line above has structural bar pipes ("| ... | ... |"),
+    // split lyrics at the same midpoint and place each word by its column
+    // position within its bar. If no structural pipes, detects whether the
+    // user used intentional spacing — if so, uses column-ratio placement;
+    // otherwise falls back to even-spread (legacy behavior).
+    function _lyricsToBeatsAligned(lyricLine, chordLine) {
+      const cells = Array.from({ length: BEATS }, () => ({ text: '', empty: true }));
+      if (!lyricLine || !lyricLine.trim()) return cells;
+
+      // Tokenize words with their column positions (skip standalone pipes)
+      const re = /\S+/g;
+      const found = [];
+      let m;
+      while ((m = re.exec(lyricLine)) !== null) {
+        if (m[0] !== '|') found.push({ text: m[0], col: m.index });
+      }
+      if (!found.length) return cells;
+
+      // Detect structural-pipe layout from the chord line above
+      let midCol = -1;
+      let endCol = lyricLine.length;
+      let startCol = 0;
+      if (chordLine) {
+        const t = chordLine.trim();
+        if (t.startsWith('|') && t.endsWith('|')) {
+          // Find pipe positions in the *original* (untrimmed) chord line
+          const pipes = [];
+          for (let i = 0; i < chordLine.length; i++) {
+            if (chordLine[i] === '|') pipes.push(i);
+          }
+          if (pipes.length >= 3) {
+            startCol = pipes[0] + 1;
+            midCol = pipes[1];
+            endCol = pipes[pipes.length - 1];
+          }
+        }
+      }
+
+      // Place a list of tokens (with .col) into a 4-cell half [base..base+3].
+      // halfStart/halfEnd are the column bounds of that half in the source.
+      function placeInHalf(tokens, base, halfStart, halfEnd) {
+        if (!tokens.length) return;
+        const halfWidth = Math.max(halfEnd - halfStart, 1);
+        const used = new Set();
+        if (tokens.length === 1) {
+          // Honor column position even for single token
+          const local = Math.max(0, Math.min(3,
+            Math.round(((tokens[0].col - halfStart) / Math.max(halfWidth - 1, 1)) * 3)
+          ));
+          cells[base + local] = { text: tokens[0].text, empty: false };
+          return;
+        }
+        if (tokens.length === 4) {
+          for (let k = 0; k < 4; k++) {
+            cells[base + k] = { text: tokens[k].text, empty: false };
+          }
+          return;
+        }
+        if (tokens.length >= 5) {
+          // First 3 by column ratio, dump remainder into cell base+3
+          for (let k = 0; k < 3; k++) {
+            cells[base + k] = { text: tokens[k].text, empty: false };
+          }
+          cells[base + 3] = { text: tokens.slice(3).map(x => x.text).join(' '), empty: false };
+          return;
+        }
+        // 2 or 3 tokens: distribute by column ratio within the half
+        tokens.forEach(f => {
+          let local = Math.round(((f.col - halfStart) / Math.max(halfWidth - 1, 1)) * 3);
+          local = Math.max(0, Math.min(3, local));
+          let cellIdx = base + local;
+          while (used.has(cellIdx) && cellIdx < base + 3) cellIdx++;
+          if (used.has(cellIdx)) {
+            let b2 = cellIdx - 1;
+            while (b2 >= base && used.has(b2)) b2--;
+            if (b2 >= base) cellIdx = b2;
+          }
+          used.add(cellIdx);
+          cells[cellIdx] = { text: f.text, empty: false };
+        });
+      }
+
+      if (midCol >= 0) {
+        // Structural-pipe layout — split at midCol
+        const half1 = found.filter(f => f.col < midCol);
+        const half2 = found.filter(f => f.col >= midCol && f.col < endCol);
+        placeInHalf(half1, 0, startCol, midCol);
+        placeInHalf(half2, 4, midCol + 1, endCol);
+        return cells;
+      }
+
+      // No structural pipes — heuristic to decide if user intended position-based
+      const leadingSpaces = lyricLine.match(/^\s*/)[0].length;
+      let maxGap = 0;
+      for (let i = 1; i < found.length; i++) {
+        const gap = found[i].col - (found[i - 1].col + found[i - 1].text.length);
+        if (gap > maxGap) maxGap = gap;
+      }
+      const intentional = leadingSpaces >= 3 || maxGap >= 3;
+
+      if (!intentional) {
+        // Legacy even-spread behavior preserved
+        return _wordsToBeats(found.map(f => f.text));
+      }
+
+      // Position-based across full 8 cells using column ratio
+      const totalWidth = Math.max(lyricLine.length, found[found.length - 1].col + 1);
+      const used = new Set();
+      found.forEach(f => {
+        let beat = Math.round((f.col / Math.max(totalWidth - 1, 1)) * (BEATS - 1));
+        beat = Math.max(0, Math.min(BEATS - 1, beat));
+        while (used.has(beat) && beat < BEATS - 1) beat++;
+        if (used.has(beat)) {
+          let b2 = beat - 1;
+          while (b2 >= 0 && used.has(b2)) b2--;
+          if (b2 >= 0) beat = b2;
+        }
+        used.add(beat);
+        cells[beat] = { text: f.text, empty: false };
+      });
       return cells;
     }
 
@@ -3603,6 +3929,10 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
         const raw = allLines[i].replace(/\s+$/, '');
         if (!raw.trim()) continue;
 
+        // Beat ruler comment line (e.g. "| 1   2   3   4   | 5   6   7   8   |")
+        // Purely visual — skip, never parse as chord/lyric content.
+        if (_isBeatRuler(raw)) continue;
+
         // Section header
         const sh = _parseSectionHeader(raw);
         if (sh) {
@@ -3629,6 +3959,7 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
           for (let j = i + 1; j < allLines.length; j++) {
             const peek = allLines[j].replace(/\s+$/, '');
             if (!peek.trim()) continue;
+            if (_isBeatRuler(peek)) continue;  // ruler is decorative — skip
             // Stop if next chord/directive/header
             if (_isChordLine(peek) || _parseSectionHeader(peek) || _parseDirectiveLine(peek)) break;
             lyricLine = peek;
@@ -3637,18 +3968,16 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
           }
           const lyricLen = Math.max(lyricLine.length, raw.length);
           const chordsCells = _chordsToBeats(raw, lyricLen);
-          const words = lyricLine ? lyricLine.trim().split(/\s+/) : [];
-          const lyricsCells = _wordsToBeats(words);
+          const lyricsCells = _lyricsToBeatsAligned(lyricLine, raw);
           cur.lines.push({ chords: chordsCells, lyrics: lyricsCells });
           continue;
         }
 
         // Bare lyric line (no chords above)
         if (!cur) startSection('Verse');
-        const words = raw.trim().split(/\s+/);
         cur.lines.push({
           chords: Array.from({ length: BEATS }, () => ({ text: '', empty: true })),
-          lyrics: _wordsToBeats(words)
+          lyrics: _lyricsToBeatsAligned(raw, null)
         });
       }
 
@@ -3685,6 +4014,110 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       out.warnings = ['Format not auto-detected — parsed as plain text. Review the preview.'].concat(out.warnings);
       return out;
     }
+
+    /* ─── Serializer: SongDoc → plain text ────────────────
+       Used for back-filling sourceText on songs imported before
+       this feature, and for regenerating clean source after
+       structured edits (when those land later). The output
+       round-trips through parsePlain to the same SongDoc. */
+    function serializeSongToPlainText(song) {
+      const out = [];
+      const titleLine = song.title || 'Untitled';
+      out.push(song.artist ? `${titleLine} — ${song.artist}` : titleLine);
+      out.push('');
+
+      // 8 beats × 8 cols = 64 char content + bar-marker scaffolding
+      const COL  = 8;          // chars per beat cell
+      const HALF = COL * 4;    // 32 chars per 4-beat half (= 1 bar)
+
+      // Build a 32-char half from 4 cells, padded to fixed cell width
+      function fmtHalf(cells, from) {
+        let s = '';
+        for (let b = 0; b < 4; b++) {
+          const c = cells[from + b] || { text: '', empty: true };
+          const txt = (c.empty || !c.text) ? '' : c.text;
+          s += txt.padEnd(COL, ' ');
+        }
+        return s.slice(0, HALF).padEnd(HALF, ' ');
+      }
+      // Chord row: bar-marker pipes around each half
+      function chordRow(cells) {
+        return `| ${fmtHalf(cells, 0)} | ${fmtHalf(cells, 4)} |`;
+      }
+      // Lyric row: no pipes — words flow naturally, but column-aligned to chords
+      // (2-char prefix matches "| ", 3-char gap matches " | ", 2-char suffix matches " |")
+      function lyricRow(cells) {
+        return `  ${fmtHalf(cells, 0)}   ${fmtHalf(cells, 4)}  `.replace(/\s+$/, '');
+      }
+      // Beat ruler — musician counting (1–8), shown above first chord/lyric pair
+      // of the first section as a visual key for the bar structure.
+      function rulerRow() {
+        const a = ['1','2','3','4'].map(n => n.padEnd(COL, ' ')).join('').slice(0, HALF).padEnd(HALF, ' ');
+        const b = ['5','6','7','8'].map(n => n.padEnd(COL, ' ')).join('').slice(0, HALF).padEnd(HALF, ' ');
+        return `| ${a} | ${b} |`;
+      }
+
+      let didEmitRuler = false;
+
+      (song.sections || []).forEach((s, i) => {
+        if (i > 0) out.push('');
+        out.push(`[ ${s.label || 'Section ' + (i + 1)} ]`);
+        // Directive line for repeat / note (only if either present)
+        if (s.repeat || s.note) {
+          const parts = [];
+          if (s.repeat && s.repeat > 1) parts.push(`repeat ${s.repeat}x`);
+          if (s.note) parts.push(s.note);
+          out.push(`(${parts.join(', ')})`);
+        }
+        out.push('');
+        (s.lines || []).forEach(ln => {
+          const chordCells = ln.chords || [];
+          const lyricCells = ln.lyrics || [];
+          const hasChord = chordCells.some(c => c && !c.empty && c.text);
+          const hasLyric = lyricCells.some(c => c && !c.empty && c.text);
+          // Emit ruler once, just above the first chord or lyric row in the song
+          if (!didEmitRuler && (hasChord || hasLyric)) {
+            out.push(rulerRow());
+            didEmitRuler = true;
+          }
+          if (hasChord) out.push(chordRow(chordCells));
+          if (hasLyric) out.push(lyricRow(lyricCells));
+        });
+      });
+
+      return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+    }
+
+    /* ─── Sample template (shown via "Show Example" + downloaded via "Download .txt") ─── */
+    const SAMPLE_SONG_TEXT = `Already Whole — Wind Wc
+
+[ Opening Mantra ]
+(repeat 4x, slow & seeding)
+
+| 1       2       3       4        | 5       6       7       8        |
+| G               D                | Em              C                |
+  Already         whole              already         free
+
+| G               D                | Em              C                |
+  Nothing         to fix             just            be
+
+[ Verse 1 ]
+(gentle build)
+
+| G               D                | Em              C                |
+  When the        morning            breaks          I remember
+
+| G               D                | Em              C                |
+  This breath        is              enough          for now
+
+[ Chorus ]
+
+| C               G                | D               Em               |
+  I am            I am               I am            home
+
+| C               G                | D               Em               |
+  I am            I am               I am            whole
+`;
 
     /* ─── Preview renderer (no DOM dependency on currentSong) ── */
     function renderPreviewSong(song) {
@@ -3744,19 +4177,55 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     const importCapoIn     = document.getElementById('importCapo_in');
     const importBpmIn      = document.getElementById('importBpm_in');
     const importFromFile   = document.getElementById('importFromFile');
+    const importModalTitle    = document.getElementById('importTitle');
+    const importShowExample   = document.getElementById('importShowExample');
+    const importExamplePanel  = document.getElementById('importExamplePanel');
+    const importExampleText   = document.getElementById('importExampleText');
+    const importLoadExample   = document.getElementById('importLoadExample');
+    const importDownloadSample= document.getElementById('importDownloadSample');
+
+    // Initial fill of example panel pre block (one-time)
+    if (importExampleText) importExampleText.textContent = SAMPLE_SONG_TEXT;
 
     let _pendingSong = null;   // last parsed SongDoc waiting for confirm
     let _parseDebounce = null;
+    let _editingSongId = null; // null = create mode, song.id = edit-existing mode
 
-    function openImportModal() {
+    function openImportModal(opts) {
+      // opts: { editSong: SongDoc } — when present, modal opens in edit mode
       importScrim.classList.add('open');
       _resetImportModal();
+      const editSong = opts && opts.editSong;
+      if (editSong) {
+        _editingSongId = editSong.id;
+        importModalTitle.textContent = 'Edit Song';
+        importConfirm.textContent = 'Save Changes';
+        // Prefill text — use stored sourceText, or back-fill via serializer
+        const text = editSong.sourceText || serializeSongToPlainText(editSong);
+        importPaste.value = text;
+        // Prefill override fields from stored values
+        if (editSong.title)              importTitleIn.value  = editSong.title;
+        if (editSong.artist)             importArtistIn.value = editSong.artist;
+        if (editSong.key)                importKeyIn.value    = editSong.key;
+        if (editSong.capo != null && editSong.capo !== '') importCapoIn.value = editSong.capo;
+        if (editSong.defaultBpm)         importBpmIn.value    = editSong.defaultBpm;
+        // Run an immediate parse so preview + Save state populate
+        _runParseFromTextarea();
+      } else {
+        _editingSongId = null;
+        importModalTitle.textContent = 'Import a Song';
+        importConfirm.textContent = 'Add to Library';
+      }
       // Try clipboard paste suggestion (no auto-paste — privacy). User pastes themselves.
       setTimeout(() => importPaste.focus(), 80);
     }
     function closeImportModal() {
       importScrim.classList.remove('open');
       _pendingSong = null;
+      _editingSongId = null;
+      // Collapse example panel on close so next open is clean
+      if (importExamplePanel) importExamplePanel.hidden = true;
+      if (importShowExample)  importShowExample.classList.remove('active');
     }
     function _resetImportModal() {
       importPaste.value = '';
@@ -3855,8 +4324,38 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
         _pendingSong.defaultBpm = bpm;
         // If sections have tempo:0, render will use defaultBpm anyway
       }
+      // Always preserve the source text so the next edit round-trips cleanly
+      _pendingSong.sourceText = importPaste.value;
+
+      if (_editingSongId) {
+        // ── EDIT mode: replace in place, preserve id ──
+        const idx = library.songs.findIndex(s => s.id === _editingSongId);
+        if (idx < 0) {
+          // Edge case — song was deleted while modal open. Fall through to create.
+          _editingSongId = null;
+        } else {
+          _pendingSong.id = _editingSongId;
+          // Re-id sections deterministically scoped to song id
+          _pendingSong.sections.forEach((s, i) => {
+            s.id = `${_pendingSong.id}-sec-${i}`;
+          });
+          library.songs[idx] = _pendingSong;
+          // If this was the active song, swap into currentSong + re-render
+          if (currentSong && currentSong.id === _editingSongId) {
+            currentSong = _pendingSong;
+            renderSong(currentSong);
+            syncBpmUi(Math.round(60000 / msPerBeatAt(0)));
+          }
+          persistLibrary(true);
+          renderSongList();
+          setStatus('saved "' + _pendingSong.title + '" ✦');
+          closeImportModal();
+          return;
+        }
+      }
+
+      // ── CREATE mode ──
       _pendingSong.id = newSongId();
-      // De-duplicate any colliding section IDs
       _pendingSong.sections.forEach((s, i) => {
         if (!s.id) s.id = `${_pendingSong.id}-sec-${i}`;
       });
@@ -3868,9 +4367,39 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     }
 
     /* ─── Modal wiring ─────────────────────────────── */
-    importBtn.addEventListener('click', openImportModal);
+    importBtn.addEventListener('click', () => openImportModal());
     importClose.addEventListener('click', closeImportModal);
     importCancel.addEventListener('click', closeImportModal);
+
+    // Show/hide example panel
+    if (importShowExample) {
+      importShowExample.addEventListener('click', () => {
+        const willShow = importExamplePanel.hidden;
+        importExamplePanel.hidden = !willShow;
+        importShowExample.classList.toggle('active', willShow);
+      });
+    }
+    // Load example into the textarea (replaces empty content; confirms if not empty)
+    if (importLoadExample) {
+      importLoadExample.addEventListener('click', () => {
+        if (importPaste.value.trim() && !confirm('Replace current paste with the example?')) return;
+        importPaste.value = SAMPLE_SONG_TEXT;
+        _runParseFromTextarea();
+      });
+    }
+    // Download the sample as a .txt file
+    if (importDownloadSample) {
+      importDownloadSample.addEventListener('click', () => {
+        const blob = new Blob([SAMPLE_SONG_TEXT], { type: 'text/plain' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url;
+        a.download = 'raga-song-template.txt';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
     importScrim.addEventListener('click', e => {
       if (e.target === importScrim) closeImportModal();
     });
@@ -3978,11 +4507,8 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
       }
       closeTempoPopover();
       persistLibrary(true);
-      // If not overridden, refresh the bar's BPM display to reflect this change
-      if (!bpmOverridden) {
-        const ms = msPerBeatAt(beatCount || 0);
-        bpmDisplay.textContent = Math.round(60000 / ms);
-      }
+      const ms = msPerBeatAt(beatCount || 0);
+      syncBpmUi(Math.round(60000 / ms));
       setStatus('tempo set ✦');
     });
 
@@ -4210,11 +4736,10 @@ Lines like (repeat 4x) are saved as a section badge."></textarea>
     ═════════════════════════════════════════════════════ */
     renderSong(currentSong);
     initDrag();
-    // Initialize BPM display from first section's tempo
     {
       const ms = msPerBeatAt(0);
       const t = Math.round(60000 / ms);
-      bpm = t; bpmSlider.value = t; bpmInput.value = t; bpmDisplay.textContent = t;
+      syncBpmUi(t);
     }
     setStatus('ready');
 
