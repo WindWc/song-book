@@ -331,6 +331,7 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
         <ul class="warn" id="heardWarn" hidden></ul>
         <div class="heard-foot">
           <button class="btn primary" id="goPlay" type="button">Play it</button>
+          <button class="btn primary" id="sendPhone" type="button">Send to phone</button>
           <button class="btn" id="copyJson" type="button">Copy song file</button>
           <button class="btn" id="resetTiming" type="button">Reset timing</button>
         </div>
@@ -1054,7 +1055,37 @@ function renderHeard(s,warnings){
   const w=$('#heardWarn'); w.hidden=!warnings.length; w.innerHTML=warnings.map(x=>`<li>${esc(x)}</li>`).join('');
   $('#jsonOut').textContent=JSON.stringify(exportSong(s),null,2);
 }
-function exportSong(s){ const {source,...rest}=s; return rest; }
+function exportSong(s){ const {edited,pv2,...rest}=s; return rest; }
+/* ── Moving songs between devices, timing included ── */
+function looksLikeSongFile(t){ const x=t.trim(); if(!x.startsWith('{')) return null; try{ const o=JSON.parse(x); if(o && o.sections && o.arrangement) return o; }catch(e){} return null; }
+function importSongFile(o,how){
+  if(!o.source) o.source=toText(o);
+  o.format='downbeat/2'; o.id=o.id||('song-'+Date.now().toString(36));
+  const i=lib.songs.findIndex(x=>x.id===o.id);
+  if(i>=0){ lib.currentId=o.id; snapshot('import over this song'); lib.songs[i]=Object.assign(lib.songs[i],o); }
+  else lib.songs.push(o);
+  lib.currentId=o.id; saveLib(); fillSongSelect(); S.bpm=o.bpm||S.bpm; $('#bpmIn').value=S.bpm; clearSel();
+  setMode('play'); updateUndo(); toast(`${how}: “${o.title||'song'}” with timing`);
+}
+const b64u={ enc:b=>{ let s=''; b.forEach(x=>s+=String.fromCharCode(x)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); },
+             dec:t=>{ t=t.replace(/-/g,'+').replace(/_/g,'/'); const s=atob(t); return Uint8Array.from(s,c=>c.charCodeAt(0)); } };
+async function packSong(o){ const data=new TextEncoder().encode(JSON.stringify(o));
+  if(window.CompressionStream){ const cs=new Blob([data]).stream().pipeThrough(new CompressionStream('gzip')); return 'z'+b64u.enc(new Uint8Array(await new Response(cs).arrayBuffer())); }
+  return 'j'+b64u.enc(data); }
+async function unpackSong(t){ const kind=t[0], bytes=b64u.dec(t.slice(1));
+  if(kind==='z'){ const ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(ds).text()); }
+  return JSON.parse(new TextDecoder().decode(bytes)); }
+const PHONE_BASE = /netlify\.app$/.test(location.hostname) ? location.origin+location.pathname : 'https://deploy-preview-1--song-book-app.netlify.app/';
+async function sendToPhone(){
+  let link; try{ link=PHONE_BASE+'#s='+await packSong(exportSong(song())); }catch(e){ toast('Could not build the link'); return; }
+  try{ await navigator.clipboard.writeText(link); toast('Link copied. Send it to your phone and open it'); }
+  catch(e){ const d=document.querySelector('details.file'); d.open=true; $('#jsonOut').textContent=link; const r=document.createRange(); r.selectNodeContents($('#jsonOut')); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Link selected. Press Cmd+C to copy'); }
+}
+async function importFromHash(){
+  const m=location.hash.match(/^#s=(.+)$/); if(!m) return;
+  try{ const o=await unpackSong(m[1]); importSongFile(o,'Received'); }catch(e){ toast('That song link looks incomplete'); }
+  try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+}
 function onTextInput(){
   clearTimeout(parseTimer);
   parseTimer=setTimeout(()=>{
@@ -1105,6 +1136,8 @@ $('#resetTiming').onclick=e=>{ const b=e.currentTarget;
   b.dataset.armed='1'; b.textContent='Replaces ALL timing. Tap again to confirm'; b.classList.add('danger');
   b._t=setTimeout(()=>{ delete b.dataset.armed; b.textContent='Reset timing'; b.classList.remove('danger'); },4000); };
 $('#songText').addEventListener('input',onTextInput);
+$('#songText').addEventListener('paste',e=>{ const t=(e.clipboardData||window.clipboardData).getData('text'); const o=looksLikeSongFile(t); if(o){ e.preventDefault(); importSongFile(o,'Imported'); } });
+$('#sendPhone').onclick=sendToPhone;
 $('#copyJson').onclick=async()=>{ const txt=JSON.stringify(exportSong(song()),null,2); try{ await navigator.clipboard.writeText(txt); toast('Song file copied'); }catch(e){ const d=document.querySelector('details.file'); d.open=true; const r=document.createRange(); r.selectNodeContents($('#jsonOut')); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected. Press Cmd+C to copy'); } };
 $('#playBtn').onclick=()=>S.playing?pause():play();
 $('#restart').onclick=()=>{ if(S.playing){ seekTo(0); } else stop(true); window.scrollTo({top:0}); };
@@ -1146,6 +1179,7 @@ document.addEventListener('visibilitychange',async()=>{ if(document.visibilitySt
 
 /* ── Boot ── */
 lib=loadLib();
+setTimeout(importFromHash,50);
 if((lib.pv||1)<3){ lib.songs.forEach(sg=>{ if(!sg.source) return; const L=sg.source.split('\n'); let i=0; while(i<L.length&&(!L[i].trim()||META_RE.test(L[i].trim()))) i++; if(i<L.length&&/^\s*song\s*$/i.test(L[i])){ L.splice(i,1); sg.source=L.join('\n'); sg.pv2=1; } }); }
 if((lib.pv||1)<3){ lib.songs.forEach(sg=>{ if(!sg.source) return; try{ const r=parseText(sg.source); mergeTiming(sg,r.sections); sg.sections=r.sections; sg.arrangement=r.arrangement; sg.capo=r.meta.capo||sg.capo||''; }catch(e){} }); lib.pv=3; saveLib(); }
 S.bpm=song().bpm; $('#bpmIn').value=S.bpm; fillSongSelect(); setMode('play'); layoutFloat(); updateUndo();
