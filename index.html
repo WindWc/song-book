@@ -254,12 +254,13 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .ph.fixed .tm i{display:block;height:100%;background:var(--accent);border-radius:2px;transform-origin:0 50%;box-shadow:0 0 8px var(--accent-glow)}
 .ph.fixed.soon .tm i{background:var(--ink)}
 @media (max-width:640px){ .ph.fixed b,.ph.fixed .nx .nc{font-size:1.8rem} }
-/* Wave mode */
-.wave .cell .c-ch,.wave .cell .c-ly{transform:scale(var(--z,1));will-change:transform}
-.wave .cell .c-ch{transform-origin:0 100%}
-.wave .cell .c-ly{transform-origin:0 0}
-.wave .cell .c-ly .chip.word{transition:color var(--dur-fast) var(--ease-out)}
-.wave .line.active .cell.now .chip.word{color:var(--ink)}
+/* Wave mode (row lens) */
+.wave .line{--lz:1}
+.wave .chip.word{font-size:calc(1.2rem*var(--lz))}
+.wave .chip.chord{font-size:calc(.98rem*var(--lz))}
+.wave .cell{min-height:calc(64px*var(--lz))}
+.wave .c-ch{min-height:calc(22px*var(--lz))}
+@media (max-width:640px){ .wave .chip.word{font-size:calc(1.12rem*var(--lz))} }
 .wave .line.active .cell.now .chip.chord{color:var(--accent);text-shadow:0 0 14px var(--accent-glow)}
 /* Appearance menu */
 .look{position:relative}
@@ -961,23 +962,24 @@ async function play(){
   try{ if('wakeLock' in navigator) S.wake=await navigator.wakeLock.request('screen'); }catch(e){}
   cancelAnimationFrame(S.raf); S.activeLine=-1; paint(true);
 }
-/* Wave: words and chords swell as the beat reaches them and taper away after */
-var WAVE={cells:new Set(), peak:0.5, reach:2.4};
+/* Wave (lens): whole rows swell as the song flows through them.
+   Current row is largest; rows above and below taper off, two each way. */
+var WAVE={lines:new Set(), peak:0.42, reach:2.6};
 function waveFrame(idx,b){
+  const e=S.tl[idx]; if(!e) return;
+  const pos=idx+clamp((b-e.start)/e.line.beats,0,1);       // continuous position, in rows
   const touched=new Set();
-  for(let k=Math.max(0,idx-1);k<=Math.min(S.tl.length-1,idx+1);k++){
-    const e=S.tl[k], el=S.lineEls[k]; if(!el) continue;
-    el.querySelectorAll('.cell').forEach(c=>{
-      const d=Math.abs(e.start+(+c.dataset.b)+0.5-b);
-      if(d>=WAVE.reach) return;
-      const z=1+WAVE.peak*(0.5+0.5*Math.cos(Math.PI*d/WAVE.reach));
-      c.style.setProperty('--z',z.toFixed(3)); c.style.zIndex=z>1.25?3:2; touched.add(c);
-    });
+  for(let k=Math.max(0,idx-3);k<=Math.min(S.tl.length-1,idx+3);k++){
+    const el=S.lineEls[k]; if(!el) continue;
+    const d=Math.abs(k+0.5-pos);
+    if(d>=WAVE.reach) continue;
+    const z=1+WAVE.peak*(0.5+0.5*Math.cos(Math.PI*d/WAVE.reach));
+    el.style.setProperty('--lz',z.toFixed(3)); touched.add(el);
   }
-  WAVE.cells.forEach(c=>{ if(!touched.has(c)){ c.style.removeProperty('--z'); c.style.zIndex=''; } });
-  WAVE.cells=touched;
+  WAVE.lines.forEach(el=>{ if(!touched.has(el)) el.style.removeProperty('--lz'); });
+  WAVE.lines=touched;
 }
-function clearWave(){ if(!WAVE) return; WAVE.cells.forEach(c=>{ c.style.removeProperty('--z'); c.style.zIndex=''; }); WAVE.cells=new Set(); }
+function clearWave(){ if(!WAVE) return; WAVE.lines.forEach(el=>el.style.removeProperty('--lz')); WAVE.lines=new Set(); }
 function pause(){
   if(!S.playing) return;
   clearWave();
