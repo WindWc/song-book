@@ -254,6 +254,13 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .ph.fixed .tm i{display:block;height:100%;background:var(--accent);border-radius:2px;transform-origin:0 50%;box-shadow:0 0 8px var(--accent-glow)}
 .ph.fixed.soon .tm i{background:var(--ink)}
 @media (max-width:640px){ .ph.fixed b,.ph.fixed .nx .nc{font-size:1.8rem} }
+/* Wave mode */
+.wave .cell .c-ch,.wave .cell .c-ly{transform:scale(var(--z,1));will-change:transform}
+.wave .cell .c-ch{transform-origin:0 100%}
+.wave .cell .c-ly{transform-origin:0 0}
+.wave .cell .c-ly .chip.word{transition:color var(--dur-fast) var(--ease-out)}
+.wave .line.active .cell.now .chip.word{color:var(--ink)}
+.wave .line.active .cell.now .chip.chord{color:var(--accent);text-shadow:0 0 14px var(--accent-glow)}
 /* Appearance menu */
 .look{position:relative}
 .iconbtn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);display:grid;place-items:center;color:var(--muted);transition:background var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-bounce)}
@@ -301,7 +308,8 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
       </div>
       <p class="eyebrow">Chord bubble</p>
       <div class="seg" role="group" aria-label="Chord bubble">
-        <button type="button" data-bub="center" aria-pressed="true">Center</button>
+        <button type="button" data-bub="wave" aria-pressed="true">Wave</button>
+        <button type="button" data-bub="center" aria-pressed="false">Center</button>
         <button type="button" data-bub="bar" aria-pressed="false">Per bar</button>
         <button type="button" data-bub="follow" aria-pressed="false">Follow</button>
       </div>
@@ -798,7 +806,7 @@ function paint(force){
     const cells=S.lineEls[idx].querySelectorAll('.cell');
     if(cb!==S.activeCell){ cells.forEach((c,i)=>{ c.classList.toggle('past',i<cb); c.classList.toggle('now',i===cb); }); S.activeCell=cb; if(S.playing){ followLine(S.lineEls[idx],false); } }
     if(cells[cb]) cells[cb].style.setProperty('--p', S.playing?(rel-cb).toFixed(3):0);
-    if(S.playing) bubbleFrame(idx, rel);
+    if(S.playing){ if(look.bubble==='wave') waveFrame(idx, showB); else bubbleFrame(idx, rel); }
   }
   // now / next chord
   let now='–', next='', nextBeat=null;
@@ -863,6 +871,7 @@ function bubbleFrame(idx, rel){
 }
 function bubbleContent(idx,b,now,next,nextBeat){
   const ph=$('#ph');
+  if(look.bubble==='wave'){ if(!ph.hidden){ ph.hidden=true; S.phKey=''; } return; }
   if(!S.playing || idx<0){ if(!ph.hidden){ ph.hidden=true; S.phKey=''; G.x=null; G.from=null; } return; }
   let html='', soon=false;
   if(b<S.playFrom){ const left=clamp(Math.ceil(S.playFrom-b-1e-6),1,S.countBeats); html=`<i>starts in ${left}</i>`; }
@@ -883,9 +892,11 @@ const ACCENTS=[
 ];
 const LOOK_KEY='downbeat.look';
 const HOST_THEME=document.documentElement.getAttribute('data-theme');
-let look={theme:'auto',accent:'lumina',bubble:'center'};
+let look={theme:'auto',accent:'lumina',bubble:'wave'};
+let WAVE_TRY_KEY='downbeat.waveIntro';
 try{ const raw=localStorage.getItem(LOOK_KEY); if(raw) look=Object.assign(look,JSON.parse(raw)); }catch(e){}
 if(look.bubble==='fixed') look.bubble='center';
+try{ if(!localStorage.getItem(WAVE_TRY_KEY)){ look.bubble='wave'; localStorage.setItem(WAVE_TRY_KEY,'1'); } }catch(e){}
 function applyLook(){
   const root=document.documentElement;
   if(look.theme==='auto'){ if(HOST_THEME) root.setAttribute('data-theme',HOST_THEME); else root.removeAttribute('data-theme'); }
@@ -896,7 +907,7 @@ function applyLook(){
   document.querySelectorAll('.sw').forEach(x=>x.setAttribute('aria-pressed',x.dataset.acc===a.id));
   $('#swName').textContent=a.name;
   document.querySelectorAll('[data-bub]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.bub===look.bubble));
-  const ph=$('#ph'); if(ph){ ph.classList.toggle('fixed',look.bubble!=='follow'); G.x=null; G.from=null; }
+  const ph=$('#ph'); if(ph){ ph.classList.toggle('fixed',look.bubble!=='follow'); document.body.classList.toggle('wave',look.bubble==='wave'); clearWave(); G.x=null; G.from=null; }
   try{ localStorage.setItem(LOOK_KEY,JSON.stringify(look)); }catch(e){}
 }
 $('#swatches').innerHTML=ACCENTS.map(a=>`<button type="button" class="sw" data-acc="${a.id}" style="--c:${a.c}" aria-label="${a.name}" aria-pressed="false"></button>`).join('');
@@ -950,8 +961,26 @@ async function play(){
   try{ if('wakeLock' in navigator) S.wake=await navigator.wakeLock.request('screen'); }catch(e){}
   cancelAnimationFrame(S.raf); S.activeLine=-1; paint(true);
 }
+/* Wave: words and chords swell as the beat reaches them and taper away after */
+var WAVE={cells:new Set(), peak:0.5, reach:2.4};
+function waveFrame(idx,b){
+  const touched=new Set();
+  for(let k=Math.max(0,idx-1);k<=Math.min(S.tl.length-1,idx+1);k++){
+    const e=S.tl[k], el=S.lineEls[k]; if(!el) continue;
+    el.querySelectorAll('.cell').forEach(c=>{
+      const d=Math.abs(e.start+(+c.dataset.b)+0.5-b);
+      if(d>=WAVE.reach) return;
+      const z=1+WAVE.peak*(0.5+0.5*Math.cos(Math.PI*d/WAVE.reach));
+      c.style.setProperty('--z',z.toFixed(3)); c.style.zIndex=z>1.25?3:2; touched.add(c);
+    });
+  }
+  WAVE.cells.forEach(c=>{ if(!touched.has(c)){ c.style.removeProperty('--z'); c.style.zIndex=''; } });
+  WAVE.cells=touched;
+}
+function clearWave(){ if(!WAVE) return; WAVE.cells.forEach(c=>{ c.style.removeProperty('--z'); c.style.zIndex=''; }); WAVE.cells=new Set(); }
 function pause(){
   if(!S.playing) return;
+  clearWave();
   S.pauseBeat=Math.max(S.playFrom,beatNow());
   S.playing=false; clearInterval(S.timer); cancelAnimationFrame(S.raf);
   setPlayIcon(); updateHint(); markCursor(); paint(true);
