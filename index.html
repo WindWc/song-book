@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Downbeat">
 <meta name="theme-color" content="#0b0b10">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230b0b10'/%3E%3Cpath d='M12 4v9' stroke='%23f4f3f8' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='18' r='3.4' fill='%237b6cf0'/%3E%3C/svg%3E">
 <style>[hidden]{display:none!important}body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>Downbeat</title>
@@ -342,6 +344,7 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
           <button class="btn primary" id="goPlay" type="button">Play it</button>
           <button class="btn primary" id="sendPhone" type="button">Send to phone</button>
           <button class="btn" id="copyJson" type="button">Copy song file</button>
+          <button class="btn" id="backupAll" type="button">Back up all songs</button>
           <button class="btn" id="resetTiming" type="button">Reset timing</button>
         </div>
         <details class="file"><summary>Song file (Downbeat format v2)</summary><pre id="jsonOut"></pre></details>
@@ -1088,8 +1091,15 @@ function renderHeard(s,warnings){
 }
 function exportSong(s){ const {edited,pv2,...rest}=s; return rest; }
 /* ── Moving songs between devices, timing included ── */
-function looksLikeSongFile(t){ const x=t.trim(); if(!x.startsWith('{')) return null; try{ const o=JSON.parse(x); if(o && o.sections && o.arrangement) return o; }catch(e){} return null; }
+function looksLikeSongFile(t){ const x=t.trim(); if(!x.startsWith('{')) return null; try{ const o=JSON.parse(x); if(o && ((o.sections && o.arrangement) || Array.isArray(o.songs))) return o; }catch(e){} return null; }
+function importLibrary(o){
+  let added=0, updated=0;
+  o.songs.forEach(sg=>{ if(!sg||!sg.sections) return; if(!sg.source) sg.source=toText(sg); sg.format='downbeat/2';
+    const i=lib.songs.findIndex(x=>x.id===sg.id); if(i>=0){ lib.songs[i]=Object.assign(lib.songs[i],sg); updated++; } else { lib.songs.push(sg); added++; } });
+  saveLib(); fillSongSelect(); setMode('play'); updateUndo(); toast(`Library restored: ${added} added, ${updated} updated`);
+}
 function importSongFile(o,how){
+  if(Array.isArray(o.songs)) return importLibrary(o);
   if(!o.source) o.source=toText(o);
   o.format='downbeat/2'; o.id=o.id||('song-'+Date.now().toString(36));
   const i=lib.songs.findIndex(x=>x.id===o.id);
@@ -1106,7 +1116,7 @@ async function packSong(o){ const data=new TextEncoder().encode(JSON.stringify(o
 async function unpackSong(t){ const kind=t[0], bytes=b64u.dec(t.slice(1));
   if(kind==='z'){ const ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(ds).text()); }
   return JSON.parse(new TextDecoder().decode(bytes)); }
-const PHONE_BASE = /netlify\.app$/.test(location.hostname) ? location.origin+location.pathname : 'https://deploy-preview-1--song-book-app.netlify.app/';
+const PHONE_BASE = /netlify\.app$/.test(location.hostname) ? location.origin+'/' : 'https://song-book-app.netlify.app/';
 async function sendToPhone(){
   let link; try{ link=PHONE_BASE+'#s='+await packSong(exportSong(song())); }catch(e){ toast('Could not build the link'); return; }
   try{ await navigator.clipboard.writeText(link); toast('Link copied. Send it to your phone and open it'); }
@@ -1169,6 +1179,12 @@ $('#resetTiming').onclick=e=>{ const b=e.currentTarget;
 $('#songText').addEventListener('input',onTextInput);
 $('#songText').addEventListener('paste',e=>{ const t=(e.clipboardData||window.clipboardData).getData('text'); const o=looksLikeSongFile(t); if(o){ e.preventDefault(); importSongFile(o,'Imported'); } });
 $('#sendPhone').onclick=sendToPhone;
+$('#backupAll').onclick=async()=>{ const txt=JSON.stringify({format:'downbeat/library',saved:new Date().toISOString(),songs:lib.songs.map(exportSong)});
+  try{ await navigator.clipboard.writeText(txt); toast(`All ${lib.songs.length} songs copied. Paste into Notes to keep, or into Write to restore`); }
+  catch(e){ const d=document.querySelector('details.file'); d.open=true; $('#jsonOut').textContent=txt; const r=document.createRange(); r.selectNodeContents($('#jsonOut')); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected. Press Cmd+C to copy'); } };
+/* Installed app: offline support + ask the browser to keep our storage */
+if('serviceWorker' in navigator && /netlify\.app$/.test(location.hostname)){ window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{})); }
+try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){}
 $('#copyJson').onclick=async()=>{ const txt=JSON.stringify(exportSong(song()),null,2); try{ await navigator.clipboard.writeText(txt); toast('Song file copied'); }catch(e){ const d=document.querySelector('details.file'); d.open=true; const r=document.createRange(); r.selectNodeContents($('#jsonOut')); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected. Press Cmd+C to copy'); } };
 $('#playBtn').onclick=()=>S.playing?pause():play();
 $('#restart').onclick=()=>{ if(S.playing){ seekTo(0); } else stop(true); window.scrollTo({top:0}); };
