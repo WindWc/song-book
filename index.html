@@ -1149,7 +1149,7 @@ async function packSong(o){ const data=new TextEncoder().encode(JSON.stringify(o
 async function unpackSong(t){ const kind=t[0], bytes=b64u.dec(t.slice(1));
   if(kind==='z'){ const ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(ds).text()); }
   return JSON.parse(new TextDecoder().decode(bytes)); }
-const PHONE_BASE = /netlify\.app$/.test(location.hostname) ? location.origin+'/' : 'https://song-book-app.netlify.app/';
+const PHONE_BASE = /netlify\.app$/.test(location.hostname) ? location.origin+'/' : 'https://down-beat.netlify.app/';
 async function sendToPhone(){
   let link; try{ link=PHONE_BASE+'#s='+await packSong(exportSong(song())); }catch(e){ toast('Could not build the link'); return; }
   try{ await navigator.clipboard.writeText(link); toast('Link copied. Send it to your phone and open it'); }
