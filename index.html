@@ -136,7 +136,17 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .nowchord .fs{display:none;font-family:var(--f-mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
 .free .nowchord .n,.free .nowchord .x{display:none}
 .free .nowchord .fs{display:block}
-.free #clickTog,.free #countTog,.free #tapTog{display:none}
+.free #clickTog,.free #countTog,.free #tapTog,.free .tempo{display:none}
+.speed{display:none;align-items:center;gap:10px;flex:1;min-width:0;height:38px;padding:0 6px 0 14px;border:1px solid var(--line);background:var(--sunk);border-radius:var(--radius-pill)}
+.free .speed{display:flex}
+.speed span{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.speed input{flex:1;min-width:90px;width:200px;height:28px;margin:0;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+.speed input::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--line-2)}
+.speed input::-moz-range-track{height:4px;border-radius:2px;background:var(--line-2)}
+.speed input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;border:0;background:var(--accent);box-shadow:0 2px 10px var(--accent-glow)}
+.speed input::-moz-range-thumb{width:22px;height:22px;border-radius:50%;border:0;background:var(--accent)}
+.speed button{flex:none;min-width:58px;height:28px;border:0;border-radius:var(--radius-pill);background:var(--surface-3);font-family:var(--f-mono);font-weight:500;font-size:.84rem;font-variant-numeric:tabular-nums;color:var(--ink)}
+@media (max-width:640px){ .free .right{gap:8px} }
 .tog .short{display:none}
 @media (max-width:900px){ .tog .long{display:none} .tog .short{display:inline} .tempo small{display:none} }
 .lib-list li.lib-sub{border-top:1px solid var(--line);padding:16px 0 6px;margin:0}
@@ -553,13 +563,14 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 
 <div class="dock" id="dock">
   <div class="dock-in">
-    <div class="nowchord" aria-live="off"><span class="n" id="nowCh">–</span><span class="x" id="nextCh"></span><span class="fs">Free scroll</span></div>
+    <div class="nowchord" aria-live="off"><span class="n" id="nowCh">–</span><span class="x" id="nextCh"></span><span class="fs">Auto-scroll</span></div>
     <div class="transport">
-      <button class="tog tap" id="freeTog" type="button" aria-pressed="false" title="Free scroll: no beats to hit, the page just glides at the song’s tempo"><span class="long">Free scroll</span><span class="short">Scroll</span></button>
+      <button class="tog tap" id="freeTog" type="button" aria-pressed="false" title="Auto-scroll: no beats to hit. The page glides by itself, and a speed dial appears"><span class="long">Auto-scroll</span><span class="short">Scroll</span></button>
       <button class="ghost" id="restart" type="button" aria-label="Back to start"><svg viewBox="0 0 16 16"><path d="M3 2v12M14 2.5 5.5 8 14 13.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
       <button class="round" id="playBtn" type="button" aria-label="Play"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></svg></button>
     </div>
     <div class="right">
+      <div class="speed" role="group" aria-label="Scroll speed"><span>Speed</span><input id="speedIn" type="range" min="25" max="250" step="5" value="100" aria-label="Scroll speed, percent of the song’s own pace"><button type="button" id="speedPct" title="Back to 100%">100%</button></div>
       <div class="tempo" role="group" aria-label="Tempo">
         <button type="button" id="bpmDown" aria-label="Slower">−</button>
         <input id="bpmIn" type="number" inputmode="numeric" min="30" max="240" aria-label="Beats per minute">
@@ -991,14 +1002,14 @@ function renderPlay(){
   S.lineEls=S.tl.map((_,i)=>document.getElementById('ln'+i));
   S.activeLine=-1; S.activeCell=-1; S.activeOcc=-1;
   if(S.loop && !s.arrangement[S.loop.oi]) S.loop=null;
-  applySel(); updateHint(); markCursor(); paint(true); markLoop();
+  applySel(); updateHint(); markCursor(); paint(true); markLoop(); syncSpeed();
 }
 function seenFlag(k,set){ try{ if(set) localStorage.setItem(k,'1'); return localStorage.getItem(k)==='1'; }catch(e){ return false; } }
 function updateHint(){
   const el=$('#pHint');
   el.textContent = S.tap ? 'Tap timing: press play and tap each word as you sing it. Each tap places the next word on the nearest beat.'
     : S.playing ? ''
-    : S.free ? (seenFlag('downbeat.freeSeen')?'':'Free scroll: no beats to hit. The page glides at the song’s tempo, − and + change the speed, and you can scroll by hand any time.')
+    : S.free ? (seenFlag('downbeat.freeSeen')?'':'Auto-scroll: no beats to hit. Tap Scroll and the page glides by itself. Drag Speed to taste, and scroll by hand any time.')
     : seenFlag('downbeat.hintSeen') ? '' : 'Tap a line to start there. Tap a word or chord to move it to another beat, or to change how long its line lasts.';
   document.body.classList.toggle('editing', !S.playing && !S.tap);
 }
@@ -1649,7 +1660,13 @@ $('#loopTog').onclick=()=>{
    at the current tempo. Scrolling by hand is always allowed; the glide carries on from wherever you leave it. */
 const F={pos:0,seen:0,last:0,hold:0,touch:false,tick:0};
 try{ S.free=localStorage.getItem('downbeat.free')==='1'; }catch(e){ S.free=false; }
-const freeSpeed=()=>Math.max(4,$('#pSong').offsetHeight/Math.max(1,S.total*60/S.bpm));     // px per second
+const scrollPct=()=>clamp(+song().scroll||100,25,250);                                     // each song remembers its own dial
+const freeSpeed=()=>Math.max(3,$('#pSong').offsetHeight/Math.max(1,S.total*60/S.bpm)*scrollPct()/100);     // px per second; 100% = the song passes in the time it takes to play
+function syncSpeed(){ const v=scrollPct(); $('#speedIn').value=v; $('#speedPct').textContent=v+'%'; }
+function setSpeed(v,save){ const s=song(); v=clamp(Math.round(+v/5)*5,25,250); if(v===100) delete s.scroll; else s.scroll=v; syncSpeed(); if(save) saveLib(); }
+$('#speedIn').addEventListener('input',e=>setSpeed(e.target.value,false));
+$('#speedIn').addEventListener('change',e=>setSpeed(e.target.value,true));
+$('#speedPct').onclick=()=>{ setSpeed(100,true); toast('Speed back to 100%'); };
 function jumpToSec(el){ window.scrollTo(0,Math.max(0,window.scrollY+el.getBoundingClientRect().top-chromeH()-10)); F.pos=F.seen=window.scrollY; }
 async function playFree(){
   clearSel(); S.playing=true; document.body.classList.add('playing'); song().lastUsed=Date.now(); saveLib(); seenFlag('downbeat.freeSeen',true);
@@ -1663,6 +1680,7 @@ function freeFrame(now){
   if(!S.playing||!S.free) return;
   const dt=Math.min(0.1,Math.max(0,(now-F.last)/1000)); F.last=now;
   const y=window.scrollY;
+  if(F.touch && now-(F.touchAt||0)>2500) F.touch=false;                                  // a lifted finger we never heard about can't freeze the glide
   if(F.touch||now<F.hold){ if(Math.abs(y-F.seen)>0.5) F.hold=Math.max(F.hold,now+250); F.pos=F.seen=y; }      // your finger (or its momentum) has the page
   else { if(Math.abs(y-F.seen)>1.5) F.pos=y;
     F.pos+=freeSpeed()*dt;
@@ -1674,14 +1692,15 @@ function freeFrame(now){
     setActiveOcc(occAtRead()); }
   S.raf=requestAnimationFrame(freeFrame);
 }
-window.addEventListener('touchstart',()=>{ F.touch=true; },{passive:true});
-['touchend','touchcancel'].forEach(t=>window.addEventListener(t,e=>{ if(!e.touches||!e.touches.length){ F.touch=false; F.hold=performance.now()+500; } },{passive:true}));
+window.addEventListener('touchstart',e=>{ if(e.target.closest&&e.target.closest('.dock,.mapbar,.float,.top,.toast')) return; F.touch=true; F.touchAt=performance.now(); },{passive:true});
+window.addEventListener('touchmove',()=>{ if(F.touch) F.touchAt=performance.now(); },{passive:true});
+['touchend','touchcancel'].forEach(t=>window.addEventListener(t,e=>{ if((!e.touches||!e.touches.length)&&F.touch){ F.touch=false; F.hold=performance.now()+500; } },{passive:true}));
 window.addEventListener('wheel',()=>{ F.hold=performance.now()+350; },{passive:true});
 function setFree(on,quiet){ stop(true); S.free=!!on; try{ localStorage.setItem('downbeat.free',on?'1':'0'); }catch(e){}
   if(on&&S.tap){ S.tap=false; $('#tapTog').setAttribute('aria-pressed',false); $('#tapPad').hidden=true; }
   document.body.classList.toggle('free',S.free); $('#freeTog').setAttribute('aria-pressed',S.free); updateHint(); layoutFloat();
-  if(!quiet) toast(on?'Free scroll: no beats, the page just glides':'Back to beats'); }
-$('#freeTog').onclick=()=>setFree(!S.free);
+  syncSpeed(); if(!quiet) toast(on?'Auto-scroll on. Drag Speed to taste':'Back to beats'); }
+$('#freeTog').onclick=()=>{ const on=!S.free; setFree(on); if(on&&S.mode==='play') play(); };
 
 /* ── Modes ── */
 function setMode(m){
