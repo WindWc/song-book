@@ -317,7 +317,10 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .sh-head h1{font-family:var(--f-display);font-weight:400;font-size:1.7rem;line-height:1.1;margin:0;letter-spacing:-.01em}
 .sh-head .meta{font-family:var(--f-mono);font-size:.74rem;color:var(--faint);display:flex;flex-wrap:wrap;gap:4px 14px}
 .sh-head .meta b{font-weight:500;color:var(--chord)}
-.sh-head .sp{margin-left:auto;height:32px}
+.sh-tools{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sh-tools .tog{height:32px}
+.sh-size{display:none;gap:6px}
+.sh-size .tog{min-width:44px;padding:0 10px;font-family:var(--f-mono)}
 .sh-body{column-gap:2.4em;column-rule:1px solid var(--line);overflow:hidden;font-size:16px;line-height:1.22}
 .sheet.scrolls .sh-body{height:auto!important;overflow:visible;column-fill:balance!important}
 .ss{break-inside:avoid;margin:0 0 .85em}
@@ -333,7 +336,30 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .sg i{font-style:normal;font-weight:500}
 .sl.nochord .sg b,.sl.chordonly .sg i{display:none}
 .sn{font-family:var(--f-mono);font-size:.6em;letter-spacing:.08em;text-transform:uppercase;color:var(--chord);margin:.2em 0 .1em}
-@media (max-width:640px){ #tabSheet{display:none} }
+/* Sheet, scrolling layout: one readable column that glides by itself. The phone's Sheet, and a choice on bigger screens */
+.sheet.flow{max-width:680px;margin:0 auto;padding-bottom:calc(64vh + 96px)}
+.sheet.flow .sh-body{height:auto!important;overflow:visible;line-height:1.28}
+.sheet.flow .ss{margin:0 0 1.5em}
+.sheet.flow .ss h3{font-size:.6em;margin:0 0 .55em;padding-bottom:.4em;border-bottom:1px solid var(--line);color:var(--muted)}
+.sheet.flow .ss.rep h3{border:0;padding:0}
+.sheet.flow .sl{margin:0 0 .5em}
+.sheet.flow .sg{margin-right:.34em}
+.sheet.flow .sh-size{display:inline-flex}
+.shdock .dock-in{grid-template-columns:auto minmax(0,1fr);grid-template-areas:none;max-width:680px}
+.shdock .transport{grid-area:auto}
+.shdock .speed{display:flex}
+.shdock .speed input{width:0;min-width:60px}
+.sh-playing .top{transform:translateY(-110%);opacity:0;pointer-events:none}
+@media (max-width:640px){
+  #shLayout{display:none}
+  .sheet{padding-top:16px}
+  .sh-head h1{font-size:1.45rem;flex:1 1 100%}
+  .sh-tools{margin-left:0;flex:1 1 100%;justify-content:space-between}
+  .modes button{padding:6px 13px}
+  .songpick{flex:1 1 calc(100% - 56px)}.look{order:4}                 /* three tabs fill the first row, so the theme button joins the song row */
+}
+@media (max-width:380px){ .shdock .speed span{display:none} .shdock .speed{padding-left:10px} .brand{font-size:1.1rem;gap:5px} .brand svg{width:16px;height:16px} .modes button{padding:6px 10px;font-size:.9rem} }
+.sheet.flow .sg{margin-top:.1em}
 @media (max-width:900px){ .brand small{display:none} }
 /* Line length tag, key stepper, capo-shape suggestion */
 .line{position:relative}
@@ -518,10 +544,23 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
   <div class="sh-head">
     <h1 id="shTitle"></h1>
     <div class="meta" id="shMeta"></div>
-    <button class="tog sp" id="shRepeats" type="button" aria-pressed="false">Repeats: short</button>
+    <div class="sh-tools">
+      <button class="tog" id="shLayout" type="button" aria-pressed="false" title="Fit the whole song on one screen, or one column that scrolls by itself">Layout: fit</button>
+      <button class="tog" id="shRepeats" type="button" aria-pressed="false">Repeats: short</button>
+      <span class="sh-size" role="group" aria-label="Text size"><button class="tog" id="shSmaller" type="button" aria-label="Smaller text">A−</button><button class="tog" id="shBigger" type="button" aria-label="Bigger text">A+</button></span>
+    </div>
   </div>
   <div class="sh-body" id="shBody"></div>
 </section>
+<div class="dock shdock" id="shDock" hidden>
+  <div class="dock-in">
+    <div class="transport">
+      <button class="ghost" id="shTop" type="button" aria-label="Back to start"><svg viewBox="0 0 16 16"><path d="M3 2v12M14 2.5 5.5 8 14 13.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+      <button class="round" id="shPlay" type="button" aria-label="Start auto-scroll"><svg viewBox="0 0 24 24" id="shPlayIcon"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></svg></button>
+    </div>
+    <div class="speed" role="group" aria-label="Scroll speed"><span>Speed</span><input id="shSpeedIn" type="range" min="25" max="250" step="5" value="100" aria-label="Scroll speed, percent of the song’s own pace"><button type="button" id="shSpeedPct" title="Back to 100%">100%</button></div>
+  </div>
+</div>
 
 <div class="lib" id="libView" hidden>
   <div class="lib-panel" role="dialog" aria-modal="true" aria-label="Library">
@@ -535,7 +574,7 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
     <div id="libSetBar"></div>
     <ul class="lib-list" id="libList"></ul>
     <div id="libMore"></div>
-    <div class="lib-foot"><button class="btn" id="backupAll" type="button">Back up all songs</button><button class="btn" id="restoreBtn" type="button">Restore from backup</button><input type="file" id="restoreFile" accept=".json,.txt,application/json,text/plain" hidden><span class="swname">Songs are saved in this browser, on this device.</span></div>
+    <div class="lib-foot"><button class="btn" id="backupAll" type="button">Back up all songs</button><button class="btn" id="restoreBtn" type="button">Restore from backup</button><input type="file" id="restoreFile" accept=".json,.txt,application/json,text/plain" hidden><span class="swname">Songs are saved in this browser, on this device. Restoring keeps whichever copy of each song is newer.</span></div>
   </div>
 </div>
 <div class="countin" id="countIn" hidden><span></span></div>
@@ -872,7 +911,14 @@ function loadLib(){
   try{ const raw=localStorage.getItem(LS); if(raw){ const p=JSON.parse(raw); if(p&&Array.isArray(p.songs)&&p.songs.length) return p; } }catch(e){}
   return {currentId:'hanuman',songs:[fromV1(V1_HANUMAN),fromV1(V1_GRAND_MOON)]};
 }
-function saveLib(){ try{ localStorage.setItem(LS,JSON.stringify(lib)); }catch(e){} }
+/* Every song carries the time it last changed, so a restore can keep whichever copy is newer.
+   The stamp moves only when the song itself changes, not when it is merely opened or played. */
+const FP=new Map(); let fpReady=false;
+const canon=v=>Array.isArray(v)?'['+v.map(canon).join(',')+']':(v&&typeof v==='object')?'{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}':JSON.stringify(v);
+const songFP=s=>{ const {edited,pv2,lastUsed,mod,id,...rest}=s; return canon(rest); };
+function stampMods(init){ if(init) fpReady=true; if(!fpReady||!lib) return;
+  lib.songs.forEach(s=>{ const fp=songFP(s), old=FP.get(s.id); if(old===undefined){ if(!init&&!s.mod) s.mod=Date.now(); } else if(old!==fp) s.mod=Date.now(); FP.set(s.id,fp); }); }
+function saveLib(){ try{ stampMods(); localStorage.setItem(LS,JSON.stringify(lib)); }catch(e){} }
 const sets=()=>lib.setlists||(lib.setlists=[]);
 const isCover=s=>s.kind==='cover';
 function setKind(id,kind){ const sg=lib.songs.find(x=>x.id===id); if(!sg) return; if(kind==='cover') sg.kind='cover'; else delete sg.kind; saveLib(); renderNav(); }
@@ -1340,12 +1386,31 @@ function renderHeard(s,warnings){
 function exportSong(s){ const {edited,pv2,lastUsed,...rest}=s; return rest; }
 /* ── Moving songs between devices, timing included ── */
 function looksLikeSongFile(t){ const x=t.trim(); if(!x.startsWith('{')) return null; try{ const o=JSON.parse(x); if(o && ((o.sections && o.arrangement) || Array.isArray(o.songs))) return o; }catch(e){} return null; }
+/* Restore merges, song by song: new songs are added, and where both sides have a song the newer copy wins.
+   A copy that gets replaced goes to Recently deleted for 30 days, so a restore never loses work. */
 function importLibrary(o){
-  let added=0, updated=0;
-  o.songs.forEach(sg=>{ if(!sg||!sg.sections) return; if(!sg.source) sg.source=toText(sg); sg.format='downbeat/2';
-    const i=lib.songs.findIndex(x=>x.id===sg.id); if(i>=0){ lib.songs[i]=Object.assign(lib.songs[i],sg); updated++; } else { lib.songs.push(sg); added++; } });
-  (o.setlists||[]).forEach(sl=>{ if(!sl||!sl.id||!Array.isArray(sl.songs)) return; const i=sets().findIndex(x=>x.id===sl.id); if(i>=0) sets()[i]=sl; else sets().push(sl); });
-  saveLib(); fillSongSelect(); setMode('play'); updateUndo(); toast(`Library restored: ${added} added, ${updated} updated`);
+  const savedAt=Date.parse(o.saved)||0, nt=t=>String(t||'').trim().toLowerCase(), ids=new Set(o.songs.filter(Boolean).map(x=>x.id));
+  let added=0, updated=0, kept=0, same=0, n=0; const idMap={};
+  o.songs.forEach(sg=>{ if(!sg||!sg.sections) return; if(!sg.source) sg.source=toText(sg); sg.format='downbeat/2'; sg.id=sg.id||('song-'+Date.now().toString(36)+(n++));
+    let i=lib.songs.findIndex(x=>x.id===sg.id);
+    if(i<0 && nt(sg.title) && nt(sg.title)!=='untitled'){                 // the same song made separately on each device: pair them by title
+      const m=lib.songs.filter(x=>nt(x.title)===nt(sg.title)&&!ids.has(x.id)); if(m.length===1) i=lib.songs.indexOf(m[0]); }
+    if(i<0){ if(!sg.mod) sg.mod=savedAt||Date.now(); lib.songs.push(sg); added++; return; }
+    const cur=lib.songs[i]; idMap[sg.id]=cur.id;
+    if(songFP(sg)===songFP(cur)){ same++; return; }
+    const theirs=sg.mod||0, mine=cur.mod||0;
+    if(theirs>mine || (!theirs&&!mine)){                                    // no dates on either side (copies from before this update): the backup wins
+      const old=JSON.parse(JSON.stringify(cur)); old.id='song-'+Date.now().toString(36)+'r'+(n++);
+      (lib.trash||(lib.trash=[])).unshift({at:Date.now(),song:old,replaced:true});
+      const next={...sg,id:cur.id,mod:theirs||savedAt||Date.now()}; if(cur.lastUsed) next.lastUsed=cur.lastUsed;
+      lib.songs[i]=next; FP.set(cur.id,songFP(next)); updated++; }
+    else kept++; });
+  if(lib.trash) lib.trash=lib.trash.slice(0,80);
+  (o.setlists||[]).forEach(sl=>{ if(!sl||!sl.id||!Array.isArray(sl.songs)) return; sl.songs=sl.songs.map(id=>idMap[id]||id); const i=sets().findIndex(x=>x.id===sl.id); if(i>=0) sets()[i]=sl; else sets().push(sl); });
+  if(!lib.songs.some(s=>s.id===lib.currentId)) lib.currentId=lib.songs[0].id;
+  saveLib(); S.bpm=song().bpm; $('#bpmIn').value=S.bpm; fillSongSelect(); setMode('play'); updateUndo();
+  const parts=[added&&`${added} added`, updated&&`${updated} updated`, kept&&`${kept} newer here kept`, same&&`${same} already the same`].filter(Boolean);
+  toast('Restored: '+(parts.join(' · ')||'nothing to bring in'), updated?{label:'See replaced',fn:()=>{ LB.trashOpen=true; openLib(); }}:{label:'OK',fn:()=>{}});
 }
 function importSongFile(o,how){
   if(Array.isArray(o.songs)) return importLibrary(o);
@@ -1527,7 +1592,7 @@ document.addEventListener('click',e=>{ const n=e.target.closest('[data-nav]'); i
 /* Swipe left or right on a song (while it isn't playing) to move through the list */
 let SW=null;
 document.addEventListener('touchstart',e=>{ SW=null;
-  if(e.touches.length!==1||S.playing||S.sel||S.tap||!$('#libView').hidden||(S.mode!=='play'&&S.mode!=='sheet')) return;
+  if(e.touches.length!==1||S.playing||SH.playing||S.sel||S.tap||!$('#libView').hidden||(S.mode!=='play'&&S.mode!=='sheet')) return;
   if(e.target.closest('.mapbar,.dock,.float,.top,input,select,textarea,button')) return;
   const t=e.touches[0]; SW={x:t.clientX,y:t.clientY,at:Date.now()}; },{passive:true});
 document.addEventListener('touchend',e=>{ if(!SW) return; const t=e.changedTouches[0], dx=t.clientX-SW.x, dy=t.clientY-SW.y, dt=Date.now()-SW.at; SW=null;
@@ -1576,7 +1641,7 @@ function renderLib(){
     list=(LB.grouped ? `<li class="lib-sub">Originals<i>${og.length}</i></li>`+og.map((s,i)=>libRow(s,i,null,q)).join('')+`<li class="lib-sub">Covers<i>${cv.length}</i></li>`+cv.map((s,i)=>libRow(s,i,null,q)).join('')
       : arr.map((s,i)=>libRow(s,i,null,q)).join('')) || `<p class="lib-empty">${q?`No songs match “${esc(LB.q.trim())}”.`:LB.view==='covers'?'No covers yet. Tap the list icon on a song and choose Cover, or use the Original / Cover switch in Write.':'No originals yet. Songs are originals unless you mark them as covers.'}</p>`;
     const tr=lib.trash||[];
-    if(tr.length&&!q&&!kindView) more=`<details class="lib-trash"${LB.trashOpen?' open':''}><summary>Recently deleted (${tr.length})</summary><ul class="lib-list">${tr.map(t=>`<li class="lr" data-id="${esc(t.song.id)}"><span class="lr-main"><span class="lr-t">${esc(t.song.title||'Untitled')}</span><span class="lr-m">deleted ${ago(t.at)} · kept for 30 days</span></span><span class="lr-act"><button type="button" class="btn" data-restore>Restore</button></span></li>`).join('')}</ul></details>`;
+    if(tr.length&&!q&&!kindView) more=`<details class="lib-trash"${LB.trashOpen?' open':''}><summary>Recently deleted (${tr.length})</summary><ul class="lib-list">${tr.map(t=>`<li class="lr" data-id="${esc(t.song.id)}"><span class="lr-main"><span class="lr-t">${esc(t.song.title||'Untitled')}</span><span class="lr-m">${t.replaced?'replaced by a restore':'deleted'} ${ago(t.at)} · kept for 30 days</span></span><span class="lr-act"><button type="button" class="btn" data-restore>Restore</button></span></li>`).join('')}</ul></details>`;
   }
   $('#libSetBar').innerHTML=bar; $('#libList').innerHTML=list; $('#libMore').innerHTML=more; LB.flash=null;
 }
@@ -1591,7 +1656,7 @@ function deleteSong(id){
   const i=lib.songs.findIndex(s=>s.id===id); if(i<0) return;
   if(lib.currentId===id) stop(true);
   const [sg]=lib.songs.splice(i,1);
-  (lib.trash||(lib.trash=[])).unshift({at:Date.now(),song:sg}); lib.trash=lib.trash.slice(0,40);
+  (lib.trash||(lib.trash=[])).unshift({at:Date.now(),song:sg}); lib.trash=lib.trash.slice(0,80);
   if(!lib.songs.length) addBlankSong();
   if(lib.currentId===id) switchSong(lib.songs[Math.min(i,lib.songs.length-1)].id); else { saveLib(); fillSongSelect(); }
   LB.open=null; renderLib();
@@ -1662,11 +1727,14 @@ const F={pos:0,seen:0,last:0,hold:0,touch:false,tick:0};
 try{ S.free=localStorage.getItem('downbeat.free')==='1'; }catch(e){ S.free=false; }
 const scrollPct=()=>clamp(+song().scroll||100,25,250);                                     // each song remembers its own dial
 const freeSpeed=()=>Math.max(3,$('#pSong').offsetHeight/Math.max(1,S.total*60/S.bpm)*scrollPct()/100);     // px per second; 100% = the song passes in the time it takes to play
-function syncSpeed(){ const v=scrollPct(); $('#speedIn').value=v; $('#speedPct').textContent=v+'%'; }
+function syncSpeed(){ const v=scrollPct(); $('#speedIn').value=v; $('#speedPct').textContent=v+'%'; $('#shSpeedIn').value=v; $('#shSpeedPct').textContent=v+'%'; }
 function setSpeed(v,save){ const s=song(); v=clamp(Math.round(+v/5)*5,25,250); if(v===100) delete s.scroll; else s.scroll=v; syncSpeed(); if(save) saveLib(); }
 $('#speedIn').addEventListener('input',e=>setSpeed(e.target.value,false));
 $('#speedIn').addEventListener('change',e=>setSpeed(e.target.value,true));
 $('#speedPct').onclick=()=>{ setSpeed(100,true); toast('Speed back to 100%'); };
+$('#shSpeedIn').addEventListener('input',e=>setSpeed(e.target.value,false));
+$('#shSpeedIn').addEventListener('change',e=>setSpeed(e.target.value,true));
+$('#shSpeedPct').onclick=()=>{ setSpeed(100,true); toast('Speed back to 100%'); };
 function jumpToSec(el){ window.scrollTo(0,Math.max(0,window.scrollY+el.getBoundingClientRect().top-chromeH()-10)); F.pos=F.seen=window.scrollY; }
 async function playFree(){
   clearSel(); S.playing=true; document.body.classList.add('playing'); song().lastUsed=Date.now(); saveLib(); seenFlag('downbeat.freeSeen',true);
@@ -1706,14 +1774,44 @@ $('#freeTog').onclick=()=>{ const on=!S.free; setFree(on); if(on&&S.mode==='play
 function setMode(m){
   S.mode=m; if(m!=='play') stop(false);
   $('#writeView').hidden=m!=='write'; $('#playView').hidden=m!=='play'; $('#sheetView').hidden=m!=='sheet'; sheetWake(m==='sheet');
-  $('#dock').hidden=m!=='play'; $('#floatWrap').hidden=m!=='play';
+  $('#dock').hidden=m!=='play'; $('#floatWrap').hidden=m!=='play'; if(m!=='sheet'){ sheetStop(); $('#shDock').hidden=true; }
   $('#tabWrite').setAttribute('aria-selected',m==='write'); $('#tabPlay').setAttribute('aria-selected',m==='play'); $('#tabSheet').setAttribute('aria-selected',m==='sheet'); moveThumb();
   document.body.style.paddingBottom = m==='play'?'':m==='sheet'?'0px':'40px';
   render();
 }
 /* ── Sheet view: the whole song fitted to one screen ── */
-let shFull=false;
-try{ shFull=localStorage.getItem('downbeat.sheetFull')==='1'; }catch(e){}
+let shFull=false, shLayout='', shFlowFull=true, shSize=0;
+try{ shFull=localStorage.getItem('downbeat.sheetFull')==='1'; shLayout=localStorage.getItem('downbeat.sheetLayout')||''; shFlowFull=localStorage.getItem('downbeat.sheetFlowFull')!=='0'; shSize=+localStorage.getItem('downbeat.sheetSize')||0; }catch(e){}
+/* Two layouts. Fit: the whole song on one screen (iPad, desktop). Scroll: one column at a readable size that
+   glides by itself. A phone always gets Scroll, because fitting a song onto a phone makes it unreadable. */
+const shPhone=()=>window.innerWidth<=640;
+const shFlow=()=>shPhone()||shLayout==='flow';
+const shFontPx=()=>clamp(shSize||(shPhone()?18:21),13,34);
+const SH={playing:false,raf:0,beats:0};
+const sheetSpeed=()=>Math.max(3,$('#shBody').offsetHeight/Math.max(1,SH.beats*60/(song().bpm||80))*scrollPct()/100);   // 100% = the sheet passes in the time the song takes
+function setSheetIcon(){ $('#shPlayIcon').innerHTML = SH.playing ? '<path d="M7 4.5h3.6v15H7zM13.4 4.5H17v15h-3.6z" fill="currentColor"/>' : '<path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/>'; $('#shPlay').setAttribute('aria-label',SH.playing?'Pause auto-scroll':'Start auto-scroll'); }
+function sheetEndY(){ return window.scrollY+$('#shBody').getBoundingClientRect().bottom-window.innerHeight*0.38; }      // glide until the last line reaches reading height
+function sheetPlay(){
+  if(SH.playing||S.mode!=='sheet'||!shFlow()) return;
+  if(window.scrollY>=sheetEndY()-4) window.scrollTo(0,0);
+  SH.playing=true; document.body.classList.add('sh-playing'); song().lastUsed=Date.now(); saveLib(); setSheetIcon();
+  F.pos=F.seen=window.scrollY; F.last=performance.now(); F.hold=0; F.touch=false;
+  cancelAnimationFrame(SH.raf); SH.raf=requestAnimationFrame(sheetFrame);
+}
+function sheetStop(){ if(!SH.playing) return; SH.playing=false; cancelAnimationFrame(SH.raf); document.body.classList.remove('sh-playing'); setSheetIcon(); }
+function sheetFrame(now){
+  if(!SH.playing) return;
+  const dt=Math.min(0.1,Math.max(0,(now-F.last)/1000)); F.last=now;
+  const y=window.scrollY;
+  if(F.touch && now-(F.touchAt||0)>2500) F.touch=false;
+  if(F.touch||now<F.hold){ if(Math.abs(y-F.seen)>0.5) F.hold=Math.max(F.hold,now+250); F.pos=F.seen=y; }      // your finger (or its momentum) has the page
+  else { if(Math.abs(y-F.seen)>1.5) F.pos=y;
+    F.pos+=sheetSpeed()*dt;
+    const end=Math.min(sheetEndY(),document.documentElement.scrollHeight-window.innerHeight);
+    if(F.pos>=end){ window.scrollTo(0,end); sheetStop(); return; }
+    window.scrollTo(0,F.pos); F.seen=window.scrollY; }
+  SH.raf=requestAnimationFrame(sheetFrame);
+}
 function sheetLineHTML(line){
   const words=line.words, chords=[...line.chords].sort((a,b)=>a.t-b.t);
   if(!words.length) return `<div class="sl chordonly">${chords.map(c=>`<span class="sg"><b>${esc(c.text)}</b><i></i></span>`).join('')}</div>`;
@@ -1726,24 +1824,30 @@ function sheetLineHTML(line){
   return `<div class="sl">${segs.map(g=>`<span class="sg"><b>${esc(g.ch)}</b><i>${esc(g.tx.join(' '))}</i></span>`).join('')}</div>`;
 }
 function renderSheet(){
-  const s=song();
+  const s=song(), flow=shFlow(), full=flow?shFlowFull:shFull;
+  sheetStop(); $('#sheetView').classList.toggle('flow',flow); $('#shDock').hidden=!(flow&&S.mode==='sheet');
+  const lb=$('#shLayout'); lb.textContent=flow?'Layout: scroll':'Layout: fit'; lb.setAttribute('aria-pressed',flow);
   $('#shTitle').textContent=s.title||'Untitled';
   const capo=String(s.capo||'').trim();
   $('#shMeta').innerHTML=[s.key&&`<span>Key <b>${esc(s.key)}</b></span>`, capo&&`<span>Capo <b>${esc(/^\d+$/.test(capo)?'fret '+capo:capo)}</b></span>`, `<span>${s.bpm} BPM</span>`].filter(Boolean).join('');
-  const b=$('#shRepeats'); b.textContent=shFull?'Repeats: full':'Repeats: short'; b.setAttribute('aria-pressed',shFull);
+  const b=$('#shRepeats'); b.textContent=full?'Repeats: full':'Repeats: short'; b.setAttribute('aria-pressed',full);
   // group consecutive plays of the same section into "×N"
   const groups=[]; s.arrangement.forEach(it=>{ const sec=s.sections[it.section]; if(!sec) return; const g=groups[groups.length-1];
-    if(g && g.sid===it.section && (g.it.label||'')===(it.label||'') && (g.it.note||'')===(it.note||'')) g.n++; else groups.push({sid:it.section,it,sec,n:1}); });
-  const seen=new Set(); let h='';
+    if(g && !(flow&&full) && g.sid===it.section && (g.it.label||'')===(it.label||'') && (g.it.note||'')===(it.note||'')) g.n++; else groups.push({sid:it.section,it,sec,n:1}); });   // the scrolling sheet writes every pass out, so the page keeps time with the song
+  const seen=new Set(); let h=''; SH.beats=0;
   groups.forEach(g=>{ const label=g.it.label||g.sec.label||''; const rep=seen.has(g.sid); seen.add(g.sid);
     const head=`${esc(label)}${g.n>1?`<u>×${g.n}</u>`:''}${g.it.note?`<em>${esc(g.it.note)}</em>`:''}`;
-    if(rep && !shFull){ h+=`<div class="ss rep"><h3>↺ ${head||'repeat'}</h3></div>`; return; }
+    if(rep && !full){ h+=`<div class="ss rep"><h3>↺ ${head||'repeat'}</h3></div>`; return; }
+    g.sec.lines.forEach(l=>SH.beats+=(l.beats||0)*g.n);
     h+=`<div class="ss">${head?`<h3>${head}</h3>`:''}${g.sec.lines.map(l=>(l.note?`<div class="sn">${esc(l.note)}</div>`:'')+sheetLineHTML(l)+(l.noteAfter?`<div class="sn">${esc(l.noteAfter)}</div>`:'')).join('')}</div>`; });
-  $('#shBody').innerHTML=h; fitSheet();
+  $('#shBody').innerHTML=h; syncSpeed(); fitSheet();
 }
 function fitSheet(){
   const v=$('#sheetView'); if(v.hidden) return;
-  const body=$('#shBody'); v.classList.remove('scrolls'); window.scrollTo(0,0);
+  if(shFlow()!==v.classList.contains('flow')){ renderSheet(); return; }            // crossed the phone width (rotated, resized)
+  const body=$('#shBody'); v.classList.remove('scrolls');
+  if(v.classList.contains('flow')){ body.classList.remove('nowrap'); body.style.height=''; body.style.columnFill=''; body.style.columnCount=1; body.style.fontSize=shFontPx()+'px'; return; }
+  window.scrollTo(0,0);
   const H=Math.max(140, window.innerHeight-body.getBoundingClientRect().top-12);
   body.style.height=H+'px'; body.style.columnFill='auto';
   const W=body.clientWidth, maxCols=W<700?2:W<1000?3:W<1500?4:5;
@@ -1771,7 +1875,12 @@ function layoutFloat(){ const d=$('#dock'); const f=$('#floatWrap'); f.style.bot
 $('#tabWrite').onclick=()=>setMode('write');
 $('#tabPlay').onclick=()=>setMode('play');
 $('#tabSheet').onclick=()=>setMode('sheet');
-$('#shRepeats').onclick=()=>{ shFull=!shFull; try{ localStorage.setItem('downbeat.sheetFull',shFull?'1':'0'); }catch(e){} renderSheet(); };
+$('#shRepeats').onclick=()=>{ try{ if(shFlow()){ shFlowFull=!shFlowFull; localStorage.setItem('downbeat.sheetFlowFull',shFlowFull?'1':'0'); } else { shFull=!shFull; localStorage.setItem('downbeat.sheetFull',shFull?'1':'0'); } }catch(e){} renderSheet(); };
+$('#shLayout').onclick=()=>{ shLayout=shFlow()?'fit':'flow'; try{ localStorage.setItem('downbeat.sheetLayout',shLayout); }catch(e){} window.scrollTo(0,0); renderSheet(); if(shFlow()) toast('Scrolling sheet. Press play and it glides by itself'); };
+const shResize=d=>{ shSize=clamp(shFontPx()+d,13,34); try{ localStorage.setItem('downbeat.sheetSize',shSize); }catch(e){} fitSheet(); };
+$('#shSmaller').onclick=()=>shResize(-1.5); $('#shBigger').onclick=()=>shResize(1.5);
+$('#shPlay').onclick=()=>SH.playing?sheetStop():sheetPlay();
+$('#shTop').onclick=()=>{ const go=SH.playing; sheetStop(); window.scrollTo(0,0); if(go) sheetPlay(); };
 $('#goPlay').onclick=()=>setMode('play');
 $('#libBtn').onclick=openLib;
 $('#newSongW').onclick=newSong;
@@ -1834,6 +1943,7 @@ document.addEventListener('keydown',e=>{
   if(e.target.matches('input,textarea,select')) return;
   if(e.key==='['||e.key===']'){ e.preventDefault(); stepSong(e.key===']'?1:-1); return; }
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
+  if(S.mode==='sheet'&&e.code==='Space'&&shFlow()){ e.preventDefault(); SH.playing?sheetStop():sheetPlay(); return; }
   if(S.mode!=='play') return;
   if(e.code==='Space'){ e.preventDefault(); if(S.tap&&S.playing) doTap(); else S.playing?pause():play(); }
   else if(S.sel&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){ e.preventDefault(); const g=getSelItem(); moveSel(Math.floor(g.item.t)+(e.key==='ArrowLeft'?-1:1)); }
@@ -1849,6 +1959,7 @@ setTimeout(importFromHash,50);
 if((lib.pv||1)<3){ lib.songs.forEach(sg=>{ if(!sg.source) return; const L=sg.source.split('\n'); let i=0; while(i<L.length&&(!L[i].trim()||META_RE.test(L[i].trim()))) i++; if(i<L.length&&/^\s*song\s*$/i.test(L[i])){ L.splice(i,1); sg.source=L.join('\n'); sg.pv2=1; } }); }
 if((lib.pv||1)<3){ lib.songs.forEach(sg=>{ if(!sg.source) return; try{ const r=parseText(sg.source); mergeTiming(sg,r.sections); sg.sections=r.sections; sg.arrangement=r.arrangement; sg.capo=r.meta.capo||sg.capo||''; }catch(e){} }); lib.pv=3; saveLib(); }
 if(lib.trash){ lib.trash=lib.trash.filter(x=>x&&x.song&&Date.now()-x.at<30*864e5); }
+stampMods(true);
 S.bpm=song().bpm; $('#bpmIn').value=S.bpm; fillSongSelect(); setMode('play'); if(S.free) setFree(true,true); layoutFloat(); updateUndo();
 </script>
 </body>
