@@ -334,6 +334,7 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .sg{display:inline-flex;flex-direction:column;vertical-align:bottom;margin-right:.32em}
 .sg b{font-family:var(--f-mono);font-weight:500;font-size:.8em;line-height:1.15;min-height:1.15em;color:var(--chord);white-space:nowrap;padding-right:.5em}
 .sg i{font-style:normal;font-weight:500}
+.sg i:empty::before{content:"\a0"}   /* a chord held after the last word has no word under it: keep a line's height so it stays on the chord row */
 .sl.nochord .sg b,.sl.chordonly .sg i{display:none}
 .sn{font-family:var(--f-mono);font-size:.6em;letter-spacing:.08em;text-transform:uppercase;color:var(--chord);margin:.2em 0 .1em}
 /* Sheet, scrolling layout: one readable column that glides by itself. The phone's Sheet, and a choice on bigger screens */
