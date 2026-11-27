@@ -168,6 +168,14 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-left:2px solid var(--line-2)}
 .cell{position:relative;min-height:64px;padding:4px 7px 9px;border-left:1px dashed var(--line);transition:background var(--dur-fast) var(--ease-out)}
 .cell:first-child{border-left:0}
+/* Rest slots: a line that isn't a whole number of rows still sits on the same grid as the others.
+   The slots it doesn't use are hatched out: nothing to play, nothing counted, the click moves straight on. */
+.gcell{position:relative;min-height:64px;border-left:1px dashed var(--line);background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--ink) 10%,transparent) 5px 6px) color-mix(in srgb,var(--ink) 4%,transparent);opacity:.8}
+.gcell:first-child{border-left:0}
+.gcell.g1{border-left:2px solid var(--line-2)}
+.bar.rest{border-left-style:dashed}
+.line.active .gcell{opacity:.45}
+@media (max-width:640px){ .bar.rest{display:none} }
 .cell.down::before{content:"";position:absolute;left:-4px;top:5px;width:6px;height:6px;border-radius:50%;background:var(--line-2)}
 .line.active .cell.down::before{background:var(--accent)}
 .cell .fill{position:absolute;inset:auto 2px 0 2px;height:3px;border-radius:2px;background:transparent}
@@ -307,7 +315,7 @@ details.file pre{max-height:260px;overflow:auto;background:var(--sunk);border:1p
 .wave .line{--lz:1}
 .wave .chip.word{font-size:calc(1.2rem*var(--lz))}
 .wave .chip.chord{font-size:calc(.98rem*var(--lz))}
-.wave .cell{min-height:calc(64px*var(--lz))}
+.wave .cell,.wave .gcell{min-height:calc(64px*var(--lz))}
 .wave .c-ch{min-height:calc(22px*var(--lz))}
 @media (max-width:640px){ .wave .chip.word{font-size:calc(1.12rem*var(--lz))} }
 .wave .line.active .cell.now .chip.chord{color:var(--accent);text-shadow:0 0 14px var(--accent-glow)}
@@ -1034,13 +1042,17 @@ function renderPlay(){
     const defB=sec.beats||s.beatsPerLine||8, defBars=Math.ceil(defB/bpb);
     S.tl.forEach((e,idx)=>{ if(e.oi!==oi) return; const line=e.line; const nb=Math.ceil(line.beats/bpb);
       if(line.note) h+=`<div class="lnote"><span>${esc(line.note)}</span></div>`;
-      h+=`<div class="line" id="ln${idx}" data-idx="${idx}">${line.beats!==defB?`<span class="lb${nb<defBars?' in':''}" style="--lw:${(nb/defBars).toFixed(3)}">${line.beats} beat${line.beats===1?'':'s'}</span>`:''}<div class="bars" style="--bars:${Math.max(nb,defBars)}">`;
-      for(let k=0;k<nb;k++){ h+='<div class="bar">';
+      const shown=Math.max(1,Math.ceil(nb/defBars))*defBars;                 // whole rows only, so every line shares one grid
+      h+=`<div class="line" id="ln${idx}" data-idx="${idx}">${line.beats!==defB?`<span class="lb">${line.beats} beat${line.beats===1?'':'s'}</span>`:''}<div class="bars" style="--bars:${defBars}">`;
+      for(let k=0;k<shown;k++){
+        if(k>=nb){ h+=`<div class="bar rest" aria-hidden="true">${'<div class="gcell"></div>'.repeat(bpb)}</div>`; continue; }
+        h+='<div class="bar">';
         for(let b=k*bpb;b<Math.min(line.beats,(k+1)*bpb);b++){
           const ch=line.chords.map((c,i)=>[c,i]).filter(([c])=>Math.floor(c.t)===b);
           const ws=line.words.map((w,i)=>[w,i]).filter(([w])=>Math.floor(w.t)===b);
           h+=`<div class="cell${b%bpb===0?' down':''}" data-sid="${esc(e.sid)}" data-li="${e.li}" data-b="${b}"><div class="c-ch">${ch.map(([c,i])=>chipHTML('chord',e.sid,e.li,i,c.text)).join('')}</div><div class="c-ly">${ws.map(([w,i])=>chipHTML('word',e.sid,e.li,i,w.text)).join('')}</div><i class="fill"></i></div>`;
         }
+        for(let b=Math.max(line.beats,k*bpb);b<(k+1)*bpb;b++) h+=`<div class="gcell${b===line.beats?' g1':''}" aria-hidden="true"></div>`;
         h+='</div>'; }
       h+='</div></div>'; if(line.noteAfter) h+=`<div class="lnote"><span>${esc(line.noteAfter)}</span></div>`; });
     h+='</div>';
